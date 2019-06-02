@@ -1,0 +1,12 @@
+[submodule "model-api-sequence"]
+	path = model-api-sequence
+	url = https://github.com/evandowning/model-api-sequence.git
+[submodule "model-api-frequency"]
+	path = model-api-frequency
+	url = https://github.com/evandowning/model-api-frequency.git
+[submodule "model-api-existence"]
+	path = model-api-existence
+	url = https://github.com/evandowning/model-api-existence.git
+[submodule "mimicry-sequence"]
+	path = mimicry-sequence
+	url = https://github.com/evandowning/mimicry-sequence.git

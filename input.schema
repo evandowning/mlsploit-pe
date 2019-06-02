@@ -1,0 +1,54 @@
+{
+    "function":[
+        {
+            "name": "mimicry_attack",
+            "options":
+                [
+                    {"name": "sequence", "type": "bool", "required": true},
+                    {"name": "sequence_window", "type": "int", "required": true},
+                    {"name": "sequence_type", "type": "str", "required": true},
+                    {"name": "generations", "type": "int", "required": true}
+                ],
+                "extensions": [
+                    {
+                         "ftype": null,
+                         "extension": "zip"
+                    }
+                ]
+        },
+        {
+            "name": "model_ensemble",
+            "options":
+                [
+                    {"name": "sequence", "type": "bool", "required": true},
+                    {"name": "sequence_window", "type": "int", "required": true},
+                    {"name": "sequence_type", "type": "str", "required": true},
+                    {"name": "existence", "type": "bool", "required": true},
+                    {"name": "frequency", "type": "bool", "required": true}
+                ],
+                "extensions": [
+                    {
+                         "ftype": null,
+                         "extension": "zip"
+                    }
+                ]
+        },
+        {
+            "name": "evaluate_model_ensemble",
+            "options":
+                [
+                    {"name": "sequence", "type": "bool", "required": true},
+                    {"name": "sequence_window", "type": "int", "required": true},
+                    {"name": "sequence_type", "type": "str", "required": true},
+                    {"name": "existence", "type": "bool", "required": true},
+                    {"name": "frequency", "type": "bool", "required": true}
+                ],
+                "extensions": [
+                    {
+                         "ftype": null,
+                         "extension": "zip"
+                    }
+                ]
+        }
+    ]
+}
