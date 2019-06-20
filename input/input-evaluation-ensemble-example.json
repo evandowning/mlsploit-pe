@@ -1,15 +1,11 @@
 {
     "name": "evaluate_model_ensemble",
-    "num_files": 1,
-    "files": ["classes-eval.txt"],
-    "option": {
-        "classes": "classes-eval.txt",
+    "num_files": 3,
+    "files": ["classes-eval.txt","convert_classes.txt","model.zip"],
+    "options": {
         "sequence": true,
         "existence": true,
-        "frequency": true,
-        "arguments": true,
-        "netflow": false
+        "frequency": true
     },
-    "tags": null,
-    "model": "model.zip"
+    "tags": [{"ftype": "data"}, {"ftype": "map"}, {"ftype": "model"}]
 }

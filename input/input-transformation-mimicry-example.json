@@ -1,15 +1,12 @@
 {
     "name": "mimicry_attack",
-    "num_files": 2,
-    "files": ["benign_list.txt","targets.txt"],
-    "option": {
-        "classes": "benign_list.txt",
-        "targets": "targets.txt",
+    "num_files": 4,
+    "files": ["benign.txt","convert_classes.txt","targets.txt","model.zip"],
+    "options": {
         "sequence": true,
-        "existence": true,
-        "frequency": true,
-        "arguments": true
+        "sequence_type": "multi_classification",
+        "sequence_window": 32,
+        "generations": 100
     },
-    "tags": null,
-    "model": "model.zip"
+    "tags": [{"ftype": "data"}, {"ftype": "map"}, {"ftype": "target"}, {"ftype": "model"}]
 }

@@ -20,11 +20,24 @@ echo "" > $LOG_ERR
 
 echo "Running $NAME" >> $LOG
 
+# Get number of files passed
+NUM_FILES=$( jq -r ".tags | length" "$CONFIG")
+
 # MODEL_ENSEMBLE
 if [ "$NAME" = "model_ensemble" ]; then
-    # Get hashes and labels
-    INPUT_FILE=$( jq -r ".files"[0] "$CONFIG" )
-    CLASSES="$INPUT_FILE"
+    # Get files
+    CLASSES=""
+    if [ $NUM_FILES -gt 0 ]; then
+        for i in `seq 0 $((NUM_FILES-1))`
+        do
+            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
+
+            # If this is a data file
+            if [ "$e" == "data" ]; then
+                CLASSES=$( jq -r ".files"[$i] "$CONFIG")
+            fi
+        done
+    fi
 
     # Folder where extraction code exists
     EXTRACT="cuckoo-headless/extract_raw/"
@@ -160,15 +173,36 @@ fi
 
 # EVALUATE_MODEL_ENSEMBLE
 if [ "$NAME" = "evaluate_model_ensemble" ]; then
-    # Get hashes and labels
-    INPUT_FILE=$( jq -r ".files"[0] "$CONFIG" )
-    CLASSES="$INPUT_FILE"
+    # Get files
+    CONVERT_CLASS=""
+    CLASSES=""
+    MODEL_ZIP=""
+    if [ $NUM_FILES -gt 0 ]; then
+        for i in `seq 0 $((NUM_FILES-1))`
+        do
+            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
+
+            # If this is a data file
+            if [ "$e" == "data" ]; then
+                CLASSES=$( jq -r ".files"[$i] "$CONFIG")
+            fi
+
+            # If this is a model file
+            if [ "$e" == "model" ]; then
+                MODEL_ZIP=$( jq -r ".files"[$i] "$CONFIG")
+            fi
+
+            # If this is a map file
+            if [ "$e" == "map" ]; then
+                CONVERT_CLASS=$( jq -r ".files"[$i] "$CONFIG")
+            fi
+        done
+    fi
 
     # Folder where extraction code exists
     EXTRACT="cuckoo-headless/extract_raw/"
 
     # Get model(s)
-    MODEL_ZIP=$( jq -r ".model" "$CONFIG" )
     OLD_NAME=$( zipinfo -1 "$INPUT/$MODEL_ZIP" | head -1 | awk '{split($NF,a,"/");print a[1]}' )
     MODEL="model"
 
@@ -183,23 +217,6 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
 
     # SEQUENCE
     if [ $( jq ".options.sequence" "$CONFIG" ) = true ]; then
-
-        # If a "convert_class" file was attached to this experiment
-        CONVERT_CLASS=0
-        LEN=$( jq -r ".files | length" "$CONFIG")
-        if [ $LEN -eq 2 ]; then
-            input1=$( jq -r ".files"[0] "$CONFIG" )
-            input2=$( jq -r ".files"[1] "$CONFIG" )
-
-            if [[ "$input1" == "convert_classes"* ]];then
-                CONVERT_CLASS="$input1"
-                CLASSES="$input2"
-            else
-                CONVERT_CLASS="$input2"
-                CLASSES="$input1"
-            fi
-        fi
-
         # Get sequence length
         SEQUENCE_WINDOW=$( jq ".options.sequence_window" "$CONFIG" )
 
@@ -328,27 +345,39 @@ fi
 
 # Mimicry Attack
 if [ "$NAME" = "mimicry_attack" ]; then
-    # Get hashes and labels
-    TARGET=0
-    CLASSES=0
-    CONVERT_CLASS=0
-
     # Get files
-    LEN=$( jq -r ".files | length" "$CONFIG")
-    for i in `seq 0 $(($LEN-1))`;
-    do
-        input=$( jq -r ".files"[$i] "$CONFIG" )
-        if [[ "$input" == "target"* ]];then
-            TARGET="$input"
-        elif [[ "$input" == "convert_classes"* ]];then
-            CONVERT_CLASS="$input"
-        else
-            CLASSES="$input"
-        fi
-    done
+    CLASSES=""
+    MODEL_ZIP=""
+    CONVERT_CLASS=""
+    TARGET=""
+    if [ $NUM_FILES -gt 0 ]; then
+        for i in `seq 0 $((NUM_FILES-1))`
+        do
+            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
+
+            # If this is a data file
+            if [ "$e" == "data" ]; then
+                CLASSES=$( jq -r ".files"[$i] "$CONFIG")
+            fi
+
+            # If this is a model file
+            if [ "$e" == "model" ]; then
+                MODEL_ZIP=$( jq -r ".files"[$i] "$CONFIG")
+            fi
+
+            # If this is a map file
+            if [ "$e" == "map" ]; then
+                CONVERT_CLASS=$( jq -r ".files"[$i] "$CONFIG")
+            fi
+
+            # If this is a target file
+            if [ "$e" == "target" ]; then
+                TARGET=$( jq -r ".files"[$i] "$CONFIG")
+            fi
+        done
+    fi
 
     # Get model(s)
-    MODEL_ZIP=$( jq -r ".model" "$CONFIG" )
     OLD_NAME=$( zipinfo -1 "$INPUT/$MODEL_ZIP" | head -1 | awk '{split($NF,a,"/");print a[1]}' )
     MODEL="model"
 

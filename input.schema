@@ -11,8 +11,20 @@
                 ],
                 "extensions": [
                     {
-                         "ftype": null,
-                         "extension": "zip"
+                        "tags": {"ftype": "data"},
+                        "extension": "txt"
+                    },
+                    {
+                        "tags": {"ftype": "map"},
+                        "extension": "txt"
+                    },
+                    {
+                        "tags": {"ftype": "target"},
+                        "extension": "txt"
+                    },
+                    {
+                        "tags": {"ftype": "model"},
+                        "extension": "zip"
                     }
                 ]
         },
@@ -28,7 +40,8 @@
                 ],
                 "extensions": [
                     {
-                         "extension": "txt"
+                        "tags": {"ftype": "data"},
+                        "extension": "txt"
                     }
                 ]
         },
@@ -44,8 +57,16 @@
                 ],
                 "extensions": [
                     {
-                         "ftype": null,
-                         "extension": "zip"
+                        "tags": {"ftype": "data"},
+                        "extension": "txt"
+                    },
+                    {
+                        "tags": {"ftype": "map"},
+                        "extension": "txt"
+                    },
+                    {
+                        "tags": {"ftype": "model"},
+                        "extension": "zip"
                     }
                 ]
         }
