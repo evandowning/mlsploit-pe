@@ -1,0 +1,13 @@
+{
+    "name": "model_ensemble",
+    "num_files": 1,
+    "files": ["classes.txt"],
+    "options": {
+        "sequence": true,
+        "sequence_window": 32,
+        "sequence_type": "multi_classification",
+        "existence": true,
+        "frequency": true
+    },
+    "tags": [{}]
+}

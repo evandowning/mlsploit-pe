@@ -28,8 +28,7 @@
                 ],
                 "extensions": [
                     {
-                         "ftype": null,
-                         "extension": "zip"
+                         "extension": "txt"
                     }
                 ]
         },

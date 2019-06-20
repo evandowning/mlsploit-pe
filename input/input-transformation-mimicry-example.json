@@ -1,0 +1,15 @@
+{
+    "name": "mimicry_attack",
+    "num_files": 2,
+    "files": ["benign_list.txt","targets.txt"],
+    "option": {
+        "classes": "benign_list.txt",
+        "targets": "targets.txt",
+        "sequence": true,
+        "existence": true,
+        "frequency": true,
+        "arguments": true
+    },
+    "tags": null,
+    "model": "model.zip"
+}

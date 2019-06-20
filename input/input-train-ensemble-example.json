@@ -1,0 +1,15 @@
+{
+    "name": "model_ensemble",
+    "num_files": 1,
+    "files": ["classes.txt"],
+    "option": {
+        "classes": "classes.txt",
+        "sequence": true,
+        "existence": true,
+        "frequency": true,
+        "arguments": true,
+        "netflow": false
+    },
+    "tags": null,
+    "model": null
+}

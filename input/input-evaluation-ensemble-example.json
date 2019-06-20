@@ -1,0 +1,15 @@
+{
+    "name": "evaluate_model_ensemble",
+    "num_files": 1,
+    "files": ["classes-eval.txt"],
+    "option": {
+        "classes": "classes-eval.txt",
+        "sequence": true,
+        "existence": true,
+        "frequency": true,
+        "arguments": true,
+        "netflow": false
+    },
+    "tags": null,
+    "model": "model.zip"
+}

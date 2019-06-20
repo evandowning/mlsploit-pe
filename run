@@ -33,12 +33,13 @@ if [ "$NAME" = "model_ensemble" ]; then
     mkdir "$INPUT/model/"
 
     # SEQUENCE
-    if [ $( jq ".option.sequence" "$CONFIG" ) = true ]; then
+    if [ $( jq ".options.sequence" "$CONFIG" ) = true ]; then
+
         # Get sequence length
-        SEQUENCE_WINDOW=$( jq ".option.sequence_window" "$CONFIG" )
+        SEQUENCE_WINDOW=$( jq ".options.sequence_window" "$CONFIG" )
 
         # Get sequence modeling type
-        SEQUENCE_TYPE=$( jq -r ".option.sequence_type" "$CONFIG" )
+        SEQUENCE_TYPE=$( jq -r ".options.sequence_type" "$CONFIG" )
 
         cd /app/sequence/
 
@@ -75,7 +76,7 @@ if [ "$NAME" = "model_ensemble" ]; then
     fi
 
     # EXISTENCE
-    if [ $( jq ".option.existence" "$CONFIG" ) = true ]; then
+    if [ $( jq ".options.existence" "$CONFIG" ) = true ]; then
         cd /app/existence/
 
         # Extract features
@@ -102,7 +103,7 @@ if [ "$NAME" = "model_ensemble" ]; then
     fi
 
     # FREQUENCY
-    if [ $( jq ".option.frequency" "$CONFIG" ) = true ]; then
+    if [ $( jq ".options.frequency" "$CONFIG" ) = true ]; then
         cd /app/frequency/
 
         # Extract features
@@ -181,7 +182,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
     mkdir "$INPUT/prediction/"
 
     # SEQUENCE
-    if [ $( jq ".option.sequence" "$CONFIG" ) = true ]; then
+    if [ $( jq ".options.sequence" "$CONFIG" ) = true ]; then
 
         # If a "convert_class" file was attached to this experiment
         CONVERT_CLASS=0
@@ -200,9 +201,9 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         fi
 
         # Get sequence length
-        SEQUENCE_WINDOW=$( jq ".option.sequence_window" "$CONFIG" )
+        SEQUENCE_WINDOW=$( jq ".options.sequence_window" "$CONFIG" )
 
-        SEQUENCE_TYPE=$( jq -r ".option.sequence_type" "$CONFIG" )
+        SEQUENCE_TYPE=$( jq -r ".options.sequence_type" "$CONFIG" )
 
         cd /app/sequence/
 
@@ -243,7 +244,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
     fi
 
     # EXISTENCE
-    if [ $( jq ".option.existence" "$CONFIG" ) = true ]; then
+    if [ $( jq ".options.existence" "$CONFIG" ) = true ]; then
         cd /app/existence/
 
         # Extract features
@@ -270,7 +271,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
     fi
 
     # FREQUENCY
-    if [ $( jq ".option.frequency" "$CONFIG" ) = true ]; then
+    if [ $( jq ".options.frequency" "$CONFIG" ) = true ]; then
         cd /app/frequency/
 
         # Extract features
@@ -371,18 +372,18 @@ if [ "$NAME" = "mimicry_attack" ]; then
     echo "attack_configs=$OUTPUT/attack-config/" >> "$MIMICRY_CFG"
 
     # Get sequence modeling type
-    SEQUENCE_TYPE=$( jq -r ".option.sequence_type" "$CONFIG" )
+    SEQUENCE_TYPE=$( jq -r ".options.sequence_type" "$CONFIG" )
 
     # Folder where extraction code exists
     EXTRACT="/app/sequence/cuckoo-headless/extract_raw/"
 
     # SEQUENCE
     echo "[sequence]" >> "$MIMICRY_CFG"
-    if [ $( jq ".option.sequence" "$CONFIG" ) = true ]; then
+    if [ $( jq ".options.sequence" "$CONFIG" ) = true ]; then
         echo "enable = true" >> "$MIMICRY_CFG"
 
         # Get generations
-        GENERATIONS=$( jq ".option.generations" "$CONFIG" )
+        GENERATIONS=$( jq ".options.generations" "$CONFIG" )
         echo "generations=$GENERATIONS" >> "$MIMICRY_CFG"
 
         # Default username/password for neo4j
@@ -390,7 +391,7 @@ if [ "$NAME" = "mimicry_attack" ]; then
         echo "neo4j_password='password'" >> "$MIMICRY_CFG"
 
         # Get sequence length
-        SEQUENCE_WINDOW=$( jq ".option.sequence_window" "$CONFIG" )
+        SEQUENCE_WINDOW=$( jq ".options.sequence_window" "$CONFIG" )
 
         cd /app/sequence/
         # Extract sequences
