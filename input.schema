@@ -9,24 +9,24 @@
                     {"name": "sequence_type", "type": "str", "required": true},
                     {"name": "generations", "type": "int", "required": true}
                 ],
-                "extensions": [
-                    {
-                        "tags": {"ftype": "data"},
-                        "extension": "txt"
-                    },
-                    {
-                        "tags": {"ftype": "map"},
-                        "extension": "txt"
-                    },
-                    {
-                        "tags": {"ftype": "target"},
-                        "extension": "txt"
-                    },
-                    {
-                        "tags": {"ftype": "model"},
-                        "extension": "zip"
-                    }
-                ]
+            "extensions": [
+                {
+                    "tags": {"ftype": "data"},
+                    "extension": "txt"
+                },
+                {
+                    "tags": {"ftype": "map"},
+                    "extension": "txt"
+                },
+                {
+                    "tags": {"ftype": "target"},
+                    "extension": "txt"
+                },
+                {
+                    "tags": {"ftype": "model"},
+                    "extension": "zip"
+                }
+            ]
         },
         {
             "name": "model_ensemble",
@@ -38,12 +38,12 @@
                     {"name": "existence", "type": "bool", "required": true},
                     {"name": "frequency", "type": "bool", "required": true}
                 ],
-                "extensions": [
-                    {
-                        "tags": {"ftype": "data"},
-                        "extension": "txt"
-                    }
-                ]
+            "extensions": [
+                {
+                    "tags": {"ftype": "data"},
+                    "extension": "txt"
+                }
+            ]
         },
         {
             "name": "evaluate_model_ensemble",
@@ -55,20 +55,20 @@
                     {"name": "existence", "type": "bool", "required": true},
                     {"name": "frequency", "type": "bool", "required": true}
                 ],
-                "extensions": [
-                    {
-                        "tags": {"ftype": "data"},
-                        "extension": "txt"
-                    },
-                    {
-                        "tags": {"ftype": "map"},
-                        "extension": "txt"
-                    },
-                    {
-                        "tags": {"ftype": "model"},
-                        "extension": "zip"
-                    }
-                ]
+            "extensions": [
+                {
+                    "tags": {"ftype": "data"},
+                    "extension": "txt"
+                },
+                {
+                    "tags": {"ftype": "map"},
+                    "extension": "txt"
+                },
+                {
+                    "tags": {"ftype": "model"},
+                    "extension": "zip"
+                }
+            ]
         }
     ]
 }

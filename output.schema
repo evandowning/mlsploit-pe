@@ -3,13 +3,13 @@
         {
             "name": "mimicry_attack",
             "tags": [],
-            "files_modified": true,
+            "files_modified": false,
             "files_extra": false
         },
         {
             "name": "model_ensemble",
             "tags": [],
-            "files_modified": true,
+            "files_modified": false,
             "files_extra": false
         },
         {
