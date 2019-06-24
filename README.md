@@ -16,6 +16,8 @@ $ cp input/input-evaluation-ensemble-example.json input/input.json
 $ ./test.sh
 
 # Attack
+$ cp input/input-transformation-example.json input/input.json
+$ ./test.sh
 
 # Evaluate attack
 $ cp input/input-evaluation-ensemble-attack-example.json input/input.json
