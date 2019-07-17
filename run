@@ -1,4 +1,24 @@
 #!/bin/bash
+
+function exit_error() {
+    NAME="$1"
+    LOG_NAME="$2"
+    LOG_ERR_NAME="$3"
+    OUTPUT="$4"
+
+    # Write output.json
+    echo '{
+    "name": "'"$NAME"'",
+    "files": [null],
+    "status": [null],
+    "results": [null],
+    "model": null,
+    "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"]
+}' > "$OUTPUT/output.json"
+
+    exit 0
+}
+
 set -x
 
 END="============================================="
@@ -37,6 +57,12 @@ if [ "$NAME" = "model_ensemble" ]; then
                 CLASSES=$( jq -r ".files"[$i] "$CONFIG")
             fi
         done
+    fi
+
+    # Check input files
+    if [ "$CLASSES" = "" ]; then
+        echo "Error. Couldn't find input files." >> $LOG_ERR
+        exit_error "$NAME" "$LOG_NAME" "$LOG_ERR_NAME" "$OUTPUT"
     fi
 
     # Folder where extraction code exists
@@ -197,6 +223,12 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
                 CONVERT_CLASS=$( jq -r ".files"[$i] "$CONFIG")
             fi
         done
+    fi
+
+    # Check input files
+    if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ] || [ "$CONVERT_CLASS" = "" ]; then
+        echo "Error. Couldn't find input files." >> $LOG_ERR
+        exit_error "$NAME" "$LOG_NAME" "$LOG_ERR_NAME" "$OUTPUT"
     fi
 
     # Folder where extraction code exists
@@ -375,6 +407,12 @@ if [ "$NAME" = "mimicry_attack" ]; then
                 TARGET=$( jq -r ".files"[$i] "$CONFIG")
             fi
         done
+    fi
+
+    # Check input files
+    if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ] || [ "$CONVERT_CLASS" = "" ] || [ "$TARGET" = ""]; then
+        echo "Error. Couldn't find input files." >> $LOG_ERR
+        exit_error "$NAME" "$LOG_NAME" "$LOG_ERR_NAME" "$OUTPUT"
     fi
 
     # Get model(s)
