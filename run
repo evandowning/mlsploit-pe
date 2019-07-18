@@ -13,6 +13,7 @@ function exit_error() {
     "status": [null],
     "results": [null],
     "model": null,
+    "tags": [null],
     "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"]
 }' > "$OUTPUT/output.json"
 
@@ -182,6 +183,7 @@ if [ "$NAME" = "model_ensemble" ]; then
     "status": [null],
     "results": [null],
     "model": "model.zip",
+    "tags": [null],
     "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip","convert_classes.txt"]
 }' > "$OUTPUT/output.json"
     # Else, write out normal files
@@ -192,6 +194,7 @@ if [ "$NAME" = "model_ensemble" ]; then
     "status": [null],
     "results": [null],
     "model": "model.zip",
+    "tags": [null],
     "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"]
 }' > "$OUTPUT/output.json"
     fi
@@ -359,6 +362,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
     "status": [null,null],
     "results": [null,null],
     "model": null,
+    "tags": [null],
     "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"]
 }' > "$OUTPUT/output.json"
     else
@@ -369,6 +373,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
     "status": [null],
     "results": [null],
     "model": null,
+    "tags": [null],
     "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"]
 }' > "$OUTPUT/output.json"
     fi
@@ -540,6 +545,7 @@ if [ "$NAME" = "mimicry_attack" ]; then
     "status": [null,null,null],
     "results": [null,null,null],
     "model": null,
+    "tags": [null],
     "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"]
 }' > "$OUTPUT/output.json"
     else
@@ -550,6 +556,7 @@ if [ "$NAME" = "mimicry_attack" ]; then
     "status": [null,null],
     "results": [null,null],
     "model": null,
+    "tags": [null],
     "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"]
 }' > "$OUTPUT/output.json"
     fi
