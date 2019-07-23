@@ -37,6 +37,5 @@ ADD ./label.txt /app
 
 # Change permissions
 RUN chown -R 1001:1001 /app/
-RUN chown -R 1001:1001 /var/lib/neo4j/
 
 CMD ["bash","run.sh"]
