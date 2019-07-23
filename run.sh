@@ -68,7 +68,7 @@ if [ "$NAME" = "model_ensemble" ]; then
     EXTRACT="cuckoo-headless/extract_raw/"
 
     # Models folder which will get compressed and sent back to user
-    mkdir "$INPUT/model/"
+    mkdir "$OUTPUT/model/"
 
     # SEQUENCE
     if [ $( jq ".options.sequence" "$CONFIG" ) = true ]; then
@@ -86,7 +86,7 @@ if [ "$NAME" = "model_ensemble" ]; then
         echo "Extracting sequences" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd "$EXTRACT"
-        python2.7 extract-sequence.py "$RAW" "$INPUT/$CLASSES" "$INPUT/api-sequences/" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-sequence.py "$RAW" "$INPUT/$CLASSES" "/app/sequence/api-sequences/" >> $LOG 2>> $LOG_ERR
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -96,7 +96,7 @@ if [ "$NAME" = "model_ensemble" ]; then
         echo "Extracting features" >> $LOG
         echo "Extracting features" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 preprocess.py "$INPUT/api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$INPUT/$CLASSES" "$INPUT/api-sequence-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
+        python3 preprocess.py "api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$INPUT/$CLASSES" "api-sequence-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
@@ -105,7 +105,7 @@ if [ "$NAME" = "model_ensemble" ]; then
         echo "Training model" >> $LOG
         echo "Training model" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 lstm.py "$EXTRACT/api.txt" "$INPUT/api-sequence-features/" "$INPUT/model/api-sequence-model/" True False $SEQUENCE_TYPE "$OUTPUT/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+        python3 lstm.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence-model/" True False $SEQUENCE_TYPE "$OUTPUT/convert_classes.txt" >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
@@ -122,7 +122,7 @@ if [ "$NAME" = "model_ensemble" ]; then
         echo "Extracting existence features" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd "$EXTRACT"
-        python2.7 extract-existence.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "$INPUT/api-existence.csv" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-existence.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/existence/api-existence.csv" >> $LOG 2>> $LOG_ERR
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -132,7 +132,7 @@ if [ "$NAME" = "model_ensemble" ]; then
         echo "Training model" >> $LOG
         echo "Training model" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 api_existence.py "$INPUT/api-existence.csv" "$INPUT/model/api-existence-model.pkl" >> $LOG 2>> $LOG_ERR
+        python3 api_existence.py "api-existence.csv" "$OUTPUT/model/api-existence-model.pkl" >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
@@ -149,7 +149,7 @@ if [ "$NAME" = "model_ensemble" ]; then
         echo "Extracting frequency features" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd "$EXTRACT"
-        python2.7 extract-frequency.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "$INPUT/api-frequency.csv" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-frequency.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/frequency/api-frequency.csv" >> $LOG 2>> $LOG_ERR
         cd ../../
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -159,7 +159,7 @@ if [ "$NAME" = "model_ensemble" ]; then
         echo "Training model" >> $LOG
         echo "Training model" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 api_frequency.py "$INPUT/api-frequency.csv" "$INPUT/model/api-frequency-model.pkl" >> $LOG 2>> $LOG_ERR
+        python3 api_frequency.py "api-frequency.csv" "$OUTPUT/model/api-frequency-model.pkl" >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
@@ -168,7 +168,7 @@ if [ "$NAME" = "model_ensemble" ]; then
     fi
 
     # Compress models and move them to output folder
-    cd "$INPUT"
+    cd "$OUTPUT"
     zip -r "$OUTPUT/model.zip" "./model/"
     cd /app/
 
@@ -237,7 +237,8 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
 
     # Unzip models
     cd "$INPUT"
-    unzip "$MODEL_ZIP"
+    unzip "$MODEL_ZIP" -d "$OUTPUT"
+    cd "$OUTPUT"
     mv $OLD_NAME $MODEL
     cd /app/
 
@@ -258,7 +259,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         echo "Extracting sequences" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd "$EXTRACT"
-        python2.7 extract-sequence.py "$RAW" "$INPUT/$CLASSES" "$INPUT/api-sequences/" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-sequence.py "$RAW" "$INPUT/$CLASSES" "/app/sequence/api-sequences/" >> $LOG 2>> $LOG_ERR
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -268,7 +269,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         echo "Extracting features" >> $LOG
         echo "Extracting features" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 preprocess.py "$INPUT/api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$INPUT/$CLASSES" "$INPUT/api-sequence-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
+        python3 preprocess.py "api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$INPUT/$CLASSES" "api-sequence-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
@@ -278,9 +279,9 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         echo "Start Timestamp: `date +%s`" >> $LOG
         # If there's a second file, then get the convert_classes file
         if [ $LEN -eq 2 ]; then
-            python3 evaluation.py "$INPUT/$MODEL/api-sequence-model/fold1-model.json" "$INPUT/$MODEL/api-sequence-model/fold1-weight.h5" "$INPUT/api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$INPUT/prediction/api-sequence.csv" "$INPUT/$CONVERT_CLASS" >> $LOG 2>> $LOG_ERR
+            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence-model/fold1-model.json" "$OUTPUT/$MODEL/api-sequence-model/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence.csv" "$INPUT/$CONVERT_CLASS" >> $LOG 2>> $LOG_ERR
         else
-            python3 evaluation.py "$INPUT/$MODEL/api-sequence-model/fold1-model.json" "$INPUT/$MODEL/api-sequence-model/fold1-weight.h5" "$INPUT/api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$INPUT/prediction/api-sequence.csv" >> $LOG 2>> $LOG_ERR
+            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence-model/fold1-model.json" "$OUTPUT/$MODEL/api-sequence-model/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence.csv" >> $LOG 2>> $LOG_ERR
         fi
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -298,7 +299,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         echo "Extracting features" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd "$EXTRACT"
-        python2.7 extract-existence.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "$INPUT/api-existence.csv" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-existence.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/existence/api-existence.csv" >> $LOG 2>> $LOG_ERR
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -308,7 +309,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         echo "Evaluating model" >> $LOG
         echo "Evaluating model" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 evaluation.py "$INPUT/api-existence.csv" "/app/label.txt" "$INPUT/$MODEL/api-existence-model.pkl" "$INPUT/prediction/api-existence.csv" >> $LOG 2>> $LOG_ERR
+        python3 evaluation.py "api-existence.csv" "/app/label.txt" "$INPUT/$MODEL/api-existence-model.pkl" "$OUTPUT/prediction/api-existence.csv" >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
@@ -325,7 +326,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         echo "Extracting features" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd "$EXTRACT"
-        python2.7 extract-frequency.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "$INPUT/api-frequency.csv" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-frequency.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/frequency/api-frequency.csv" >> $LOG 2>> $LOG_ERR
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -335,7 +336,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         echo "Evaluating model" >> $LOG
         echo "Evaluating model" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 evaluation.py "$INPUT/api-frequency.csv" "/app/label.txt" "$INPUT/$MODEL/api-frequency-model.pkl" "$INPUT/prediction/api-frequency.csv" >> $LOG 2>> $LOG_ERR
+        python3 evaluation.py "api-frequency.csv" "/app/label.txt" "$OUTPUT/$MODEL/api-frequency-model.pkl" "$OUTPUT/prediction/api-frequency.csv" >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
@@ -344,7 +345,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
     fi
 
     # Compress predictions and move them to output folder
-    cd "$INPUT"
+    cd "$OUTPUT"
     zip -r "$OUTPUT/prediction.zip" "./prediction/"
     cd /app/
 
@@ -405,8 +406,10 @@ if [ "$NAME" = "mimicry_attack" ]; then
 
     # Unzip models
     cd "$INPUT"
-    unzip "$MODEL_ZIP"
+    unzip "$MODEL_ZIP" -d "$OUTPUT"
+    cd "$OUTPUT"
     mv $OLD_NAME $MODEL
+    cd /app/
 
     # Predictions folder which will get compressed and sent back to user
     mkdir "$OUTPUT/attack-prediction/"
@@ -415,7 +418,7 @@ if [ "$NAME" = "mimicry_attack" ]; then
     rm "$MIMICRY_CFG"
 
     echo "[input_options]" >> "$MIMICRY_CFG"
-    echo "sequences=$INPUT/api-sequences/" >> "$MIMICRY_CFG"
+    echo "sequences=/app/sequence/api-sequences/" >> "$MIMICRY_CFG"
     echo "target_hashes=$INPUT/$TARGET" >> "$MIMICRY_CFG"
 
     echo "[output_options]" >> "$MIMICRY_CFG"
@@ -450,8 +453,8 @@ if [ "$NAME" = "mimicry_attack" ]; then
         echo "Extracting sequences" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd cuckoo-headless/extract_raw/
-        python2.7 extract-sequence.py "$RAW" "$INPUT/$CLASSES" "$INPUT/api-sequences/" >> $LOG 2>> $LOG_ERR
-        python2.7 extract-sequence.py "$RAW" "$INPUT/$TARGET" "$INPUT/api-sequences/" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-sequence.py "$RAW" "$INPUT/$CLASSES" "api-sequences/" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-sequence.py "$RAW" "$INPUT/$TARGET" "api-sequences/" >> $LOG 2>> $LOG_ERR
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -462,7 +465,7 @@ if [ "$NAME" = "mimicry_attack" ]; then
         sleep 5
         cd /app/mimicry
         cd sequence/
-        python3 create-neo4j-csv.py "$INPUT/api-sequences/" "$INPUT/$CLASSES" benign output.csv
+        python3 create-neo4j-csv.py "/app/sequence/api-sequences/" "$INPUT/$CLASSES" benign output.csv
         cp output.csv /var/lib/neo4j/import/mimicry.csv
         bash neo4j-load-csv.sh neo4j password
         cd /app
@@ -472,8 +475,6 @@ if [ "$NAME" = "mimicry_attack" ]; then
     fi
 
     cd /app/mimicry/
-
-    ls -l "$INPUT/api-sequences/"
 
     echo "Running Mimicry Attack" >> $LOG
     echo "Running Mimicry Attack" >> $LOG_ERR
@@ -501,9 +502,9 @@ if [ "$NAME" = "mimicry_attack" ]; then
 
     # If there's a second file, then get the convert_classes file
     if [ $LEN -eq 3 ]; then
-        python3 evaluation.py "$INPUT/$MODEL/api-sequence-model/fold1-model.json" "$INPUT/$MODEL/api-sequence-model/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" "$INPUT/$CONVERT_CLASS" >> $LOG 2>> $LOG_ERR
+        python3 evaluation.py "$OUTPUT/$MODEL/api-sequence-model/fold1-model.json" "$OUTPUT/$MODEL/api-sequence-model/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" "$INPUT/$CONVERT_CLASS" >> $LOG 2>> $LOG_ERR
     else
-        python3 evaluation.py "$INPUT/$MODEL/api-sequence-model/fold1-model.json" "$INPUT/$MODEL/api-sequence-model/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" >> $LOG 2>> $LOG_ERR
+        python3 evaluation.py "$OUTPUT/$MODEL/api-sequence-model/fold1-model.json" "$OUTPUT/$MODEL/api-sequence-model/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" >> $LOG 2>> $LOG_ERR
     fi
 
     echo "End Timestamp: `date +%s`" >> $LOG
