@@ -26,9 +26,9 @@ INPUT="/mnt/input"
 OUTPUT="/mnt/output"
 RAW="/mnt/malwarelab"
 
+CONFIG="$INPUT/input.json"
 NAME=$( jq -r ".name" "$CONFIG" )
 
-CONFIG="$INPUT/input.json"
 LOG_NAME="pe-${NAME}-log.txt"
 LOG_ERR_NAME="pe-${NAME}-log-err.txt"
 LOG="$OUTPUT/$LOG_NAME"

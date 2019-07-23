@@ -1,7 +1,7 @@
 FROM debian:stretch
 
 RUN apt update && apt install -y sudo default-jre jq python3 zip
-RUN apt upgrade
+RUN apt upgrade -y
 
 workdir /app
 RUN mkdir sequence
