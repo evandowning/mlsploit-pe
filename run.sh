@@ -309,7 +309,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         echo "Evaluating model" >> $LOG
         echo "Evaluating model" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 evaluation.py "api-existence.csv" "/app/label.txt" "$INPUT/$MODEL/api-existence-model.pkl" "$OUTPUT/prediction/api-existence.csv" >> $LOG 2>> $LOG_ERR
+        python3 evaluation.py "api-existence.csv" "/app/label.txt" "$OUTPUT/$MODEL/api-existence-model.pkl" "$OUTPUT/prediction/api-existence.csv" >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
