@@ -35,4 +35,7 @@ workdir /app
 ADD ./run.sh /app
 ADD ./label.txt /app
 
+# Change permissions
+RUN chown -R 1001:1001 /app/
+
 CMD ["bash","run.sh"]
