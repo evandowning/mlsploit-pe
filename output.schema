@@ -4,19 +4,19 @@
             "name": "mimicry_attack",
             "tags": [],
             "files_modified": false,
-            "files_extra": false
+            "files_extra": true
         },
         {
             "name": "model_ensemble",
             "tags": [],
             "files_modified": false,
-            "files_extra": false
+            "files_extra": true
         },
         {
             "name": "evaluate_model_ensemble",
             "tags": [],
             "files_modified": false,
-            "files_extra": false
+            "files_extra": true
         }
     ]
 }
