@@ -1,34 +1,6 @@
 {
     "functions":[
         {
-            "name": "mimicry_attack",
-            "options":
-                [
-                    {"name": "sequence", "type": "bool", "required": true},
-                    {"name": "sequence_window", "type": "int", "required": true},
-                    {"name": "sequence_type", "type": "str", "required": true},
-                    {"name": "generations", "type": "int", "required": true}
-                ],
-            "extensions": [
-                {
-                    "tags": {"ftype": "data"},
-                    "extension": "txt"
-                },
-                {
-                    "tags": {"ftype": "map"},
-                    "extension": "txt"
-                },
-                {
-                    "tags": {"ftype": "target"},
-                    "extension": "txt"
-                },
-                {
-                    "tags": {"ftype": "model"},
-                    "extension": "zip"
-                }
-            ]
-        },
-        {
             "name": "model_ensemble",
             "options":
                 [
@@ -62,6 +34,34 @@
                 },
                 {
                     "tags": {"ftype": "map"},
+                    "extension": "txt"
+                },
+                {
+                    "tags": {"ftype": "model"},
+                    "extension": "zip"
+                }
+            ]
+        },
+        {
+            "name": "mimicry_attack",
+            "options":
+                [
+                    {"name": "sequence", "type": "bool", "required": true},
+                    {"name": "sequence_window", "type": "int", "required": true},
+                    {"name": "sequence_type", "type": "str", "required": true},
+                    {"name": "generations", "type": "int", "required": true}
+                ],
+            "extensions": [
+                {
+                    "tags": {"ftype": "data"},
+                    "extension": "txt"
+                },
+                {
+                    "tags": {"ftype": "map"},
+                    "extension": "txt"
+                },
+                {
+                    "tags": {"ftype": "target"},
                     "extension": "txt"
                 },
                 {
