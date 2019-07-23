@@ -223,7 +223,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
     fi
 
     # Check input files
-    if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ] || [ "$CONVERT_CLASS" = "" ]; then
+    if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ]; then
         echo "Error. Couldn't find input files." >> $LOG_ERR
         exit_error "$NAME" "$LOG_NAME" "$LOG_ERR_NAME" "$OUTPUT"
     fi
@@ -278,7 +278,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         echo "Evaluating model" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
         # If there's a second file, then get the convert_classes file
-        if [ $LEN -eq 2 ]; then
+    	if [ "$CONVERT_CLASS" != "" ]; then
             python3 evaluation.py "$OUTPUT/$MODEL/api-sequence-model/fold1-model.json" "$OUTPUT/$MODEL/api-sequence-model/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence.csv" "$INPUT/$CONVERT_CLASS" >> $LOG 2>> $LOG_ERR
         else
             python3 evaluation.py "$OUTPUT/$MODEL/api-sequence-model/fold1-model.json" "$OUTPUT/$MODEL/api-sequence-model/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence.csv" >> $LOG 2>> $LOG_ERR
@@ -395,7 +395,7 @@ if [ "$NAME" = "mimicry_attack" ]; then
     fi
 
     # Check input files
-    if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ] || [ "$CONVERT_CLASS" = "" ] || [ "$TARGET" = ""]; then
+    if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ] || [ "$TARGET" = ""]; then
         echo "Error. Couldn't find input files." >> $LOG_ERR
         exit_error "$NAME" "$LOG_NAME" "$LOG_ERR_NAME" "$OUTPUT"
     fi
@@ -453,8 +453,8 @@ if [ "$NAME" = "mimicry_attack" ]; then
         echo "Extracting sequences" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd cuckoo-headless/extract_raw/
-        python2.7 extract-sequence.py "$RAW" "$INPUT/$CLASSES" "api-sequences/" >> $LOG 2>> $LOG_ERR
-        python2.7 extract-sequence.py "$RAW" "$INPUT/$TARGET" "api-sequences/" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-sequence.py "$RAW" "$INPUT/$CLASSES" "/app/sequence/api-sequences/" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-sequence.py "$RAW" "$INPUT/$TARGET" "/app/sequence/api-sequences/" >> $LOG 2>> $LOG_ERR
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -501,7 +501,7 @@ if [ "$NAME" = "mimicry_attack" ]; then
     echo "Start Timestamp: `date +%s`" >> $LOG
 
     # If there's a second file, then get the convert_classes file
-    if [ $LEN -eq 3 ]; then
+    if [ "$CONVERT_CLASS" != "" ]; then
         python3 evaluation.py "$OUTPUT/$MODEL/api-sequence-model/fold1-model.json" "$OUTPUT/$MODEL/api-sequence-model/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" "$INPUT/$CONVERT_CLASS" >> $LOG 2>> $LOG_ERR
     else
         python3 evaluation.py "$OUTPUT/$MODEL/api-sequence-model/fold1-model.json" "$OUTPUT/$MODEL/api-sequence-model/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" >> $LOG 2>> $LOG_ERR
