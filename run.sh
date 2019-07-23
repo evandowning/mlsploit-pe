@@ -9,12 +9,10 @@ function exit_error() {
     # Write output.json
     echo '{
     "name": "'"$NAME"'",
-    "files": [null],
-    "status": [null],
-    "results": [null],
-    "model": null,
-    "tags": [null],
-    "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"]
+    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "tags": [{"ftype":"log"},{"ftype":"log"}],
+    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "files_modified": [null]
 }' > "$OUTPUT/output.json"
 
     exit 0
@@ -28,13 +26,13 @@ INPUT="/mnt/input"
 OUTPUT="/mnt/output"
 RAW="/mnt/malwarelab"
 
+NAME=$( jq -r ".name" "$CONFIG" )
+
 CONFIG="$INPUT/input.json"
-LOG_NAME="pe-log.txt"
-LOG_ERR_NAME="pe-log-err.txt"
+LOG_NAME="pe-${NAME}-log.txt"
+LOG_ERR_NAME="pe-${NAME}-log-err.txt"
 LOG="$OUTPUT/$LOG_NAME"
 LOG_ERR="$OUTPUT/$LOG_ERR_NAME"
-
-NAME=$( jq -r ".name" "$CONFIG" )
 
 echo "Started: `date +%s`" > $LOG
 echo "" > $LOG_ERR
@@ -178,24 +176,20 @@ if [ "$NAME" = "model_ensemble" ]; then
     # Add convert_class.txt if it exists
     if [ -f "$OUTPUT/convert_classes.txt" ]; then
     echo '{
-    "name": "model_ensemble",
-    "files": [null],
-    "status": [null],
-    "results": [null],
-    "model": "model.zip",
-    "tags": [null],
-    "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip","convert_classes.txt"]
+    "name": "'"$NAME"'",
+    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip","convert_classes.txt"],
+    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"},{"ftype":"map"}],
+    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip","convert_classes.txt"],
+    "files_modified": [null]
 }' > "$OUTPUT/output.json"
     # Else, write out normal files
     else
     echo '{
-    "name": "model_ensemble",
-    "files": [null],
-    "status": [null],
-    "results": [null],
-    "model": "model.zip",
-    "tags": [null],
-    "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"]
+    "name": "'"$NAME"'",
+    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"],
+    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"}],
+    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"],
+    "files_modified": [null]
 }' > "$OUTPUT/output.json"
     fi
 fi
@@ -355,28 +349,13 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
     cd /app/
 
     # If there were two input files
-    if [ $LEN -eq 2 ]; then
     echo '{
-    "name": "evaluate_model_ensemble",
-    "files": [null,null],
-    "status": [null,null],
-    "results": [null,null],
-    "model": null,
-    "tags": [null],
-    "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"]
+    "name": "'"$NAME"'",
+    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
+    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"}],
+    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
+    "files_modified": [null]
 }' > "$OUTPUT/output.json"
-    else
-    # Write output.json
-    echo '{
-    "name": "evaluate_model_ensemble",
-    "files": [null],
-    "status": [null],
-    "results": [null],
-    "model": null,
-    "tags": [null],
-    "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"]
-}' > "$OUTPUT/output.json"
-    fi
 fi
 
 
@@ -537,29 +516,14 @@ if [ "$NAME" = "mimicry_attack" ]; then
     zip -r "$OUTPUT/attack-prediction.zip" "./attack-prediction/"
     cd /app/
 
-    if [ $LEN -eq 3 ]; then
     # Write output.json
     echo '{
-    "name": "mimicry_attack",
-    "files": [null,null,null],
-    "status": [null,null,null],
-    "results": [null,null,null],
-    "model": null,
-    "tags": [null],
-    "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"]
+    "name": "'"$NAME"'",
+    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"],
+    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"feature"},{"ftype":"prediction"}],
+    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"],
+    "files_modified": [null]
 }' > "$OUTPUT/output.json"
-    else
-    # Write output.json
-    echo '{
-    "name": "mimicry_attack",
-    "files": [null,null],
-    "status": [null,null],
-    "results": [null,null],
-    "model": null,
-    "tags": [null],
-    "files_etc": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"]
-}' > "$OUTPUT/output.json"
-    fi
 fi
 
 

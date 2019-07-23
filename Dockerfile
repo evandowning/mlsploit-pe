@@ -32,7 +32,7 @@ RUN ./setup_neo4j.sh
 
 # Add run (for Docker) and api.txt (for converting API calls to integers)
 workdir /app
-ADD ./run /app
+ADD ./run.sh /app
 ADD ./label.txt /app
 
-CMD ["bash","run"]
+CMD ["bash","run.sh"]
