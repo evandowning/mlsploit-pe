@@ -243,7 +243,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
     cd /app/
 
     # Predictions folder which will get compressed and sent back to user
-    mkdir "$INPUT/prediction/"
+    mkdir "$OUTPUT/prediction/"
 
     # SEQUENCE
     if [ $( jq ".options.sequence" "$CONFIG" ) = true ]; then
