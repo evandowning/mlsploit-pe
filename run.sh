@@ -395,7 +395,7 @@ if [ "$NAME" = "mimicry_attack" ]; then
     fi
 
     # Check input files
-    if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ] || [ "$TARGET" = ""]; then
+    if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ] || [ "$TARGET" = "" ]; then
         echo "Error. Couldn't find input files." >> $LOG_ERR
         exit_error "$NAME" "$LOG_NAME" "$LOG_ERR_NAME" "$OUTPUT"
     fi
