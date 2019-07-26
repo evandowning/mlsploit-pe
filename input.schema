@@ -8,7 +8,8 @@
                     {"name": "sequence_window", "type": "int", "required": true},
                     {"name": "sequence_type", "type": "str", "required": true},
                     {"name": "existence", "type": "bool", "required": true},
-                    {"name": "frequency", "type": "bool", "required": true}
+                    {"name": "frequency", "type": "bool", "required": true},
+                    {"name": "arguments", "type": "bool", "required": true}
                 ],
             "extensions": [
                 {
@@ -25,7 +26,8 @@
                     {"name": "sequence_window", "type": "int", "required": true},
                     {"name": "sequence_type", "type": "str", "required": true},
                     {"name": "existence", "type": "bool", "required": true},
-                    {"name": "frequency", "type": "bool", "required": true}
+                    {"name": "frequency", "type": "bool", "required": true},
+                    {"name": "arguments", "type": "bool", "required": true}
                 ],
             "extensions": [
                 {
@@ -66,6 +68,20 @@
                 },
                 {
                     "tags": {"ftype": "model"},
+                    "extension": "zip"
+                }
+            ]
+        },
+        {
+            "name": "pe_transformer",
+            "options": [],
+            "extensions": [
+                {
+                    "tags": {"ftype": "data"},
+                    "extension": "txt"
+                },
+                {
+                    "tags": {"ftype": "cfg"},
                     "extension": "zip"
                 }
             ]
