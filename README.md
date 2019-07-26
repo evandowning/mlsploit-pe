@@ -23,3 +23,9 @@ $ ./test.sh
 $ cp input/input-evaluation-ensemble-attack-example.json input/input.json
 $ ./test.sh
 ```
+
+## MLsploit notes
+  * Modify `mlsploit-execution-backend/mlsploit.py`
+    * `Git(tmp_dir).clone(repo)` -> `Git(tmp_dir).clone(repo,recursive=True)`
+  * Modify `run.sh` to contain folder where samples are located and mount on docker in `mlsploit-execution-backend/mlsploit.py`
+    * Current path is variable `RAW` in `run.sh`
