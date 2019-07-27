@@ -35,6 +35,10 @@ workdir /app
 ADD ./run.sh /app
 ADD ./label.txt /app
 
+# If private repo exists, set up
+COPY Dockerfile behavior-profile* /app/arguments/
+RUN if [ -d arguments ]; then cd arguments; ./setup.sh; fi
+
 # Change permissions
 RUN chown -R 1001:1001 /app/
 
