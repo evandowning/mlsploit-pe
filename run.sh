@@ -399,7 +399,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         echo "Evaluating model" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
 	cd ml_model/
-        python2.7 evaluation.py "/app/arguments/behavior_profiles_minhash/" "$OUTPUT/$MODEL/arguments/model-ensemble.pkl" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/arguments.csv" >> $LOG 2>> $LOG_ERR
+        python2.7 evaluation.py "/app/arguments/behavior_profiles_minhash/" "$OUTPUT/$MODEL/arguments/model_ensemble.pkl" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/arguments.csv" >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
