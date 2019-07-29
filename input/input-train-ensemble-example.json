@@ -3,11 +3,12 @@
     "num_files": 1,
     "files": ["classes.txt"],
     "options": {
-        "sequence": true,
+        "sequence": false,
         "sequence_window": 32,
         "sequence_type": "multi_classification",
-        "existence": true,
-        "frequency": true
+        "existence": false,
+        "frequency": false,
+	"arguments": true
     },
     "tags": [{"ftype": "data"}]
 }
