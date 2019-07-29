@@ -179,7 +179,7 @@ if [ "$NAME" = "model_ensemble" ]; then
         echo "Start Timestamp: `date +%s`" >> $LOG
 	cd extract_raw/
 	python2.7 extract.py "$RAW" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles/" >> $LOG 2>> $LOG_ERR
-	python2.7 feature_set_to_minhash.py "/app/arguments/behavior_profiles/" "$INPUT/$CLASSES" "/app/label.txt" "/app/arguments/behavior_profiles_minhash/" >> $LOG 2>> $LOG_ERR
+	python2.7 feature_set_to_minhash.py "/app/arguments/behavior_profiles/" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles_minhash/" >> $LOG 2>> $LOG_ERR
         cd ../
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
