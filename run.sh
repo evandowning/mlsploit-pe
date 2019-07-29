@@ -169,7 +169,7 @@ if [ "$NAME" = "model_ensemble" ]; then
 
     # ARGUMENTS
     if [ $( jq ".options.arguments" "$CONFIG" ) = true ]; then
-        cd /app/behavior-profile/
+        cd /app/arguments/
 
 	mkdir -p "$OUTPUT/model/arguments"
 
