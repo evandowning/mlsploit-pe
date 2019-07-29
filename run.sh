@@ -375,6 +375,38 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         cd /app/
     fi
 
+    #TODO
+    # ARGUMENTS
+    if [ $( jq ".options.arguments" "$CONFIG" ) = true ]; then
+        cd /app/arguments/
+
+	mkdir -p "$OUTPUT/model/arguments"
+
+        # Extract features
+        echo "Extracting argument features" >> $LOG
+        echo "Extracting argument features" >> $LOG_ERR
+        echo "Start Timestamp: `date +%s`" >> $LOG
+	cd extract_raw/
+	python2.7 extract.py "$RAW" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles/" >> $LOG 2>> $LOG_ERR
+	python2.7 feature_set_to_minhash.py "/app/arguments/behavior_profiles/" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles_minhash/" >> $LOG 2>> $LOG_ERR
+        cd ../
+        echo "End Timestamp: `date +%s`" >> $LOG
+        echo $END >> $LOG
+        echo $END >> $LOG_ERR
+
+	# Evaluate model
+        echo "Evaluating model" >> $LOG
+        echo "Evaluating model" >> $LOG_ERR
+        echo "Start Timestamp: `date +%s`" >> $LOG
+	cd ml_model/
+        python2.7 evaluation.py "/app/arguments/behavior_profiles_minhash/" "$OUTPUT/$MODEL/arguments/model-ensemble.pkl" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/arguments.csv" >> $LOG 2>> $LOG_ERR
+        echo "End Timestamp: `date +%s`" >> $LOG
+        echo $END >> $LOG
+        echo $END >> $LOG_ERR
+
+        cd /app/
+    fi
+
     # Compress predictions and move them to output folder
     cd "$OUTPUT"
     zip -r "$OUTPUT/prediction.zip" "./prediction/"
