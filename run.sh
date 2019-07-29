@@ -171,7 +171,7 @@ if [ "$NAME" = "model_ensemble" ]; then
     if [ $( jq ".options.arguments" "$CONFIG" ) = true ]; then
         cd /app/behavior-profile/
 
-	mkdir "$OUTPUT/model/arguments"
+	mkdir -p "$OUTPUT/model/arguments"
 
         # Extract features
         echo "Extracting argument features" >> $LOG
@@ -179,7 +179,7 @@ if [ "$NAME" = "model_ensemble" ]; then
         echo "Start Timestamp: `date +%s`" >> $LOG
 	cd extract_raw/
 	python2.7 python extract.py "$RAW" "$INPUT/$CLASSES" "/app/behavior-profile/behavior_profiles/" >> $LOG 2>> $LOG_ERR
-	python2.7 feature_set_to_minhash.py "/app/behavior-profile/behavior_profiles/" "$INPUT/$CLASSES" "../behavior_profile/malware_families/label.txt" "/app/behavior-profile/behavior_profiles_minhash/" >> $LOG 2>> $LOG_ERR
+	python2.7 feature_set_to_minhash.py "/app/behavior-profile/behavior_profiles/" "$INPUT/$CLASSES" "/app/label.txt" "/app/behavior-profile/behavior_profiles_minhash/" >> $LOG 2>> $LOG_ERR
         cd ../
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -190,7 +190,7 @@ if [ "$NAME" = "model_ensemble" ]; then
         echo "Training model" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
 	cd ml_model/
-	python2.7 ml_profiles.py --minhash "/app/behavior-profile/behavior_profiles_minhash/" --ensemble_model "$OUTPUT/model/arguments/model_ensemble.pkl" --k 5 --knn_model "$OUTPUT/model/arguments/model_knn.pkl" >> $LOG 2>> $LOG_ERR
+	python2.7 ml_profiles.py --sample "$INPUT/$CLASSES" --label "/app/label.txt" --minhash "/app/behavior-profile/behavior_profiles_minhash/" --ensemble_model "$OUTPUT/model/arguments/model_ensemble.pkl" --nb_model "$OUTPUT/model/arguments/model_nb.pkl" >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
