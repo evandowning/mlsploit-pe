@@ -1,14 +1,14 @@
 {
-    "name": "model_ensemble",
-    "num_files": 1,
-    "files": ["classes.txt"],
+    "name": "evaluate_model_ensemble",
+    "num_files": 3,
+    "files": ["classes-eval.txt","convert_classes.txt","model.zip"],
     "options": {
-        "sequence": false,
+        "sequence": true,
         "sequence_window": 32,
         "sequence_type": "multi_classification",
-        "existence": false,
-        "frequency": false,
-	"arguments": true
+        "existence": true,
+        "frequency": true,
+        "arguments": true
     },
-    "tags": [{"ftype": "data"}]
+    "tags": [{"ftype": "data"}, {"ftype": "map"}, {"ftype": "model"}]
 }

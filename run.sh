@@ -79,7 +79,23 @@ if [ "$NAME" = "model_ensemble" ]; then
         # Get sequence modeling type
         SEQUENCE_TYPE=$( jq -r ".options.sequence_type" "$CONFIG" )
 
+        # Get ensemble options
+        SEQUENCE_LSTM=false
+        SEQUENCE_RNN=false
+        SEQUENCE_CNN=false
+        if [ $( jq ".options.sequence_lstm" "$CONFIG" ) = true ]; then
+            SEQUENCE_LSTM=true
+        fi
+        if [ $( jq ".options.sequence_rnn" "$CONFIG" ) = true ]; then
+            SEQUENCE_RNN=true
+        fi
+        if [ $( jq ".options.sequence_cnn" "$CONFIG" ) = true ]; then
+            SEQUENCE_CNN=true
+        fi
+
         cd /app/sequence/
+
+        mkdir "$OUTPUT/model/api-sequence"
 
         # Extract sequences
         echo "Extracting sequences" >> $LOG
@@ -101,14 +117,36 @@ if [ "$NAME" = "model_ensemble" ]; then
         echo $END >> $LOG
         echo $END >> $LOG_ERR
 
-        # Train model
-        echo "Training model" >> $LOG
-        echo "Training model" >> $LOG_ERR
-        echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 lstm.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence-model/" True False $SEQUENCE_TYPE "$OUTPUT/convert_classes.txt" >> $LOG 2>> $LOG_ERR
-        echo "End Timestamp: `date +%s`" >> $LOG
-        echo $END >> $LOG
-        echo $END >> $LOG_ERR
+        # Train models
+        if [ $SEQUENCE_LSTM = true ]; then
+            echo "Training LSTM model" >> $LOG
+            echo "Training LSTM model" >> $LOG_ERR
+            echo "Start Timestamp: `date +%s`" >> $LOG
+            python3 lstm.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/lstm/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/lstm/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+            echo "End Timestamp: `date +%s`" >> $LOG
+            echo $END >> $LOG
+            echo $END >> $LOG_ERR
+        fi
+
+        if [ $SEQUENCE_RNN = true ]; then
+            echo "Training RNN model" >> $LOG
+            echo "Training RNN model" >> $LOG_ERR
+            echo "Start Timestamp: `date +%s`" >> $LOG
+            python3 rnn.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/rnn/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/rnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+            echo "End Timestamp: `date +%s`" >> $LOG
+            echo $END >> $LOG
+            echo $END >> $LOG_ERR
+        fi
+
+        if [ $SEQUENCE_CNN = true ]; then
+            echo "Training CNN model" >> $LOG
+            echo "Training CNN model" >> $LOG_ERR
+            echo "Start Timestamp: `date +%s`" >> $LOG
+            python3 cnn.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/cnn/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/cnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+            echo "End Timestamp: `date +%s`" >> $LOG
+            echo $END >> $LOG
+            echo $END >> $LOG_ERR
+        fi
 
         cd /app/
     fi
@@ -116,6 +154,36 @@ if [ "$NAME" = "model_ensemble" ]; then
     # EXISTENCE
     if [ $( jq ".options.existence" "$CONFIG" ) = true ]; then
         cd /app/existence/
+
+        mkdir "$OUTPUT/model/api-existence"
+
+        # String to construct parameters
+        EXISTENCE_PARAM=""
+
+        # Get ensemble options
+        if [ $( jq ".options.existence_rf" "$CONFIG" ) = true ]; then
+            EXISTENCE_PARAM+=" --rf_model $OUTPUT/model/api-existence/model_rf.pkl"
+        fi
+        if [ $( jq ".options.existence_rf_trees" "$CONFIG" ) != null ]; then
+            EXISTENCE_RF_TREES=$( jq ".options.existence_rf_trees" "$CONFIG" )
+            EXISTENCE_PARAM+=" --trees $EXISTENCE_RF_TREES"
+        fi
+        if [ $( jq ".options.existence_nb" "$CONFIG" ) = true ]; then
+            EXISTENCE_PARAM+=" --nb_model $OUTPUT/model/api-existence/model_nb.pkl"
+        fi
+        if [ $( jq ".options.existence_knn" "$CONFIG" ) = true ]; then
+            EXISTENCE_PARAM+=" --knn_model $OUTPUT/model/api-existence/model_knn.pkl"
+        fi
+        if [ $( jq ".options.existence_knn_k" "$CONFIG" ) != null ]; then
+            EXISTENCE_KNN_K=$( jq ".options.existence_knn_k" "$CONFIG" )
+            EXISTENCE_PARAM+=" --k $EXISTENCE_KNN_K"
+        fi
+        if [ $( jq ".options.existence_sgd" "$CONFIG" ) = true ]; then
+            EXISTENCE_PARAM+=" --sgd_model $OUTPUT/model/api-existence/model_sgd.pkl"
+        fi
+        if [ $( jq ".options.existence_mlp" "$CONFIG" ) = true ]; then
+            EXISTENCE_PARAM+=" --mlp_model $OUTPUT/model/api-existence/model_mlp.pkl"
+        fi
 
         # Extract features
         echo "Extracting existence features" >> $LOG
@@ -128,11 +196,14 @@ if [ "$NAME" = "model_ensemble" ]; then
         echo $END >> $LOG
         echo $END >> $LOG_ERR
 
-        # Train model
-        echo "Training model" >> $LOG
-        echo "Training model" >> $LOG_ERR
+        # Train models
+        echo "Training models" >> $LOG
+        echo "Training models" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 api_existence.py "api-existence.csv" "$OUTPUT/model/api-existence-model.pkl" >> $LOG 2>> $LOG_ERR
+        python3 api_existence.py    --csv "api-existence.csv" \
+                                    --ensemble_model "$OUTPUT/model/api-existence/model_ensemble.pkl" \
+                                    $EXISTENCE_PARAM \
+                                    >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
@@ -143,6 +214,36 @@ if [ "$NAME" = "model_ensemble" ]; then
     # FREQUENCY
     if [ $( jq ".options.frequency" "$CONFIG" ) = true ]; then
         cd /app/frequency/
+
+        mkdir "$OUTPUT/model/api-frequency"
+
+        # String to construct parameters
+        FREQUENCY_PARAM=""
+
+        # Get ensemble options
+        if [ $( jq ".options.frequency_rf" "$CONFIG" ) = true ]; then
+            FREQUENCY_PARAM+=" --rf_model $OUTPUT/model/api-frequency/model_rf.pkl"
+        fi
+        if [ $( jq ".options.frequency_rf_trees" "$CONFIG" ) != null ]; then
+            FREQUENCY_RF_TREES=$( jq ".options.frequency_rf_trees" "$CONFIG" )
+            FREQUENCY_PARAM+=" --trees $FREQUENCY_RF_TREES"
+        fi
+        if [ $( jq ".options.frequency_nb" "$CONFIG" ) = true ]; then
+            FREQUENCY_PARAM+=" --nb_model $OUTPUT/model/api-frequency/model_nb.pkl"
+        fi
+        if [ $( jq ".options.frequency_knn" "$CONFIG" ) = true ]; then
+            FREQUENCY_PARAM+=" --knn_model $OUTPUT/model/api-frequency/model_knn.pkl"
+        fi
+        if [ $( jq ".options.frequency_knn_k" "$CONFIG" ) != null ]; then
+            FREQUENCY_KNN_K=$( jq ".options.frequency_knn_k" "$CONFIG" )
+            FREQUENCY_PARAM+=" --k $FREQUENCY_KNN_K"
+        fi
+        if [ $( jq ".options.frequency_sgd" "$CONFIG" ) = true ]; then
+            FREQUENCY_PARAM+=" --sgd_model $OUTPUT/model/api-frequency/model_sgd.pkl"
+        fi
+        if [ $( jq ".options.frequency_mlp" "$CONFIG" ) = true ]; then
+            FREQUENCY_PARAM+=" --mlp_model $OUTPUT/model/api-frequency/model_mlp.pkl"
+        fi
 
         # Extract features
         echo "Extracting frequency features" >> $LOG
@@ -156,10 +257,13 @@ if [ "$NAME" = "model_ensemble" ]; then
         echo $END >> $LOG_ERR
 
         # Train model
-        echo "Training model" >> $LOG
-        echo "Training model" >> $LOG_ERR
+        echo "Training models" >> $LOG
+        echo "Training models" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 api_frequency.py "api-frequency.csv" "$OUTPUT/model/api-frequency-model.pkl" >> $LOG 2>> $LOG_ERR
+        python3 api_frequency.py    --csv "api-frequency.csv" \
+                                    --ensemble_model "$OUTPUT/model/api-frequency/model_ensemble.pkl" \
+                                    $FREQUENCY_PARAM \
+                                    >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
@@ -171,26 +275,59 @@ if [ "$NAME" = "model_ensemble" ]; then
     if [ $( jq ".options.arguments" "$CONFIG" ) = true ]; then
         cd /app/arguments/
 
-	mkdir -p "$OUTPUT/model/arguments"
+        mkdir "$OUTPUT/model/arguments"
+
+        # String to construct parameters
+        ARGUMENTS_PARAM=""
+
+        # Get ensemble options
+        if [ $( jq ".options.arguments_rf" "$CONFIG" ) = true ]; then
+            ARGUMENTS_PARAM+=" --rf_model $OUTPUT/model/arguments/model_rf.pkl"
+        fi
+        if [ $( jq ".options.arguments_rf_trees" "$CONFIG" ) != null ]; then
+            ARGUMENTS_RF_TREES=$( jq ".options.arguments_rf_trees" "$CONFIG" )
+            ARGUMENTS_PARAM+=" --trees $ARGUMENTS_RF_TREES"
+        fi
+        if [ $( jq ".options.arguments_nb" "$CONFIG" ) = true ]; then
+            ARGUMENTS_PARAM+=" --nb_model $OUTPUT/model/arguments/model_nb.pkl"
+        fi
+        if [ $( jq ".options.arguments_knn" "$CONFIG" ) = true ]; then
+            ARGUMENTS_PARAM+=" --knn_model $OUTPUT/model/arguments/model_knn.pkl"
+        fi
+        if [ $( jq ".options.arguments_knn_k" "$CONFIG" ) != null ]; then
+            ARGUMENTS_KNN_K=$( jq ".options.arguments_knn_k" "$CONFIG" )
+            ARGUMENTS_PARAM+=" --k $ARGUMENTS_KNN_K"
+        fi
+        if [ $( jq ".options.arguments_sgd" "$CONFIG" ) = true ]; then
+            ARGUMENTS_PARAM+=" --sgd_model $OUTPUT/model/arguments/model_sgd.pkl"
+        fi
+        if [ $( jq ".options.arguments_mlp" "$CONFIG" ) = true ]; then
+            ARGUMENTS_PARAM+=" --mlp_model $OUTPUT/model/arguments/model_mlp.pkl"
+        fi
 
         # Extract features
         echo "Extracting argument features" >> $LOG
         echo "Extracting argument features" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-	cd extract_raw/
-	python2.7 extract.py "$RAW" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles/" >> $LOG 2>> $LOG_ERR
-	python2.7 feature_set_to_minhash.py "/app/arguments/behavior_profiles/" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles_minhash/" >> $LOG 2>> $LOG_ERR
+        cd extract_raw/
+        python2.7 extract.py "$RAW" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles/" >> $LOG 2>> $LOG_ERR
+        python2.7 feature_set_to_minhash.py "/app/arguments/behavior_profiles/" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles_minhash/" >> $LOG 2>> $LOG_ERR
         cd ../
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
 
         # Train model
-        echo "Training model" >> $LOG
-        echo "Training model" >> $LOG_ERR
+        echo "Training models" >> $LOG
+        echo "Training models" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-	cd ml_model/
-	python2.7 ml_profiles.py --sample "$INPUT/$CLASSES" --label "/app/label.txt" --minhash "/app/arguments/behavior_profiles_minhash/" --ensemble_model "$OUTPUT/model/arguments/model_ensemble.pkl" --nb_model "$OUTPUT/model/arguments/model_nb.pkl" >> $LOG 2>> $LOG_ERR
+        cd ml_model/
+        python2.7 ml_profiles.py    --sample "$INPUT/$CLASSES" \
+                                    --label "/app/label.txt" \
+                                    --minhash "/app/arguments/behavior_profiles_minhash/" \
+                                    --ensemble_model "$OUTPUT/model/arguments/model_ensemble.pkl" \
+                                    $ARGUMENTS_PARAM \
+                                    >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
@@ -204,17 +341,6 @@ if [ "$NAME" = "model_ensemble" ]; then
     cd /app/
 
     # Write output.json
-    # Add convert_class.txt if it exists
-    if [ -f "$OUTPUT/convert_classes.txt" ]; then
-    echo '{
-    "name": "'"$NAME"'",
-    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip","convert_classes.txt"],
-    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"},{"ftype":"map"}],
-    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip","convert_classes.txt"],
-    "files_modified": [null]
-}' > "$OUTPUT/output.json"
-    # Else, write out normal files
-    else
     echo '{
     "name": "'"$NAME"'",
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"],
@@ -222,13 +348,11 @@ if [ "$NAME" = "model_ensemble" ]; then
     "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"],
     "files_modified": [null]
 }' > "$OUTPUT/output.json"
-    fi
 fi
 
 # EVALUATE_MODEL_ENSEMBLE
 if [ "$NAME" = "evaluate_model_ensemble" ]; then
     # Get files
-    CONVERT_CLASS=""
     CLASSES=""
     MODEL_ZIP=""
     if [ $NUM_FILES -gt 0 ]; then
@@ -244,11 +368,6 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
             # If this is a model file
             if [ "$e" == "model" ]; then
                 MODEL_ZIP=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-
-            # If this is a map file
-            if [ "$e" == "map" ]; then
-                CONVERT_CLASS=$( jq -r ".files"[$i] "$CONFIG")
             fi
         done
     fi
@@ -305,18 +424,53 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         echo $END >> $LOG
         echo $END >> $LOG_ERR
 
-        echo "Evaluating model" >> $LOG
-        echo "Evaluating model" >> $LOG_ERR
-        echo "Start Timestamp: `date +%s`" >> $LOG
-        # If there's a second file, then get the convert_classes file
-    	if [ "$CONVERT_CLASS" != "" ]; then
-            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence-model/fold1-model.json" "$OUTPUT/$MODEL/api-sequence-model/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence.csv" "$INPUT/$CONVERT_CLASS" >> $LOG 2>> $LOG_ERR
-        else
-            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence-model/fold1-model.json" "$OUTPUT/$MODEL/api-sequence-model/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence.csv" >> $LOG 2>> $LOG_ERR
+        # If LSTM was trained
+        if [ -d "$OUTPUT/$MODEL/api-sequence/lstm/" ]; then
+            echo "Evaluating model" >> $LOG
+            echo "Evaluating model" >> $LOG_ERR
+            echo "Start Timestamp: `date +%s`" >> $LOG
+            # If there's a second file, then get the convert_classes file
+            if [ "$OUTPUT/$MODEL/api-sequence/lstm/convert_classes.txt" != "" ]; then
+                python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/lstm/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/lstm/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-lstm.csv" "$OUTPUT/$MODEL/api-sequence/lstm/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+            else
+                python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/lstm/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/lstm/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-lstm.csv" >> $LOG 2>> $LOG_ERR
+            fi
+            echo "End Timestamp: `date +%s`" >> $LOG
+            echo $END >> $LOG
+            echo $END >> $LOG_ERR
         fi
-        echo "End Timestamp: `date +%s`" >> $LOG
-        echo $END >> $LOG
-        echo $END >> $LOG_ERR
+
+        # If RNN was trained
+        if [ -d "$OUTPUT/$MODEL/api-sequence/rnn/" ]; then
+            echo "Evaluating model" >> $LOG
+            echo "Evaluating model" >> $LOG_ERR
+            echo "Start Timestamp: `date +%s`" >> $LOG
+            # If there's a second file, then get the convert_classes file
+            if [ "$OUTPUT/$MODEL/api-sequence/rnn/convert_classes.txt" != "" ]; then
+                python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/rnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/rnn/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-rnn.csv" "$OUTPUT/$MODEL/api-sequence/rnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+            else
+                python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/rnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/rnn/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-rnn.csv" >> $LOG 2>> $LOG_ERR
+            fi
+            echo "End Timestamp: `date +%s`" >> $LOG
+            echo $END >> $LOG
+            echo $END >> $LOG_ERR
+        fi
+
+        # If CNN was trained
+        if [ -d "$OUTPUT/$MODEL/api-sequence/cnn/" ]; then
+            echo "Evaluating model" >> $LOG
+            echo "Evaluating model" >> $LOG_ERR
+            echo "Start Timestamp: `date +%s`" >> $LOG
+            # If there's a second file, then get the convert_classes file
+            if [ "$OUTPUT/$MODEL/api-sequence/cnn/convert_classes.txt" != "" ]; then
+                python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/cnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/cnn/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-cnn.csv" "$OUTPUT/$MODEL/api-sequence/cnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+            else
+                python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/cnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/cnn/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-cnn.csv" >> $LOG 2>> $LOG_ERR
+            fi
+            echo "End Timestamp: `date +%s`" >> $LOG
+            echo $END >> $LOG
+            echo $END >> $LOG_ERR
+        fi
 
         cd /app/
     fi
@@ -337,13 +491,15 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         echo $END >> $LOG_ERR
 
         # Evaluate model
-        echo "Evaluating model" >> $LOG
-        echo "Evaluating model" >> $LOG_ERR
-        echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 evaluation.py "api-existence.csv" "/app/label.txt" "$OUTPUT/$MODEL/api-existence-model.pkl" "$OUTPUT/prediction/api-existence.csv" >> $LOG 2>> $LOG_ERR
-        echo "End Timestamp: `date +%s`" >> $LOG
-        echo $END >> $LOG
-        echo $END >> $LOG_ERR
+        for model_fn in `ls -1 "$OUTPUT/$MODEL/api-existence/"`; do
+            echo "Evaluating model" >> $LOG
+            echo "Evaluating model" >> $LOG_ERR
+            echo "Start Timestamp: `date +%s`" >> $LOG
+            python3 evaluation.py "api-existence.csv" "/app/label.txt" "$OUTPUT/$MODEL/api-existence/$model_fn" "$OUTPUT/prediction/api-existence_${model_fn}.csv" >> $LOG 2>> $LOG_ERR
+            echo "End Timestamp: `date +%s`" >> $LOG
+            echo $END >> $LOG
+            echo $END >> $LOG_ERR
+        done
 
         cd /app/
     fi
@@ -364,45 +520,49 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
         echo $END >> $LOG_ERR
 
         # Evaluate model
-        echo "Evaluating model" >> $LOG
-        echo "Evaluating model" >> $LOG_ERR
-        echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 evaluation.py "api-frequency.csv" "/app/label.txt" "$OUTPUT/$MODEL/api-frequency-model.pkl" "$OUTPUT/prediction/api-frequency.csv" >> $LOG 2>> $LOG_ERR
-        echo "End Timestamp: `date +%s`" >> $LOG
-        echo $END >> $LOG
-        echo $END >> $LOG_ERR
+        for model_fn in `ls -1 "$OUTPUT/$MODEL/api-frequency/"`; do
+            echo "Evaluating model" >> $LOG
+            echo "Evaluating model" >> $LOG_ERR
+            echo "Start Timestamp: `date +%s`" >> $LOG
+            python3 evaluation.py "api-frequency.csv" "/app/label.txt" "$OUTPUT/$MODEL/api-frequency/$model_fn" "$OUTPUT/prediction/api-frequency_${model_fn}.csv" >> $LOG 2>> $LOG_ERR
+            echo "End Timestamp: `date +%s`" >> $LOG
+            echo $END >> $LOG
+            echo $END >> $LOG_ERR
+        done
 
         cd /app/
     fi
 
-    #TODO
     # ARGUMENTS
     if [ $( jq ".options.arguments" "$CONFIG" ) = true ]; then
         cd /app/arguments/
 
-	mkdir -p "$OUTPUT/model/arguments"
+        mkdir -p "$OUTPUT/model/arguments"
 
         # Extract features
         echo "Extracting argument features" >> $LOG
         echo "Extracting argument features" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-	cd extract_raw/
-	python2.7 extract.py "$RAW" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles/" >> $LOG 2>> $LOG_ERR
-	python2.7 feature_set_to_minhash.py "/app/arguments/behavior_profiles/" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles_minhash/" >> $LOG 2>> $LOG_ERR
+        cd extract_raw/
+        python2.7 extract.py "$RAW" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles/" >> $LOG 2>> $LOG_ERR
+        python2.7 feature_set_to_minhash.py "/app/arguments/behavior_profiles/" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles_minhash/" >> $LOG 2>> $LOG_ERR
         cd ../
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
 
-	# Evaluate model
-        echo "Evaluating model" >> $LOG
-        echo "Evaluating model" >> $LOG_ERR
-        echo "Start Timestamp: `date +%s`" >> $LOG
-	cd ml_model/
-        python2.7 evaluation.py "/app/arguments/behavior_profiles_minhash/" "$OUTPUT/$MODEL/arguments/model_ensemble.pkl" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/arguments.csv" >> $LOG 2>> $LOG_ERR
-        echo "End Timestamp: `date +%s`" >> $LOG
-        echo $END >> $LOG
-        echo $END >> $LOG_ERR
+        cd ml_model/
+
+        # Evaluate model
+        for model_fn in `ls -1 "$OUTPUT/$MODEL/arguments/"`; do
+            echo "Evaluating model" >> $LOG
+            echo "Evaluating model" >> $LOG_ERR
+            echo "Start Timestamp: `date +%s`" >> $LOG
+            python2.7 evaluation.py "/app/arguments/behavior_profiles_minhash/" "$OUTPUT/$MODEL/arguments/$model_fn" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/arguments_${model_fn}.csv" >> $LOG 2>> $LOG_ERR
+            echo "End Timestamp: `date +%s`" >> $LOG
+            echo $END >> $LOG
+            echo $END >> $LOG_ERR
+        done
 
         cd /app/
     fi
@@ -428,7 +588,6 @@ if [ "$NAME" = "mimicry_attack" ]; then
     # Get files
     CLASSES=""
     MODEL_ZIP=""
-    CONVERT_CLASS=""
     TARGET=""
     if [ $NUM_FILES -gt 0 ]; then
         for i in `seq 0 $((NUM_FILES-1))`
@@ -443,11 +602,6 @@ if [ "$NAME" = "mimicry_attack" ]; then
             # If this is a model file
             if [ "$e" == "model" ]; then
                 MODEL_ZIP=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-
-            # If this is a map file
-            if [ "$e" == "map" ]; then
-                CONVERT_CLASS=$( jq -r ".files"[$i] "$CONFIG")
             fi
 
             # If this is a target file
@@ -564,10 +718,10 @@ if [ "$NAME" = "mimicry_attack" ]; then
     echo "Start Timestamp: `date +%s`" >> $LOG
 
     # If there's a second file, then get the convert_classes file
-    if [ "$CONVERT_CLASS" != "" ]; then
-        python3 evaluation.py "$OUTPUT/$MODEL/api-sequence-model/fold1-model.json" "$OUTPUT/$MODEL/api-sequence-model/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" "$INPUT/$CONVERT_CLASS" >> $LOG 2>> $LOG_ERR
+    if [ "$OUTPUT/$MODEL/api-sequence/convert_classes.txt" != "" ]; then
+        python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" "$OUTPUT/$MODEL/api-sequence/convert_classes.txt" >> $LOG 2>> $LOG_ERR
     else
-        python3 evaluation.py "$OUTPUT/$MODEL/api-sequence-model/fold1-model.json" "$OUTPUT/$MODEL/api-sequence-model/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" >> $LOG 2>> $LOG_ERR
+        python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" >> $LOG 2>> $LOG_ERR
     fi
 
     echo "End Timestamp: `date +%s`" >> $LOG

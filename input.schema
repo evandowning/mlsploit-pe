@@ -7,9 +7,36 @@
                     {"name": "sequence", "type": "bool", "required": true},
                     {"name": "sequence_window", "type": "int", "required": true},
                     {"name": "sequence_type", "type": "enum", "values": ["multi_classification","binary_classification"], "required": true},
+                    {"name": "sequence_lstm", "type": "bool", "required": false},
+                    {"name": "sequence_rnn", "type": "bool", "required": false},
+                    {"name": "sequence_cnn", "type": "bool", "required": false},
+
                     {"name": "existence", "type": "bool", "required": true},
+                    {"name": "existence_rf", "type": "bool", "required": false},
+                    {"name": "existence_rf_trees", "type": "int", "required": false},
+                    {"name": "existence_nb", "type": "bool", "required": false},
+                    {"name": "existence_knn", "type": "bool", "required": false},
+                    {"name": "existence_knn_k", "type": "int", "required": false},
+                    {"name": "existence_sgd", "type": "bool", "required": false},
+                    {"name": "existence_mlp", "type": "bool", "required": false},
+
                     {"name": "frequency", "type": "bool", "required": true},
-                    {"name": "arguments", "type": "bool", "required": true}
+                    {"name": "frequency_rf", "type": "bool", "required": false},
+                    {"name": "frequency_rf_trees", "type": "int", "required": false},
+                    {"name": "frequency_nb", "type": "bool", "required": false},
+                    {"name": "frequency_knn", "type": "bool", "required": false},
+                    {"name": "frequency_knn_k", "type": "int", "required": false},
+                    {"name": "frequency_sgd", "type": "bool", "required": false},
+                    {"name": "frequency_mlp", "type": "bool", "required": false},
+
+                    {"name": "arguments", "type": "bool", "required": true},
+                    {"name": "arguments_rf", "type": "bool", "required": false},
+                    {"name": "arguments_rf_trees", "type": "int", "required": false},
+                    {"name": "arguments_nb", "type": "bool", "required": false},
+                    {"name": "arguments_knn", "type": "bool", "required": false},
+                    {"name": "arguments_knn_k", "type": "int", "required": false},
+                    {"name": "arguments_sgd", "type": "bool", "required": false},
+                    {"name": "arguments_mlp", "type": "bool", "required": false}
                 ],
             "extensions": [
                 {
