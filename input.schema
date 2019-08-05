@@ -6,7 +6,7 @@
                 [
                     {"name": "sequence", "type": "bool", "required": true},
                     {"name": "sequence_window", "type": "int", "required": true},
-                    {"name": "sequence_type", "type": "str", "required": true},
+                    {"name": "sequence_type", "type": "enum", "values": ["multi_classification","binary_classification"], "required": true},
                     {"name": "existence", "type": "bool", "required": true},
                     {"name": "frequency", "type": "bool", "required": true},
                     {"name": "arguments", "type": "bool", "required": true}
@@ -24,7 +24,7 @@
                 [
                     {"name": "sequence", "type": "bool", "required": true},
                     {"name": "sequence_window", "type": "int", "required": true},
-                    {"name": "sequence_type", "type": "str", "required": true},
+                    {"name": "sequence_type", "type": "enum", "values": ["multi_classification","binary_classification"], "required": true},
                     {"name": "existence", "type": "bool", "required": true},
                     {"name": "frequency", "type": "bool", "required": true},
                     {"name": "arguments", "type": "bool", "required": true}
@@ -50,7 +50,7 @@
                 [
                     {"name": "sequence", "type": "bool", "required": true},
                     {"name": "sequence_window", "type": "int", "required": true},
-                    {"name": "sequence_type", "type": "str", "required": true},
+                    {"name": "sequence_type", "type": "enum", "values": ["multi_classification","binary_classification"], "required": true},
                     {"name": "generations", "type": "int", "required": true}
                 ],
             "extensions": [
