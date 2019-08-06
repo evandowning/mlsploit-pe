@@ -38,6 +38,8 @@ ADD ./label.txt /app
 # If private repo exists, set up
 COPY Dockerfile behavior-profile* /app/arguments/
 RUN if [ -d arguments ]; then cd arguments; ./setup.sh; fi
+COPY Dockerfile patch/patchPE* /app/petransformer/
+RUN if [ -d petransformer ]; then cd petransformer; ./setup.sh; ./autorun.sh; fi
 
 # Change permissions
 RUN chown -R 1001:1001 /app/

@@ -745,4 +745,59 @@ if [ "$NAME" = "mimicry_attack" ]; then
 fi
 
 
+# PE Transformer
+if [ "$NAME" = "pe_transformer" ]; then
+    # Get files
+    CONFIG_ZIP=""
+    if [ $NUM_FILES -gt 0 ]; then
+        for i in `seq 0 $((NUM_FILES-1))`
+        do
+            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
+
+            # If this is a config file
+            if [ "$e" == "cfg" ]; then
+                CONFIG_ZIP=$( jq -r ".files"[$i] "$CONFIG")
+            fi
+        done
+    fi
+
+    # Check input files
+    if [ "$CONFIG_ZIP" = "" ]; then
+        echo "Error. Couldn't find input files." >> $LOG_ERR
+        exit_error "$NAME" "$LOG_NAME" "$LOG_ERR_NAME" "$OUTPUT"
+    fi
+
+    # Get config(s)
+    OLD_NAME=$( zipinfo -1 "$INPUT/$CONFIG_ZIP" | head -1 | awk '{split($NF,a,"/");print a[1]}' )
+    CFG="cfg"
+
+    # Unzip config(s)
+    cd "$INPUT"
+    unzip "$CONFIG_ZIP" -d "$OUTPUT"
+    cd "$OUTPUT"
+    mv $OLD_NAME $CFG
+    cd /app/
+
+    # Get sample
+    SAMPLE=$( jq -r ".options.hash" "$CONFIG" )
+
+    cd /app/petransformer
+
+    # Copy payloads
+    mkdir -p ~/.msf4/modules/payloads/singles/windows/
+    cp ./payloads/* ~/.msf4/modules/payloads/singles/windows/
+
+    # Run transformer
+    python3 main.py ./shellcode/ "$RAW/sample/$SAMPLE" "$OUTPUT/$CFG/0.cfg" "$OUTPUT/attack.exe" > $LOG 2> $LOG_ERR
+
+    # Write output.json
+    echo '{
+    "name": "'"$NAME"'",
+    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "tags": [{"ftype":"log"},{"ftype":"log"}],
+    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "files_modified": [null]
+}' > "$OUTPUT/output.json"
+fi
+
 echo "Finished: `date +%s`" >> $LOG

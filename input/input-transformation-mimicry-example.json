@@ -1,12 +1,9 @@
 {
-    "name": "mimicry_attack",
-    "num_files": 4,
-    "files": ["benign.txt","convert_classes.txt","target.txt","model.zip"],
+    "name": "pe_transformer",
+    "num_files": 1,
+    "files": ["rbot-config.zip"],
     "options": {
-        "sequence": true,
-        "sequence_type": "multi_classification",
-        "sequence_window": 32,
-        "generations": 10
+        "hash": "rbot-original.exe"
     },
-    "tags": [{"ftype": "data"}, {"ftype": "map"}, {"ftype": "target"}, {"ftype": "model"}]
+    "tags": [{"ftype": "cfg"}]
 }

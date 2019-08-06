@@ -86,10 +86,6 @@
                     "extension": "txt"
                 },
                 {
-                    "tags": {"ftype": "map"},
-                    "extension": "txt"
-                },
-                {
                     "tags": {"ftype": "target"},
                     "extension": "txt"
                 },
@@ -101,12 +97,11 @@
         },
         {
             "name": "pe_transformer",
-            "options": [],
+            "options":
+                [
+                    {"name": "hash", "type": "str", "required": true}
+                ],
             "extensions": [
-                {
-                    "tags": {"ftype": "data"},
-                    "extension": "txt"
-                },
                 {
                     "tags": {"ftype": "cfg"},
                     "extension": "zip"

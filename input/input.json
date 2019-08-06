@@ -1,14 +1,9 @@
 {
-    "name": "evaluate_model_ensemble",
-    "num_files": 3,
-    "files": ["classes-eval.txt","convert_classes.txt","model.zip"],
+    "name": "pe_transformer",
+    "num_files": 1,
+    "files": ["rbot-config.zip"],
     "options": {
-        "sequence": true,
-        "sequence_window": 32,
-        "sequence_type": "multi_classification",
-        "existence": true,
-        "frequency": true,
-        "arguments": true
+        "hash": "rbot-original.exe"
     },
-    "tags": [{"ftype": "data"}, {"ftype": "map"}, {"ftype": "model"}]
+    "tags": [{"ftype": "cfg"}]
 }
