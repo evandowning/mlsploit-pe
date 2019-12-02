@@ -1,0 +1,12 @@
+{
+    "name": "mimicry_attack",
+    "num_files": 3,
+    "files": ["benign.txt","target.txt","model.zip"],
+    "options": {
+        "sequence": true,
+        "sequence_type": "multi_classification",
+        "sequence_window": 32,
+        "generations": 10
+    },
+    "tags": [{"ftype": "data"}, {"ftype": "target"}, {"ftype": "model"}]
+}

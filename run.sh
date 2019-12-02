@@ -25,6 +25,7 @@ END="============================================="
 INPUT="/mnt/input"
 OUTPUT="/mnt/output"
 RAW="/mnt/malwarelab"
+BINARY="/mnt/binary"
 
 CONFIG="$INPUT/input.json"
 NAME=$( jq -r ".name" "$CONFIG" )
@@ -800,4 +801,67 @@ if [ "$NAME" = "pe_transformer" ]; then
 }' > "$OUTPUT/output.json"
 fi
 
+#TODO
+# Detect Trampoline
+if [ "$NAME" = "detect_trampoline" ]; then
+    # Get files
+    NOMINAL=""
+    TEST=""
+    if [ $NUM_FILES -gt 0 ]; then
+        for i in `seq 0 $((NUM_FILES-1))`
+        do
+            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
+
+            # If this is a nominal file
+            if [ "$e" == "nominal" ]; then
+                NOMINAL=$( jq -r ".files"[$i] "$CONFIG")
+            fi
+
+            # If this is a modified file
+            if [ "$e" == "test" ]; then
+                TEST=$( jq -r ".files"[$i] "$CONFIG")
+            fi
+        done
+    fi
+
+    # Check input files
+    if [ "$NOMINAL" = "" ]; then
+        echo "Error. Couldn't find input files." >> $LOG_ERR
+        exit_error "$NAME" "$LOG_NAME" "$LOG_ERR_NAME" "$OUTPUT"
+    fi
+    if [ "$TEST" = "" ]; then
+        echo "Error. Couldn't find input files." >> $LOG_ERR
+        exit_error "$NAME" "$LOG_NAME" "$LOG_ERR_NAME" "$OUTPUT"
+    fi
+
+    cd /app/petransformer/artifact/
+
+    # Extract features from nominal and test sets
+    python3 extract.py "$BINARY" "$INPUT/$NOMINAL" "$OUTPUT/nominal_features/"
+    python3 extract.py "$BINARY" "$INPUT/$TEST" "$OUTPUT/test_features/"
+
+    # Model nominal (unmodified) files
+    python3 model_naive.py $OUTPUT/nominal_features/ "$INPUT/$NOMINAL" > "$OUTPUT/out.txt"
+    threshold_num=`grep 'Average number of jumps:' "$OUTPUT/out.txt" | rev | cut -d ' ' -f 1 | rev`
+    threshold_dist=`grep 'Average distance of jumps:' "$OUTPUT/out.txt" | rev | cut -d ' ' -f 1 | rev`
+    threshold_ratio=`grep 'ratio' "$OUTPUT/out.txt" | rev | cut -d ' ' -f 1 | rev`
+
+    # Run detection on test samples
+    python3 eval.py "$OUTPUT/test_features/" "$INPUT/$TEST" \
+                                             $threshold_num \
+                                             $threshold_dist \
+                                             $threshold_ratio
+
+    # Write output.json
+    echo '{
+    "name": "'"$NAME"'",
+    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "tags": [{"ftype":"log"},{"ftype":"log"}],
+    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "files_modified": [null]
+}' > "$OUTPUT/output.json"
+fi
+
 echo "Finished: `date +%s`" >> $LOG
+echo "Finished: `date +%s`" >> $LOG
+
