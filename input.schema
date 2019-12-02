@@ -107,6 +107,21 @@
                     "extension": "zip"
                 }
             ]
+        },
+        {
+            "name": "detect_trampoline",
+            "options":
+                [],
+            "extensions": [
+                {
+                    "tags": {"ftype": "nominal"},
+                    "extension": "txt"
+                },
+                {
+                    "tags": {"ftype": "test"},
+                    "extension": "txt"
+                }
+            ]
         }
     ]
 }

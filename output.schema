@@ -23,6 +23,12 @@
             "tags": [],
             "files_modified": false,
             "files_extra": true
+        },
+        {
+            "name": "detect_trampoline",
+            "tags": [],
+            "files_modified": false,
+            "files_extra": true
         }
     ]
 }
