@@ -209,8 +209,6 @@ function.add_option(
     doctxt="""Arguments - Multi-Layer Perceptron - Enable""",
     required=True)
 
-function.add_output_tag(name='tag1', type='str')
-
 #############################################
 # Create model ensemble evaluating function #
 #############################################
@@ -254,8 +252,6 @@ function.add_option(
     type='bool',
     doctxt="""Arguments - Enable""",
     required=True)
-
-function.add_output_tag(name='tag1', type='str')
 
 ##################################
 # Create mimicry attack function #
@@ -320,7 +316,6 @@ function = module.build_function(
     modifies_input_files=False,
     expected_filetype='txt',
     optional_filetypes=[])
-function.add_output_tag(name='tag1', type='str')
 
 # Save yaml file
 module.save()
