@@ -1,7 +1,6 @@
 from mlsploit import Module
 
-# From https://github.com/mlsploit/mlsploit.github.io/blob/master/static/img/modules/pe.png
-IMG_URL = 'https://raw.githubusercontent.com/mlsploit/mlsploit.github.io/master/static/img/modules/pe.png'
+IMG_URL='https://github.com/evandowning/mlsploit-pe/raw/develop/static/pe.png'
 
 module = Module.build(
     display_name='PE Module',

@@ -300,4 +300,4 @@ functions:
   expected_filetype: txt
   optional_filetypes: []
   output_tags: []
-icon_url: https://raw.githubusercontent.com/mlsploit/mlsploit.github.io/master/static/img/modules/pe.png
+icon_url: https://github.com/evandowning/mlsploit-pe/raw/develop/static/pe.png
