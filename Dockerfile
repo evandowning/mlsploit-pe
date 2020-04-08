@@ -11,29 +11,29 @@ RUN mkdir mimicry
 
 # Setup sequence
 workdir /app/sequence
-ADD ./model-api-sequence ./
+COPY ./model-api-sequence ./
 RUN ./setup.sh
 
 # Setup existence
 workdir /app/existence
-ADD ./model-api-existence ./
+COPY ./model-api-existence ./
 RUN ./setup.sh
 
 # Setup frequency
 workdir /app/frequency
-ADD ./model-api-frequency ./
+COPY ./model-api-frequency ./
 RUN ./setup.sh
 
 # Setup mimicry attack
 workdir /app/mimicry
-ADD ./mimicry-sequence ./
+COPY ./mimicry-sequence ./
 RUN ./setup.sh
 RUN ./setup_neo4j.sh
 
 # Add run (for Docker) and api.txt (for converting API calls to integers)
 workdir /app
-ADD ./run.sh /app
-ADD ./label.txt /app
+COPY ./run.sh /app
+COPY ./label.txt /app
 
 # If private repo exists, set up
 COPY Dockerfile behavior-profile* /app/arguments/
