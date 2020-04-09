@@ -876,4 +876,4 @@ fi
 
 echo "Finished: `date +%s`" >> $LOG
 
-return 0
+exit 0
