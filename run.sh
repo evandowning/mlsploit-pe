@@ -366,24 +366,8 @@ fi
 # EVALUATE_MODEL_ENSEMBLE
 if [ "$NAME" = "evaluate_model_ensemble" ]; then
     # Get files
-    CLASSES=""
-    MODEL_ZIP=""
-    if [ $NUM_FILES -gt 0 ]; then
-        for i in `seq 0 $((NUM_FILES-1))`
-        do
-            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
-
-            # If this is a data file
-            if [ "$e" == "data" ]; then
-                CLASSES=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-
-            # If this is a model file
-            if [ "$e" == "model" ]; then
-                MODEL_ZIP=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-        done
-    fi
+    CLASSES=$(parse_file "$CONFIG" ".data.txt")
+    MODEL_ZIP=$(parse_file "$CONFIG" ".model.zip")
 
     # Check input files
     if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ]; then
@@ -599,30 +583,9 @@ fi
 # Mimicry Attack
 if [ "$NAME" = "mimicry_attack" ]; then
     # Get files
-    CLASSES=""
-    MODEL_ZIP=""
-    TARGET=""
-    if [ $NUM_FILES -gt 0 ]; then
-        for i in `seq 0 $((NUM_FILES-1))`
-        do
-            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
-
-            # If this is a data file
-            if [ "$e" == "data" ]; then
-                CLASSES=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-
-            # If this is a model file
-            if [ "$e" == "model" ]; then
-                MODEL_ZIP=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-
-            # If this is a target file
-            if [ "$e" == "target" ]; then
-                TARGET=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-        done
-    fi
+    CLASSES=$(parse_file "$CONFIG" ".data.txt")
+    MODEL_ZIP=$(parse_file "$CONFIG" ".model.zip")
+    TARGET=$(parse_file "$CONFIG" ".target.txt")
 
     # Check input files
     if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ] || [ "$TARGET" = "" ]; then
@@ -761,18 +724,7 @@ fi
 # PE Transformer
 if [ "$NAME" = "pe_transformer" ]; then
     # Get files
-    CONFIG_ZIP=""
-    if [ $NUM_FILES -gt 0 ]; then
-        for i in `seq 0 $((NUM_FILES-1))`
-        do
-            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
-
-            # If this is a config file
-            if [ "$e" == "cfg" ]; then
-                CONFIG_ZIP=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-        done
-    fi
+    CONFIG_ZIP=$(parse_file "$CONFIG" ".cfg.zip")
 
     # Check input files
     if [ "$CONFIG_ZIP" = "" ]; then
@@ -817,24 +769,8 @@ fi
 # Detect Trampoline
 if [ "$NAME" = "detect_trampoline" ]; then
     # Get files
-    NOMINAL=""
-    TEST=""
-    if [ $NUM_FILES -gt 0 ]; then
-        for i in `seq 0 $((NUM_FILES-1))`
-        do
-            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
-
-            # If this is a nominal file
-            if [ "$e" == "nominal" ]; then
-                NOMINAL=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-
-            # If this is a modified file
-            if [ "$e" == "test" ]; then
-                TEST=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-        done
-    fi
+    NOMINAL=$(parse_file "$CONFIG" ".nominal.txt")
+    TEST=$(parse_file "$CONFIG" ".test.txt")
 
     # Check input files
     if [ "$NOMINAL" = "" ]; then
@@ -875,5 +811,3 @@ if [ "$NAME" = "detect_trampoline" ]; then
 fi
 
 echo "Finished: `date +%s`" >> $LOG
-
-exit 0

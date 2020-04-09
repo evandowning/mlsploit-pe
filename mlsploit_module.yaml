@@ -236,7 +236,7 @@ functions:
     default: null
   creates_new_files: true
   modifies_input_files: false
-  expected_filetype: data.txt,.map.txt
+  expected_filetype: data.txt
   optional_filetypes:
   - model.zip
   output_tags: []
@@ -272,9 +272,9 @@ functions:
     default: 1
   creates_new_files: true
   modifies_input_files: false
-  expected_filetype: data.txt,.target.txt
+  expected_filetype: data.txt
   optional_filetypes:
-  - model.zip
+  - target.txt,.model.zip
   output_tags:
   - name: tag1
     type: str
@@ -300,7 +300,8 @@ functions:
   options: []
   creates_new_files: true
   modifies_input_files: false
-  expected_filetype: nominal.txt,.test.txt
-  optional_filetypes: []
+  expected_filetype: nominal.txt
+  optional_filetypes:
+  - test.txt
   output_tags: []
 icon_url: https://github.com/evandowning/mlsploit-pe/raw/develop/static/pe.png

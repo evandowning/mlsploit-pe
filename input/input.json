@@ -1,7 +1,36 @@
 {
-    "name": "detect_trampoline",
-    "num_files": 2,
-    "files": ["nominal.txt","test.txt"],
-    "options": {},
-    "tags": [{"ftype": "nominal"}, {"ftype": "test"}]
+    "name": "model_ensemble",
+    "num_files": 1,
+    "files": ["pe.data.txt"],
+    "options": {
+        "sequence": true,
+        "sequence_window": 32,
+        "sequence_type": "multi_classification",
+        "sequence_lstm": true,
+        "sequence_rnn": true,
+        "sequence_cnn": true,
+
+        "existence": true,
+        "existence_rf": true,
+        "existence_rf_trees": 5,
+        "existence_nb": true,
+        "existence_knn": true,
+        "existence_knn_k": 5,
+        "existence_sgd": true,
+        "existence_mlp": true,
+
+        "frequency": true,
+        "frequency_rf": true,
+        "frequency_nb": true,
+        "frequency_knn": true,
+        "frequency_knn_k": 5,
+        "frequency_sgd": true,
+        "frequency_mlp": true,
+
+        "arguments": true,
+        "arguments_rf": true,
+        "arguments_rf_trees": 5,
+        "arguments_nb": true,
+        "arguments_sgd": true
+    }
 }

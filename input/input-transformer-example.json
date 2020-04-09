@@ -1,9 +1,8 @@
 {
     "name": "pe_transformer",
     "num_files": 1,
-    "files": ["cfg.zip"],
+    "files": ["pe.cfg.zip"],
     "options": {
         "hash": "blah"
-    },
-    "tags": [{"ftype": "cfg"}]
+    }
 }

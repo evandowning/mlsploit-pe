@@ -217,7 +217,7 @@ function = module.build_function(
     doctxt="""Evaluates an ensemble of trained models. Takes .data.txt, .map.txt, and .model.zip as input.""",
     creates_new_files=True,
     modifies_input_files=False,
-    expected_filetype='.data.txt,.map.txt',
+    expected_filetype='.data.txt',
     optional_filetypes=['.model.zip'])
 function.add_option(
     name='sequence',
@@ -261,8 +261,8 @@ function = module.build_function(
     doctxt="""Performs mimicry attack. Takes .data.txt, .target.txt, and .model.zip as input.""",
     creates_new_files=True,
     modifies_input_files=False,
-    expected_filetype='.data.txt,.target.txt',
-    optional_filetypes=['.model.zip'])
+    expected_filetype='.data.txt',
+    optional_filetypes=['.target.txt,.model.zip'])
 function.add_option(
     name='sequence',
     type='bool',
@@ -314,8 +314,8 @@ function = module.build_function(
     doctxt="""Trains model to detect trampoline insertion. Takes .nominal.txt and .test.txt as input.""",
     creates_new_files=True,
     modifies_input_files=False,
-    expected_filetype='.nominal.txt,.test.txt',
-    optional_filetypes=[])
+    expected_filetype='.nominal.txt',
+    optional_filetypes=['.test.txt'])
 
 # Save yaml file
 module.save()

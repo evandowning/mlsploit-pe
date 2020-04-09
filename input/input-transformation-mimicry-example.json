@@ -1,9 +1,8 @@
 {
     "name": "pe_transformer",
     "num_files": 1,
-    "files": ["rbot-config.zip"],
+    "files": ["rbot.cfg.zip"],
     "options": {
         "hash": "rbot-original.exe"
-    },
-    "tags": [{"ftype": "cfg"}]
+    }
 }

@@ -1,7 +1,7 @@
 {
     "name": "model_ensemble",
     "num_files": 1,
-    "files": ["classes.txt"],
+    "files": ["pe.data.txt"],
     "options": {
         "sequence": true,
         "sequence_window": 32,
@@ -32,6 +32,5 @@
         "arguments_rf_trees": 5,
         "arguments_nb": true,
         "arguments_sgd": true
-    },
-    "tags": [{"ftype": "data"}]
+    }
 }

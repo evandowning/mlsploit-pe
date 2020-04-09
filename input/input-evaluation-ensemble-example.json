@@ -1,7 +1,7 @@
 {
     "name": "evaluate_model_ensemble",
     "num_files": 2,
-    "files": ["classes-eval.txt","model.zip"],
+    "files": ["pe-eval.data.txt","model.zip"],
     "options": {
         "sequence": true,
         "sequence_window": 32,
@@ -9,6 +9,5 @@
         "existence": true,
         "frequency": true,
         "arguments": true
-    },
-    "tags": [{"ftype": "data"}, {"ftype": "model"}]
+    }
 }
