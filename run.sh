@@ -67,7 +67,7 @@ echo "Running $NAME" >> $LOG
 NUM_FILES=$( jq -r ".num_files | length" "$CONFIG")
 
 # MODEL_ENSEMBLE
-if [ "$NAME" = "Ensemble - Train" ]; then
+if [ "$NAME" = "Ensemble-Train" ]; then
     # Get files
     CLASSES=$(parse_file "$CONFIG" ".data.txt")
 

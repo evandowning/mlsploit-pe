@@ -13,12 +13,14 @@ module = Module.build(
 # Create model ensemble training function #
 ###########################################
 function = module.build_function(
-    name='Ensemble - Train',
+    name='Ensemble-Train',
     doctxt="""Trains an ensemble of models on PE features. Takes .data.txt file as input.""",
     creates_new_files=True,
     modifies_input_files=False,
     expected_filetype='.data.txt',
     optional_filetypes=[])
+
+function.add_output_tag(name='log', type='str')
 
 # API sequence
 function.add_option(

@@ -2,7 +2,7 @@ display_name: PE Module
 tagline: This is the PE module
 doctxt: Module to train and attack PE models.
 functions:
-- name: Ensemble - Train
+- name: Ensemble-Train
   doctxt: Trains an ensemble of models on PE features. Takes .data.txt file as input.
   options:
   - name: sequence
