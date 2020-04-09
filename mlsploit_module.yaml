@@ -1,0 +1,306 @@
+display_name: PE Module
+tagline: This is the PE module
+doctxt: Module to train and attack PE models.
+functions:
+- name: Ensemble - Train
+  doctxt: Trains an ensemble of models on PE features. Takes .data.txt file as input.
+  options:
+  - name: sequence
+    type: bool
+    doctxt: Sequence - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: sequence_window
+    type: int
+    doctxt: Sequence - Window Size
+    required: true
+    enum_values: null
+    default: 32
+  - name: sequence_type
+    type: enum
+    doctxt: Sequence - Classification Type
+    required: true
+    enum_values:
+    - multi_classification
+    - binary_classification
+    default: binary_classification
+  - name: sequence_lstm
+    type: bool
+    doctxt: Sequence - LSTM - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: sequence_rnn
+    type: bool
+    doctxt: Sequence - RNN - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: sequence_cnn
+    type: bool
+    doctxt: Sequence - CNN - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: existence
+    type: bool
+    doctxt: Existence - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: existence_rf
+    type: bool
+    doctxt: Existence - Random Forest - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: existence_rf_trees
+    type: int
+    doctxt: Existence - Random Forest - Number of Trees
+    required: true
+    enum_values: null
+    default: 10
+  - name: existence_nb
+    type: bool
+    doctxt: Existence - Naive Bayes - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: existence_knn
+    type: bool
+    doctxt: Existence - k-Nearest Neighbors - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: existence_knn_k
+    type: int
+    doctxt: Existence - k-Nearest Neighbors - k-value
+    required: true
+    enum_values: null
+    default: 5
+  - name: existence_sgd
+    type: bool
+    doctxt: Existence - Stochastic Gradient Descent - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: existence_mlp
+    type: bool
+    doctxt: Existence - Multi-Layer Perceptron - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: frequency
+    type: bool
+    doctxt: Frequency - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: frequency_rf
+    type: bool
+    doctxt: Frequency - Random Forest - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: frequency_rf_trees
+    type: int
+    doctxt: Frequency - Random Forest - Number of Trees
+    required: true
+    enum_values: null
+    default: 10
+  - name: frequency_nb
+    type: bool
+    doctxt: Frequency - Naive Bayes - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: frequency_knn
+    type: bool
+    doctxt: Frequency - k-Nearest Neighbors - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: frequency_knn_k
+    type: int
+    doctxt: Frequency - k-Nearest Neighbors - k-value
+    required: true
+    enum_values: null
+    default: 5
+  - name: frequency_sgd
+    type: bool
+    doctxt: Frequency - Stochastic Gradient Descent - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: frequency_mlp
+    type: bool
+    doctxt: Frequency - Multi-Layer Perceptron - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: arguments
+    type: bool
+    doctxt: Arguments - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: arguments_rf
+    type: bool
+    doctxt: Arguments - Random Forest - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: arguments_rf_trees
+    type: int
+    doctxt: Arguments - Random Forest - Number of Trees
+    required: true
+    enum_values: null
+    default: 10
+  - name: arguments_nb
+    type: bool
+    doctxt: Arguments - Naive Bayes - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: arguments_knn
+    type: bool
+    doctxt: Arguments - k-Nearest Neighbors - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: arguments_knn_k
+    type: int
+    doctxt: Arguments - k-Nearest Neighbors - k-value
+    required: true
+    enum_values: null
+    default: 5
+  - name: arguments_sgd
+    type: bool
+    doctxt: Arguments - Stochastic Gradient Descent - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: arguments_mlp
+    type: bool
+    doctxt: Arguments - Multi-Layer Perceptron - Enable
+    required: true
+    enum_values: null
+    default: false
+  creates_new_files: true
+  modifies_input_files: false
+  expected_filetype: data.txt
+  optional_filetypes: []
+  output_tags: []
+- name: Ensemble - Evaluate
+  doctxt: Evaluates an ensemble of trained models. Takes .data.txt, .map.txt, and
+    .model.zip as input.
+  options:
+  - name: sequence
+    type: bool
+    doctxt: Sequence - Enable
+    required: true
+    enum_values: null
+    default: null
+  - name: sequence_window
+    type: int
+    doctxt: Sequence - Window Size
+    required: true
+    enum_values: null
+    default: 32
+  - name: sequence_type
+    type: enum
+    doctxt: Sequence - Classification Type
+    required: true
+    enum_values:
+    - multi_classification
+    - binary_classification
+    default: binary_classification
+  - name: existence
+    type: bool
+    doctxt: Existence - Enable
+    required: true
+    enum_values: null
+    default: null
+  - name: frequency
+    type: bool
+    doctxt: Frequency - Enable
+    required: true
+    enum_values: null
+    default: null
+  - name: arguments
+    type: bool
+    doctxt: Arguments - Enable
+    required: true
+    enum_values: null
+    default: null
+  creates_new_files: true
+  modifies_input_files: false
+  expected_filetype: data.txt,.map.txt
+  optional_filetypes:
+  - model.zip
+  output_tags: []
+- name: Mimicry Attack
+  doctxt: Performs mimicry attack. Takes .data.txt, .target.txt, and .model.zip as
+    input.
+  options:
+  - name: sequence
+    type: bool
+    doctxt: Sequence - Enable
+    required: true
+    enum_values: null
+    default: null
+  - name: sequence_window
+    type: int
+    doctxt: Sequence - Window Size
+    required: true
+    enum_values: null
+    default: 32
+  - name: sequence_type
+    type: enum
+    doctxt: Sequence - Classification Type
+    required: true
+    enum_values:
+    - multi_classification
+    - binary_classification
+    default: binary_classification
+  - name: generations
+    type: int
+    doctxt: Number of attack samples to generate
+    required: true
+    enum_values: null
+    default: 1
+  creates_new_files: true
+  modifies_input_files: false
+  expected_filetype: data.txt,.target.txt
+  optional_filetypes:
+  - model.zip
+  output_tags:
+  - name: tag1
+    type: str
+- name: PE Transformer
+  doctxt: Statically modifies PE binary to exhibit attack. Takes .cfg.zip as input.
+  options:
+  - name: hash
+    type: str
+    doctxt: SHA-256 hash value of binary to transform.
+    required: true
+    enum_values: null
+    default: null
+  creates_new_files: true
+  modifies_input_files: false
+  expected_filetype: cfg.zip
+  optional_filetypes: []
+  output_tags:
+  - name: tag1
+    type: str
+- name: Detect Trampoline
+  doctxt: Trains model to detect trampoline insertion. Takes .nominal.txt and .test.txt
+    as input.
+  options: []
+  creates_new_files: true
+  modifies_input_files: false
+  expected_filetype: nominal.txt,.test.txt
+  optional_filetypes: []
+  output_tags: []
+icon_url: https://github.com/evandowning/mlsploit-pe/raw/develop/static/pe.png
