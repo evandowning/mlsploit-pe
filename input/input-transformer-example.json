@@ -1,8 +1,0 @@
-{
-    "name": "pe_transformer",
-    "num_files": 1,
-    "files": ["pe.cfg.zip"],
-    "options": {
-        "hash": "blah"
-    }
-}

@@ -63,8 +63,6 @@ echo "" > $LOG_ERR
 
 echo "Running $NAME" >> $LOG
 
-exit 0
-
 # Get number of files passed
 NUM_FILES=$( jq -r ".num_files | length" "$CONFIG")
 

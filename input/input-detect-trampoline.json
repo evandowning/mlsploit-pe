@@ -1,5 +1,5 @@
 {
-    "name": "detect_trampoline",
+    "name": "Detect-Trampoline",
     "num_files": 2,
     "files": ["pe.nominal.txt","pe.test.txt"],
     "options": {}

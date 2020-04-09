@@ -1,5 +1,5 @@
 {
-    "name": "pe_transformer",
+    "name": "PE-Transformer",
     "num_files": 1,
     "files": ["rbot.cfg.zip"],
     "options": {

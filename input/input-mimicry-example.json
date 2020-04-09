@@ -1,5 +1,5 @@
 {
-    "name": "mimicry_attack",
+    "name": "Mimicry-Attack",
     "num_files": 3,
     "files": ["pe-benign.data.txt","pe.target.txt","pe.model.zip"],
     "options": {

@@ -1,5 +1,5 @@
 {
-    "name": "model_ensemble",
+    "name": "Ensemble-Train",
     "num_files": 1,
     "files": ["pe.data.txt"],
     "options": {

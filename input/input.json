@@ -1,16 +1,16 @@
 {
-    "name": "model_ensemble",
+    "name": "Ensemble-Train",
     "num_files": 1,
     "files": ["pe.data.txt"],
     "options": {
-        "sequence": true,
+        "sequence": false,
         "sequence_window": 32,
         "sequence_type": "multi_classification",
-        "sequence_lstm": true,
-        "sequence_rnn": true,
-        "sequence_cnn": true,
+        "sequence_lstm": false,
+        "sequence_rnn": false,
+        "sequence_cnn": false,
 
-        "existence": true,
+        "existence": false,
         "existence_rf": true,
         "existence_rf_trees": 5,
         "existence_nb": true,
@@ -19,7 +19,7 @@
         "existence_sgd": true,
         "existence_mlp": true,
 
-        "frequency": true,
+        "frequency": false,
         "frequency_rf": true,
         "frequency_nb": true,
         "frequency_knn": true,

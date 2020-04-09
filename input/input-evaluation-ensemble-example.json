@@ -1,5 +1,5 @@
 {
-    "name": "evaluate_model_ensemble",
+    "name": "Ensemble-Evaluate",
     "num_files": 2,
     "files": ["pe-eval.data.txt","pe.model.zip"],
     "options": {
