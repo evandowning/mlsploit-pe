@@ -13,7 +13,7 @@ function exit_error() {
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
     "tags": [{"ftype":"log"},{"ftype":"log"}],
     "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
-    "files_modified": [null]
+    "files_modified": []
 }' > "$OUTPUT/output.json"
 
     exit 0
@@ -359,7 +359,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"],
     "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"}],
     "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"],
-    "files_modified": [null]
+    "files_modified": []
 }' > "$OUTPUT/output.json"
 fi
 
