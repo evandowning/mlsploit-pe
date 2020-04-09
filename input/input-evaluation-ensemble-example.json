@@ -1,7 +1,7 @@
 {
     "name": "evaluate_model_ensemble",
     "num_files": 2,
-    "files": ["pe-eval.data.txt","model.zip"],
+    "files": ["pe-eval.data.txt","pe.model.zip"],
     "options": {
         "sequence": true,
         "sequence_window": 32,
