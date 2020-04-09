@@ -67,7 +67,7 @@ echo "Running $NAME" >> $LOG
 NUM_FILES=$( jq -r ".num_files | length" "$CONFIG")
 
 # MODEL_ENSEMBLE
-if [ "$NAME" = "model_ensemble" ]; then
+if [ "$NAME" = "Ensemble - Train" ]; then
     # Get files
     CLASSES=$(parse_file "$CONFIG" ".data.txt")
 
@@ -875,5 +875,5 @@ if [ "$NAME" = "detect_trampoline" ]; then
 fi
 
 echo "Finished: `date +%s`" >> $LOG
-echo "Finished: `date +%s`" >> $LOG
 
+return 0
