@@ -213,7 +213,7 @@ function.add_option(
 # Create model ensemble evaluating function #
 #############################################
 function = module.build_function(
-    name='Ensemble - Evaluate',
+    name='Ensemble-Evaluate',
     doctxt="""Evaluates an ensemble of trained models. Takes .data.txt, .map.txt, and .model.zip as input.""",
     creates_new_files=True,
     modifies_input_files=False,
@@ -257,7 +257,7 @@ function.add_option(
 # Create mimicry attack function #
 ##################################
 function = module.build_function(
-    name='Mimicry Attack',
+    name='Mimicry-Attack',
     doctxt="""Performs mimicry attack. Takes .data.txt, .target.txt, and .model.zip as input.""",
     creates_new_files=True,
     modifies_input_files=False,
@@ -293,7 +293,7 @@ function.add_output_tag(name='tag1', type='str')
 # Create PE transformer function #
 ##################################
 function = module.build_function(
-    name='PE Transformer',
+    name='PE-Transformer',
     doctxt="""Statically modifies PE binary to exhibit attack. Takes .cfg.zip as input.""",
     creates_new_files=True,
     modifies_input_files=False,
@@ -310,7 +310,7 @@ function.add_output_tag(name='tag1', type='str')
 # Create trampoline detection function #
 ########################################
 function = module.build_function(
-    name='Detect Trampoline',
+    name='Detect-Trampoline',
     doctxt="""Trains model to detect trampoline insertion. Takes .nominal.txt and .test.txt as input.""",
     creates_new_files=True,
     modifies_input_files=False,

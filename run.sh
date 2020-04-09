@@ -364,7 +364,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
 fi
 
 # EVALUATE_MODEL_ENSEMBLE
-if [ "$NAME" = "evaluate_model_ensemble" ]; then
+if [ "$NAME" = "Ensemble-Evaluate" ]; then
     # Get files
     CLASSES=$(parse_file "$CONFIG" ".data.txt")
     MODEL_ZIP=$(parse_file "$CONFIG" ".model.zip")
@@ -581,7 +581,7 @@ fi
 
 
 # Mimicry Attack
-if [ "$NAME" = "mimicry_attack" ]; then
+if [ "$NAME" = "Mimicry-Attack" ]; then
     # Get files
     CLASSES=$(parse_file "$CONFIG" ".data.txt")
     MODEL_ZIP=$(parse_file "$CONFIG" ".model.zip")
@@ -722,7 +722,7 @@ fi
 
 
 # PE Transformer
-if [ "$NAME" = "pe_transformer" ]; then
+if [ "$NAME" = "PE-Transformer" ]; then
     # Get files
     CONFIG_ZIP=$(parse_file "$CONFIG" ".cfg.zip")
 
@@ -765,9 +765,8 @@ if [ "$NAME" = "pe_transformer" ]; then
 }' > "$OUTPUT/output.json"
 fi
 
-#TODO
 # Detect Trampoline
-if [ "$NAME" = "detect_trampoline" ]; then
+if [ "$NAME" = "Detect-Trampoline" ]; then
     # Get files
     NOMINAL=$(parse_file "$CONFIG" ".nominal.txt")
     TEST=$(parse_file "$CONFIG" ".test.txt")
