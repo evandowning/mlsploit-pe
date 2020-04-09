@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Function if error occured
 function exit_error() {
     NAME="$1"
     LOG_NAME="$2"
@@ -16,6 +17,28 @@ function exit_error() {
 }' > "$OUTPUT/output.json"
 
     exit 0
+}
+
+# Function to parse data files
+function parse_file() {
+    CONFIG="$1"
+    EXT="$2"
+
+    # Get number of files passed
+    NUM_FILES=$( jq -r ".num_files | length" "$CONFIG")
+
+    if [ $NUM_FILES -gt 0 ]; then
+        for i in `seq 0 $((NUM_FILES-1))`
+        do
+            e=$( jq -r ".files"[$i] "$CONFIG" )
+
+            # If this is the targeted file extension
+            if [[ "$e" == *"$EXT" ]]; then
+                echo "$e"
+                return
+            fi
+        done
+    fi
 }
 
 set -x
@@ -41,23 +64,12 @@ echo "" > $LOG_ERR
 echo "Running $NAME" >> $LOG
 
 # Get number of files passed
-NUM_FILES=$( jq -r ".tags | length" "$CONFIG")
+NUM_FILES=$( jq -r ".num_files | length" "$CONFIG")
 
 # MODEL_ENSEMBLE
 if [ "$NAME" = "model_ensemble" ]; then
     # Get files
-    CLASSES=""
-    if [ $NUM_FILES -gt 0 ]; then
-        for i in `seq 0 $((NUM_FILES-1))`
-        do
-            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
-
-            # If this is a data file
-            if [ "$e" == "data" ]; then
-                CLASSES=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-        done
-    fi
+    CLASSES=$(parse_file "$CONFIG" ".data.txt")
 
     # Check input files
     if [ "$CLASSES" = "" ]; then

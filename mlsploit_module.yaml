@@ -3,7 +3,7 @@ tagline: This is the PE module
 doctxt: Module to train and attack PE models.
 functions:
 - name: Ensemble - Train
-  doctxt: Trains an ensemble of models on PE features.
+  doctxt: Trains an ensemble of models on PE features. Takes .data.txt file as input.
   options:
   - name: sequence
     type: bool
@@ -189,11 +189,12 @@ functions:
     default: false
   creates_new_files: true
   modifies_input_files: false
-  expected_filetype: txt
+  expected_filetype: data.txt
   optional_filetypes: []
   output_tags: []
 - name: Ensemble - Evaluate
-  doctxt: Evaluates an ensemble of trained models.
+  doctxt: Evaluates an ensemble of trained models. Takes .data.txt, .map.txt, and
+    .model.zip as input.
   options:
   - name: sequence
     type: bool
@@ -235,12 +236,13 @@ functions:
     default: null
   creates_new_files: true
   modifies_input_files: false
-  expected_filetype: txt
+  expected_filetype: data.txt,.map.txt
   optional_filetypes:
-  - zip
+  - model.zip
   output_tags: []
 - name: Mimicry Attack
-  doctxt: Performs mimicry attack.
+  doctxt: Performs mimicry attack. Takes .data.txt, .target.txt, and .model.zip as
+    input.
   options:
   - name: sequence
     type: bool
@@ -270,14 +272,14 @@ functions:
     default: 1
   creates_new_files: true
   modifies_input_files: false
-  expected_filetype: txt
+  expected_filetype: data.txt,.target.txt
   optional_filetypes:
-  - zip
+  - model.zip
   output_tags:
   - name: tag1
     type: str
 - name: PE Transformer
-  doctxt: Statically modifies PE binary to exhibit attack.
+  doctxt: Statically modifies PE binary to exhibit attack. Takes .cfg.zip as input.
   options:
   - name: hash
     type: str
@@ -287,17 +289,18 @@ functions:
     default: null
   creates_new_files: true
   modifies_input_files: false
-  expected_filetype: zip
+  expected_filetype: cfg.zip
   optional_filetypes: []
   output_tags:
   - name: tag1
     type: str
 - name: Detect Trampoline
-  doctxt: Trains model to detect trampoline insertion.
+  doctxt: Trains model to detect trampoline insertion. Takes .nominal.txt and .test.txt
+    as input.
   options: []
   creates_new_files: true
   modifies_input_files: false
-  expected_filetype: txt
+  expected_filetype: nominal.txt,.test.txt
   optional_filetypes: []
   output_tags: []
 icon_url: https://github.com/evandowning/mlsploit-pe/raw/develop/static/pe.png

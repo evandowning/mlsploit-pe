@@ -14,10 +14,10 @@ module = Module.build(
 ###########################################
 function = module.build_function(
     name='Ensemble - Train',
-    doctxt="""Trains an ensemble of models on PE features.""",
+    doctxt="""Trains an ensemble of models on PE features. Takes .data.txt file as input.""",
     creates_new_files=True,
     modifies_input_files=False,
-    expected_filetype='txt',
+    expected_filetype='.data.txt',
     optional_filetypes=[])
 
 # API sequence
@@ -214,11 +214,11 @@ function.add_option(
 #############################################
 function = module.build_function(
     name='Ensemble - Evaluate',
-    doctxt="""Evaluates an ensemble of trained models.""",
+    doctxt="""Evaluates an ensemble of trained models. Takes .data.txt, .map.txt, and .model.zip as input.""",
     creates_new_files=True,
     modifies_input_files=False,
-    expected_filetype='txt',
-    optional_filetypes=['zip'])
+    expected_filetype='.data.txt,.map.txt',
+    optional_filetypes=['.model.zip'])
 function.add_option(
     name='sequence',
     type='bool',
@@ -258,11 +258,11 @@ function.add_option(
 ##################################
 function = module.build_function(
     name='Mimicry Attack',
-    doctxt="""Performs mimicry attack.""",
+    doctxt="""Performs mimicry attack. Takes .data.txt, .target.txt, and .model.zip as input.""",
     creates_new_files=True,
     modifies_input_files=False,
-    expected_filetype='txt',
-    optional_filetypes=['zip'])
+    expected_filetype='.data.txt,.target.txt',
+    optional_filetypes=['.model.zip'])
 function.add_option(
     name='sequence',
     type='bool',
@@ -294,10 +294,10 @@ function.add_output_tag(name='tag1', type='str')
 ##################################
 function = module.build_function(
     name='PE Transformer',
-    doctxt="""Statically modifies PE binary to exhibit attack.""",
+    doctxt="""Statically modifies PE binary to exhibit attack. Takes .cfg.zip as input.""",
     creates_new_files=True,
     modifies_input_files=False,
-    expected_filetype='zip',
+    expected_filetype='.cfg.zip',
     optional_filetypes=[])
 function.add_option(
     name='hash',
@@ -311,10 +311,10 @@ function.add_output_tag(name='tag1', type='str')
 ########################################
 function = module.build_function(
     name='Detect Trampoline',
-    doctxt="""Trains model to detect trampoline insertion.""",
+    doctxt="""Trains model to detect trampoline insertion. Takes .nominal.txt and .test.txt as input.""",
     creates_new_files=True,
     modifies_input_files=False,
-    expected_filetype='txt',
+    expected_filetype='.nominal.txt,.test.txt',
     optional_filetypes=[])
 
 # Save yaml file
