@@ -12,7 +12,7 @@ function exit_error() {
     "name": "'"$NAME"'",
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
     "tags": [{"ftype":"log"},{"ftype":"log"}],
-    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
     "files_modified": []
 }' > "$OUTPUT/output.json"
 
@@ -358,7 +358,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
     "name": "'"$NAME"'",
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"],
     "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"}],
-    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"],
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"],
     "files_modified": []
 }' > "$OUTPUT/output.json"
 fi
@@ -590,7 +590,7 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
     "name": "'"$NAME"'",
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
     "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"}],
-    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
     "files_modified": [null]
 }' > "$OUTPUT/output.json"
 fi
@@ -752,7 +752,7 @@ if [ "$NAME" = "mimicry_attack" ]; then
     "name": "'"$NAME"'",
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"],
     "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"feature"},{"ftype":"prediction"}],
-    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"],
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"],
     "files_modified": [null]
 }' > "$OUTPUT/output.json"
 fi
@@ -808,7 +808,7 @@ if [ "$NAME" = "pe_transformer" ]; then
     "name": "'"$NAME"'",
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
     "tags": [{"ftype":"log"},{"ftype":"log"}],
-    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
     "files_modified": [null]
 }' > "$OUTPUT/output.json"
 fi
@@ -869,7 +869,7 @@ if [ "$NAME" = "detect_trampoline" ]; then
     "name": "'"$NAME"'",
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
     "tags": [{"ftype":"log"},{"ftype":"log"}],
-    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
     "files_modified": [null]
 }' > "$OUTPUT/output.json"
 fi

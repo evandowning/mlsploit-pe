@@ -20,8 +20,6 @@ function = module.build_function(
     expected_filetype='.data.txt',
     optional_filetypes=[])
 
-function.add_output_tag(name='log', type='str')
-
 # API sequence
 function.add_option(
     name='sequence',
