@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 
 RUN apt update && apt install -y sudo default-jre jq python3 zip
 RUN apt upgrade -y
