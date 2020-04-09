@@ -63,6 +63,8 @@ echo "" > $LOG_ERR
 
 echo "Running $NAME" >> $LOG
 
+exit 0
+
 # Get number of files passed
 NUM_FILES=$( jq -r ".num_files | length" "$CONFIG")
 
@@ -350,15 +352,15 @@ if [ "$NAME" = "Ensemble-Train" ]; then
 
     # Compress models and move them to output folder
     cd "$OUTPUT"
-    zip -r "$OUTPUT/model.zip" "./model/"
+    zip -r "$OUTPUT/pe.model.zip" "./model/"
     cd /app/
 
     # Write output.json
     echo '{
     "name": "'"$NAME"'",
-    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"],
+    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
     "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"}],
-    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"],
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
     "files_modified": []
 }' > "$OUTPUT/output.json"
 fi
@@ -716,7 +718,7 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"],
     "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"feature"},{"ftype":"prediction"}],
     "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"],
-    "files_modified": [null]
+    "files_modified": []
 }' > "$OUTPUT/output.json"
 fi
 
@@ -761,7 +763,7 @@ if [ "$NAME" = "PE-Transformer" ]; then
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
     "tags": [{"ftype":"log"},{"ftype":"log"}],
     "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
-    "files_modified": [null]
+    "files_modified": []
 }' > "$OUTPUT/output.json"
 fi
 
@@ -805,7 +807,7 @@ if [ "$NAME" = "Detect-Trampoline" ]; then
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
     "tags": [{"ftype":"log"},{"ftype":"log"}],
     "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
-    "files_modified": [null]
+    "files_modified": []
 }' > "$OUTPUT/output.json"
 fi
 
