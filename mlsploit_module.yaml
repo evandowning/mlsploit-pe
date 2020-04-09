@@ -191,7 +191,9 @@ functions:
   modifies_input_files: false
   expected_filetype: data.txt
   optional_filetypes: []
-  output_tags: []
+  output_tags:
+  - name: log
+    type: str
 - name: Ensemble - Evaluate
   doctxt: Evaluates an ensemble of trained models. Takes .data.txt, .map.txt, and
     .model.zip as input.
