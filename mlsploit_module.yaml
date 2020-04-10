@@ -274,7 +274,8 @@ functions:
   modifies_input_files: false
   expected_filetype: data.txt
   optional_filetypes:
-  - target.txt,.model.zip
+  - target.txt
+  - model.zip
   output_tags:
   - name: tag1
     type: str

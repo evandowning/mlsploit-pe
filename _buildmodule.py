@@ -262,7 +262,7 @@ function = module.build_function(
     creates_new_files=True,
     modifies_input_files=False,
     expected_filetype='.data.txt',
-    optional_filetypes=['.target.txt,.model.zip'])
+    optional_filetypes=['.target.txt','.model.zip'])
 function.add_option(
     name='sequence',
     type='bool',

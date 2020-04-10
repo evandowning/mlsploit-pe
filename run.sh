@@ -613,6 +613,7 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
     echo "[input_options]" >> "$MIMICRY_CFG"
     echo "sequences=/app/sequence/api-sequences/" >> "$MIMICRY_CFG"
     echo "target_hashes=$INPUT/$TARGET" >> "$MIMICRY_CFG"
+    echo "preferred=preferred.txt" >> "$MIMICRY_CFG"
 
     echo "[output_options]" >> "$MIMICRY_CFG"
     echo "attack_features=$OUTPUT/attack-feature/" >> "$MIMICRY_CFG"
@@ -680,11 +681,20 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
 
     cd /app/sequence/
 
+    # Create samples file
+    rm "$OUTPUT/attack-feature/api-sequences-samples.txt"
+    for fn in `find "$OUTPUT/attack-feature/api-sequences/" -mindepth 1 -maxdepth 1 -type f`; do
+        # Get label for sample
+        h=${fn: -66:-2}
+        l=$(grep $h "$INPUT/$TARGET" | cut -d$'\t' -f2)
+        echo -e "${fn: -66}\t${l}" >> "$OUTPUT/attack-feature/api-sequences-samples.txt"
+    done
+
     # Run evaluation on new features
     echo "Extracting sequence features" >> $LOG
     echo "Extracting sequence features" >> $LOG_ERR
     echo "Start Timestamp: `date +%s`" >> $LOG
-    python3 preprocess.py "$OUTPUT/attack-feature/api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$OUTPUT/attack-feature/api-sequences/samples.txt" "$OUTPUT/api-sequence-attack-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
+    python3 preprocess.py "$OUTPUT/attack-feature/api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$OUTPUT/attack-feature/api-sequences-samples.txt" "$OUTPUT/api-sequence-attack-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
     echo "End Timestamp: `date +%s`" >> $LOG
     echo $END >> $LOG
     echo $END >> $LOG_ERR
@@ -695,9 +705,9 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
 
     # If there's a second file, then get the convert_classes file
     if [ "$OUTPUT/$MODEL/api-sequence/convert_classes.txt" != "" ]; then
-        python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" "$OUTPUT/$MODEL/api-sequence/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+        python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" "$OUTPUT/$MODEL/api-sequence/convert_classes.txt" >> $LOG 2>> $LOG_ERR
     else
-        python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" >> $LOG 2>> $LOG_ERR
+        python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" >> $LOG 2>> $LOG_ERR
     fi
 
     echo "End Timestamp: `date +%s`" >> $LOG

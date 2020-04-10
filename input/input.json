@@ -1,36 +1,11 @@
 {
-    "name": "Ensemble-Train",
-    "num_files": 1,
-    "files": ["pe.data.txt"],
+    "name": "Mimicry-Attack",
+    "num_files": 3,
+    "files": ["pe-benign.data.txt","pe.target.txt","pe.model.zip"],
     "options": {
-        "sequence": false,
-        "sequence_window": 32,
+        "sequence": true,
         "sequence_type": "multi_classification",
-        "sequence_lstm": false,
-        "sequence_rnn": false,
-        "sequence_cnn": false,
-
-        "existence": false,
-        "existence_rf": true,
-        "existence_rf_trees": 5,
-        "existence_nb": true,
-        "existence_knn": true,
-        "existence_knn_k": 5,
-        "existence_sgd": true,
-        "existence_mlp": true,
-
-        "frequency": false,
-        "frequency_rf": true,
-        "frequency_nb": true,
-        "frequency_knn": true,
-        "frequency_knn_k": 5,
-        "frequency_sgd": true,
-        "frequency_mlp": true,
-
-        "arguments": true,
-        "arguments_rf": true,
-        "arguments_rf_trees": 5,
-        "arguments_nb": true,
-        "arguments_sgd": true
+        "sequence_window": 32,
+        "generations": 10
     }
 }
