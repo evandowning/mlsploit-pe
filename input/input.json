@@ -1,11 +1,6 @@
 {
-    "name": "Mimicry-Attack",
-    "num_files": 3,
-    "files": ["pe-benign.data.txt","pe.target.txt","pe.model.zip"],
-    "options": {
-        "sequence": true,
-        "sequence_type": "multi_classification",
-        "sequence_window": 32,
-        "generations": 10
-    }
+    "name": "Detect-Trampoline",
+    "num_files": 2,
+    "files": ["pe.nominal.txt","pe.test.txt"],
+    "options": {}
 }

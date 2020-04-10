@@ -685,9 +685,10 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
     rm "$OUTPUT/attack-feature/api-sequences-samples.txt"
     for fn in `find "$OUTPUT/attack-feature/api-sequences/" -mindepth 1 -maxdepth 1 -type f`; do
         # Get label for sample
-        h=${fn: -66:-2}
-        l=$(grep $h "$INPUT/$TARGET" | cut -d$'\t' -f2)
-        echo -e "${fn: -66}\t${l}" >> "$OUTPUT/attack-feature/api-sequences-samples.txt"
+        h=$(echo $fn | rev | cut -d'/' -f1 | rev)
+        l=$(grep ${h:0:-2} "$INPUT/$TARGET" | cut -d$'\t' -f2)
+
+        echo -e "${h}\t${l}" >> "$OUTPUT/attack-feature/api-sequences-samples.txt"
     done
 
     # Run evaluation on new features
@@ -763,7 +764,7 @@ if [ "$NAME" = "PE-Transformer" ]; then
     cp ./payloads/* ~/.msf4/modules/payloads/singles/windows/
 
     # Run transformer
-    python3 main.py ./shellcode/ "$RAW/sample/$SAMPLE" "$OUTPUT/$CFG/0.cfg" "$OUTPUT/attack.exe" > $LOG 2> $LOG_ERR
+    python3 main.py ./shellcode/ "$BINARY/$SAMPLE" "$OUTPUT/$CFG" "$OUTPUT/attack.exe" >> $LOG 2>> $LOG_ERR
 
     # Write output.json
     echo '{
@@ -807,7 +808,7 @@ if [ "$NAME" = "Detect-Trampoline" ]; then
     python3 eval.py "$OUTPUT/test_features/" "$INPUT/$TEST" \
                                              $threshold_num \
                                              $threshold_dist \
-                                             $threshold_ratio
+                                             $threshold_ratio >> $LOG 2>> $LOG_ERR
 
     # Write output.json
     echo '{
