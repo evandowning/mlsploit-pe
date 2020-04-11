@@ -190,7 +190,8 @@ functions:
   creates_new_files: true
   modifies_input_files: true
   expected_filetype: train.txt
-  optional_filetypes: []
+  optional_filetypes:
+  - eval.txt
   output_tags: []
 - name: Ensemble-Evaluate
   doctxt: Evaluates an ensemble of trained models. Takes .eval.txt and .model.zip

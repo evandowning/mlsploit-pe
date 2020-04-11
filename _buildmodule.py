@@ -18,7 +18,7 @@ function = module.build_function(
     creates_new_files=True,
     modifies_input_files=True,
     expected_filetype='.train.txt',
-    optional_filetypes=[])
+    optional_filetypes=['.eval.txt'])
 
 # API sequence
 function.add_option(
