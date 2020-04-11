@@ -376,10 +376,10 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         # Write output.json
         echo '{
         "name": "'"$NAME"'",
-        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
-        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"},{"ftype":"data"}],
-        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip","'"$EVAL"'"],
-        "files_modified": []
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip","'"$EVAL"'"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
+        "files_modified": ["'"$EVAL"'"]
     }' > "$OUTPUT/output.json"
     fi
 
@@ -602,21 +602,24 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
     NUM=$(ls -1 input/ | grep "\.log.*\.txt" | wc -l)
     LOG_IN_FTYPE=$(yes "{\"ftype\":\"log\"}," | head -$NUM | tr -d '\n')
 
+#       "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"},'"${LOG_IN_FTYPE:0:-1}"'],
+#       "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip","'"$LOG_IN"'"],
+
     if [ "$LOG_IN" = "" ]; then
         echo '{
         "name": "'"$NAME"'",
-        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
-        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"},'"${LOG_IN_FTYPE:0:-1}"'],
-        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip","'"$LOG_IN"'"],
-        "files_modified": []
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip","'"$MODEL_ZIP"'","'"$LOG_IN"'"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"},{"ftype":"model"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip","'"$MODEL_ZIP"'"],
+        "files_modified": ["'"$LOG_IN"'"]
 }' > "$OUTPUT/output.json"
 
     else
         echo '{
         "name": "'"$NAME"'",
         "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
-        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"},{"ftype":"model"}],
-        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip","'"$MODEL_ZIP"'"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
         "files_modified": []
 }' > "$OUTPUT/output.json"
     fi
