@@ -24,7 +24,7 @@ functions:
     enum_values:
     - multi_classification
     - binary_classification
-    default: binary_classification
+    default: multi_classification
   - name: sequence_lstm
     type: bool
     doctxt: Sequence - LSTM - Enable

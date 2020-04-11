@@ -596,10 +596,10 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
 
     # If logs exist in input, copy to output folder
     cp "$INPUT/*\.log.*\.txt" "$OUTPUT"
-    LOG_IN=$(ls -1 input/ | grep "\.log.*\.txt")
+    LOG_IN=$(ls -1 "$INPUT/" | grep "\.log.*\.txt")
     LOG_IN=$(echo $LOG_IN | sed "s/\ /\",\"/g")
 
-    NUM=$(ls -1 input/ | grep "\.log.*\.txt" | wc -l)
+    NUM=$(ls -1 "$INPUT/" | grep "\.log.*\.txt" | wc -l)
     LOG_IN_FTYPE=$(yes "{\"ftype\":\"log\"}," | head -$NUM | tr -d '\n')
 
 #       "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"},'"${LOG_IN_FTYPE:0:-1}"'],

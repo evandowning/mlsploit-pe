@@ -37,7 +37,7 @@ function.add_option(
     name='sequence_type',
     type='enum',
     enum_values=['multi_classification','binary_classification'],
-    default='binary_classification',
+    default='multi_classification',
     doctxt="""Sequence - Classification Type""",
     required=True)
 function.add_option(
