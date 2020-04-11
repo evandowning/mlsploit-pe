@@ -1,7 +1,7 @@
 {
     "name": "Mimicry-Attack",
     "num_files": 3,
-    "files": ["pe-benign.data.txt","pe.target.txt","pe.model.zip"],
+    "files": ["pe.benign.txt","pe.target.txt","pe.model.zip"],
     "options": {
         "sequence": true,
         "sequence_type": "multi_classification",

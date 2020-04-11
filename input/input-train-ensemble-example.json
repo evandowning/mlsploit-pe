@@ -1,7 +1,7 @@
 {
     "name": "Ensemble-Train",
     "num_files": 1,
-    "files": ["pe.data.txt"],
+    "files": ["pe.train.txt"],
     "options": {
         "sequence": true,
         "sequence_window": 32,

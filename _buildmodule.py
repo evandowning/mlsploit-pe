@@ -14,10 +14,10 @@ module = Module.build(
 ###########################################
 function = module.build_function(
     name='Ensemble-Train',
-    doctxt="""Trains an ensemble of models on PE features. Takes .data.txt file as input.""",
+    doctxt="""Trains an ensemble of models on PE features. Takes .train.txt file as input.""",
     creates_new_files=True,
-    modifies_input_files=False,
-    expected_filetype='.data.txt',
+    modifies_input_files=True,
+    expected_filetype='.train.txt',
     optional_filetypes=[])
 
 # API sequence
@@ -214,10 +214,10 @@ function.add_option(
 #############################################
 function = module.build_function(
     name='Ensemble-Evaluate',
-    doctxt="""Evaluates an ensemble of trained models. Takes .data.txt, .map.txt, and .model.zip as input.""",
+    doctxt="""Evaluates an ensemble of trained models. Takes .eval.txt and .model.zip as input.""",
     creates_new_files=True,
     modifies_input_files=False,
-    expected_filetype='.data.txt',
+    expected_filetype='.eval.txt',
     optional_filetypes=['.model.zip'])
 function.add_option(
     name='sequence',
@@ -258,10 +258,10 @@ function.add_option(
 ##################################
 function = module.build_function(
     name='Mimicry-Attack',
-    doctxt="""Performs mimicry attack. Takes .data.txt, .target.txt, and .model.zip as input.""",
+    doctxt="""Performs mimicry attack. Takes .benign.txt, .target.txt, and .model.zip as input.""",
     creates_new_files=True,
     modifies_input_files=False,
-    expected_filetype='.data.txt',
+    expected_filetype='.benign.txt',
     optional_filetypes=['.target.txt','.model.zip'])
 function.add_option(
     name='sequence',

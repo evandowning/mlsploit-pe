@@ -39,6 +39,8 @@ function parse_file() {
             fi
         done
     fi
+
+    echo ""
 }
 
 set -x
@@ -69,7 +71,7 @@ NUM_FILES=$( jq -r ".num_files | length" "$CONFIG")
 # MODEL_ENSEMBLE
 if [ "$NAME" = "Ensemble-Train" ]; then
     # Get files
-    CLASSES=$(parse_file "$CONFIG" ".data.txt")
+    CLASSES=$(parse_file "$CONFIG" ".train.txt")
 
     # Check input files
     if [ "$CLASSES" = "" ]; then
@@ -353,20 +355,39 @@ if [ "$NAME" = "Ensemble-Train" ]; then
     zip -r "$OUTPUT/pe.model.zip" "./model/"
     cd /app/
 
-    # Write output.json
-    echo '{
-    "name": "'"$NAME"'",
-    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
-    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"}],
-    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
-    "files_modified": []
-}' > "$OUTPUT/output.json"
+    # If eval data file was passed, add it to files_modified[]
+    # so mlsploit frontend will pass it to next in pipeline
+    EVAL=$(parse_file "$CONFIG" ".eval.txt")
+
+    if [ "$EVAL" = "" ]; then
+        # Write output.json
+        echo '{
+        "name": "'"$NAME"'",
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
+        "files_modified": []
+    }' > "$OUTPUT/output.json"
+    else
+        # Copy eval data file to output folder
+        cp "$INPUT/$EVAL" "$OUTPUT/$EVAL"
+
+        # Write output.json
+        echo '{
+        "name": "'"$NAME"'",
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
+        "files_modified": ["'"$EVAL"'"]
+    }' > "$OUTPUT/output.json"
+    fi
+
 fi
 
 # EVALUATE_MODEL_ENSEMBLE
 if [ "$NAME" = "Ensemble-Evaluate" ]; then
     # Get files
-    CLASSES=$(parse_file "$CONFIG" ".data.txt")
+    CLASSES=$(parse_file "$CONFIG" ".eval.txt")
     MODEL_ZIP=$(parse_file "$CONFIG" ".model.zip")
 
     # Check input files
@@ -583,7 +604,7 @@ fi
 # Mimicry Attack
 if [ "$NAME" = "Mimicry-Attack" ]; then
     # Get files
-    CLASSES=$(parse_file "$CONFIG" ".data.txt")
+    CLASSES=$(parse_file "$CONFIG" ".benign.txt")
     MODEL_ZIP=$(parse_file "$CONFIG" ".model.zip")
     TARGET=$(parse_file "$CONFIG" ".target.txt")
 

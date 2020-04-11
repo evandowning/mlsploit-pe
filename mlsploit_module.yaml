@@ -3,7 +3,7 @@ tagline: This is the PE module
 doctxt: Module to train and attack PE models.
 functions:
 - name: Ensemble-Train
-  doctxt: Trains an ensemble of models on PE features. Takes .data.txt file as input.
+  doctxt: Trains an ensemble of models on PE features. Takes .train.txt file as input.
   options:
   - name: sequence
     type: bool
@@ -188,13 +188,13 @@ functions:
     enum_values: null
     default: false
   creates_new_files: true
-  modifies_input_files: false
-  expected_filetype: data.txt
+  modifies_input_files: true
+  expected_filetype: train.txt
   optional_filetypes: []
   output_tags: []
 - name: Ensemble-Evaluate
-  doctxt: Evaluates an ensemble of trained models. Takes .data.txt, .map.txt, and
-    .model.zip as input.
+  doctxt: Evaluates an ensemble of trained models. Takes .eval.txt and .model.zip
+    as input.
   options:
   - name: sequence
     type: bool
@@ -236,13 +236,13 @@ functions:
     default: null
   creates_new_files: true
   modifies_input_files: false
-  expected_filetype: data.txt
+  expected_filetype: eval.txt
   optional_filetypes:
   - model.zip
   output_tags: []
 - name: Mimicry-Attack
-  doctxt: Performs mimicry attack. Takes .data.txt, .target.txt, and .model.zip as
-    input.
+  doctxt: Performs mimicry attack. Takes .benign.txt, .target.txt, and .model.zip
+    as input.
   options:
   - name: sequence
     type: bool
@@ -272,7 +272,7 @@ functions:
     default: 1
   creates_new_files: true
   modifies_input_files: false
-  expected_filetype: data.txt
+  expected_filetype: benign.txt
   optional_filetypes:
   - target.txt
   - model.zip
