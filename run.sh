@@ -596,7 +596,7 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
     "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"}],
     "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
-    "files_modified": [null]
+    "files_modified": []
 }' > "$OUTPUT/output.json"
 fi
 

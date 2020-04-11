@@ -222,6 +222,7 @@ function = module.build_function(
 function.add_option(
     name='sequence',
     type='bool',
+    default=False,
     doctxt="""Sequence - Enable""",
     required=True)
 function.add_option(
@@ -234,22 +235,25 @@ function.add_option(
     name='sequence_type',
     type='enum',
     enum_values=['multi_classification','binary_classification'],
-    default='binary_classification',
+    default='multi_classification',
     doctxt="""Sequence - Classification Type""",
     required=True)
 function.add_option(
     name='existence',
     type='bool',
+    default=False,
     doctxt="""Existence - Enable""",
     required=True)
 function.add_option(
     name='frequency',
     type='bool',
+    default=False,
     doctxt="""Frequency - Enable""",
     required=True)
 function.add_option(
     name='arguments',
     type='bool',
+    default=False,
     doctxt="""Arguments - Enable""",
     required=True)
 
@@ -266,6 +270,7 @@ function = module.build_function(
 function.add_option(
     name='sequence',
     type='bool',
+    default=False,
     doctxt="""Sequence - Enable""",
     required=True)
 function.add_option(
@@ -278,7 +283,7 @@ function.add_option(
     name='sequence_type',
     type='enum',
     enum_values=['multi_classification','binary_classification'],
-    default='binary_classification',
+    default='multi_classification',
     doctxt="""Sequence - Classification Type""",
     required=True)
 function.add_option(
@@ -287,7 +292,6 @@ function.add_option(
     default=1,
     doctxt="""Number of attack samples to generate""",
     required=True)
-function.add_output_tag(name='tag1', type='str')
 
 ##################################
 # Create PE transformer function #
@@ -304,7 +308,6 @@ function.add_option(
     type='str',
     doctxt="""SHA-256 hash value of binary to transform.""",
     required=True)
-function.add_output_tag(name='tag1', type='str')
 
 ########################################
 # Create trampoline detection function #

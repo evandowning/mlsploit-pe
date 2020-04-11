@@ -201,7 +201,7 @@ functions:
     doctxt: Sequence - Enable
     required: true
     enum_values: null
-    default: null
+    default: false
   - name: sequence_window
     type: int
     doctxt: Sequence - Window Size
@@ -215,25 +215,25 @@ functions:
     enum_values:
     - multi_classification
     - binary_classification
-    default: binary_classification
+    default: multi_classification
   - name: existence
     type: bool
     doctxt: Existence - Enable
     required: true
     enum_values: null
-    default: null
+    default: false
   - name: frequency
     type: bool
     doctxt: Frequency - Enable
     required: true
     enum_values: null
-    default: null
+    default: false
   - name: arguments
     type: bool
     doctxt: Arguments - Enable
     required: true
     enum_values: null
-    default: null
+    default: false
   creates_new_files: true
   modifies_input_files: false
   expected_filetype: eval.txt
@@ -249,7 +249,7 @@ functions:
     doctxt: Sequence - Enable
     required: true
     enum_values: null
-    default: null
+    default: false
   - name: sequence_window
     type: int
     doctxt: Sequence - Window Size
@@ -263,7 +263,7 @@ functions:
     enum_values:
     - multi_classification
     - binary_classification
-    default: binary_classification
+    default: multi_classification
   - name: generations
     type: int
     doctxt: Number of attack samples to generate
@@ -276,9 +276,7 @@ functions:
   optional_filetypes:
   - target.txt
   - model.zip
-  output_tags:
-  - name: tag1
-    type: str
+  output_tags: []
 - name: PE-Transformer
   doctxt: Statically modifies PE binary to exhibit attack. Takes .cfg.zip as input.
   options:
@@ -292,9 +290,7 @@ functions:
   modifies_input_files: false
   expected_filetype: cfg.zip
   optional_filetypes: []
-  output_tags:
-  - name: tag1
-    type: str
+  output_tags: []
 - name: Detect-Trampoline
   doctxt: Trains model to detect trampoline insertion. Takes .nominal.txt and .test.txt
     as input.
