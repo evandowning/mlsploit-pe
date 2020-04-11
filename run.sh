@@ -55,8 +55,8 @@ BINARY="/mnt/binary"
 CONFIG="$INPUT/input.json"
 NAME=$( jq -r ".name" "$CONFIG" )
 
-LOG_NAME="pe-${NAME}-log.txt"
-LOG_ERR_NAME="pe-${NAME}-log-err.txt"
+LOG_NAME="pe-${NAME}.log.txt"
+LOG_ERR_NAME="pe-${NAME}.log_err.txt"
 LOG="$OUTPUT/$LOG_NAME"
 LOG_ERR="$OUTPUT/$LOG_ERR_NAME"
 
@@ -368,6 +368,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
         "files_modified": []
     }' > "$OUTPUT/output.json"
+
     else
         # Copy eval data file to output folder
         cp "$INPUT/$EVAL" "$OUTPUT/$EVAL"
@@ -590,14 +591,36 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
     zip -r "$OUTPUT/prediction.zip" "./prediction/"
     cd /app/
 
-    # If there were two input files
-    echo '{
-    "name": "'"$NAME"'",
-    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
-    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"}],
-    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
-    "files_modified": []
+    # Copy model to output folder
+    cp "$INPUT/$MODEL_ZIP" "$OUTPUT/$MODEL_ZIP"
+
+    # If logs exist in input, copy to output folder
+    cp "$INPUT/*\.log.*\.txt" "$OUTPUT"
+    LOG_IN=$(ls -1 input/ | grep "\.log.*\.txt")
+    LOG_IN=$(echo $LOG_IN | sed "s/\ /\",\"/g")
+
+    NUM=$(ls -1 input/ | grep "\.log.*\.txt" | wc -l)
+    LOG_IN_FTYPE=$(yes "{\"ftype\":\"log\"}," | head -$NUM | tr -d '\n')
+
+    if [ "$LOG_IN" = "" ]; then
+        echo '{
+        "name": "'"$NAME"'",
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"},'"${LOG_IN_FTYPE:0:-1}"'],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip","'"$LOG_IN"'"],
+        "files_modified": []
 }' > "$OUTPUT/output.json"
+
+    else
+        echo '{
+        "name": "'"$NAME"'",
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"},{"ftype":"model"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip","'"$MODEL_ZIP"'"],
+        "files_modified": []
+}' > "$OUTPUT/output.json"
+    fi
+
 fi
 
 
