@@ -376,9 +376,9 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         echo '{
         "name": "'"$NAME"'",
         "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
-        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"}],
-        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
-        "files_modified": ["'"$EVAL"'"]
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"},{"ftype":"data"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip","'"$EVAL"'"],
+        "files_modified": []
     }' > "$OUTPUT/output.json"
     fi
 
