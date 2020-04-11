@@ -272,7 +272,7 @@ functions:
     enum_values: null
     default: 1
   creates_new_files: true
-  modifies_input_files: false
+  modifies_input_files: true
   expected_filetype: benign.txt
   optional_filetypes:
   - target.txt
@@ -288,7 +288,7 @@ functions:
     enum_values: null
     default: null
   creates_new_files: true
-  modifies_input_files: false
+  modifies_input_files: true
   expected_filetype: cfg.zip
   optional_filetypes: []
   output_tags: []

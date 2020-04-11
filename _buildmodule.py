@@ -264,7 +264,7 @@ function = module.build_function(
     name='Mimicry-Attack',
     doctxt="""Performs mimicry attack. Takes .benign.txt, .target.txt, and .model.zip as input.""",
     creates_new_files=True,
-    modifies_input_files=False,
+    modifies_input_files=True,
     expected_filetype='.benign.txt',
     optional_filetypes=['.target.txt','.model.zip'])
 function.add_option(
@@ -300,7 +300,7 @@ function = module.build_function(
     name='PE-Transformer',
     doctxt="""Statically modifies PE binary to exhibit attack. Takes .cfg.zip as input.""",
     creates_new_files=True,
-    modifies_input_files=False,
+    modifies_input_files=True,
     expected_filetype='.cfg.zip',
     optional_filetypes=[])
 function.add_option(

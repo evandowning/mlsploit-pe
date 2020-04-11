@@ -1,3 +1,7 @@
+# Private repos
+behavior-profile/
+patch/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

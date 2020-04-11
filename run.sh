@@ -14,7 +14,7 @@ function exit_error() {
     "tags": [{"ftype":"log"},{"ftype":"log"}],
     "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
     "files_modified": []
-}' > "$OUTPUT/output.json"
+    }' > "$OUTPUT/output.json"
 
     exit 0
 }
@@ -367,7 +367,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"}],
         "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
         "files_modified": []
-    }' > "$OUTPUT/output.json"
+        }' > "$OUTPUT/output.json"
 
     else
         # Copy eval data file to output folder
@@ -380,7 +380,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"},{"ftype":"data"}],
         "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
         "files_modified": ["'"$EVAL"'"]
-    }' > "$OUTPUT/output.json"
+        }' > "$OUTPUT/output.json"
     fi
 
 fi
@@ -611,7 +611,7 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
         "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"}],
         "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
         "files_modified": []
-}' > "$OUTPUT/output.json"
+        }' > "$OUTPUT/output.json"
 
     else
         echo '{
@@ -620,7 +620,7 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
         "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"},{"ftype":"model"},'"${LOG_IN_FTYPE:0:-1}"'],
         "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip","'"$MODEL_ZIP"'"],
         "files_modified": ["'"$LOG_IN"'"]
-}' > "$OUTPUT/output.json"
+        }' > "$OUTPUT/output.json"
 
     fi
 
@@ -766,16 +766,17 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
     cd "$OUTPUT"
     zip -r "$OUTPUT/attack-feature.zip" "./attack-feature/"
     zip -r "$OUTPUT/attack-prediction.zip" "./attack-prediction/"
+    zip -r "$OUTPUT/attack.cfg.zip" "./attack-config/"
     cd /app/
 
     # Write output.json
     echo '{
     "name": "'"$NAME"'",
-    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"],
-    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"feature"},{"ftype":"prediction"}],
-    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"],
+    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip","attack.cfg.zip"],
+    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"feature"},{"ftype":"prediction"},{"ftype":"cfg"}],
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip","attack.cfg.zip"],
     "files_modified": []
-}' > "$OUTPUT/output.json"
+    }' > "$OUTPUT/output.json"
 fi
 
 
@@ -794,15 +795,16 @@ if [ "$NAME" = "PE-Transformer" ]; then
     OLD_NAME=$( zipinfo -1 "$INPUT/$CONFIG_ZIP" | head -1 | awk '{split($NF,a,"/");print a[1]}' )
     CFG="cfg"
 
+    # Get sample
+    SAMPLE=$( jq -r ".options.hash" "$CONFIG" )
+
+    #TODO - Only gets first config from api sequences attack. Should add flexibility in future.
     # Unzip config(s)
     cd "$INPUT"
     unzip "$CONFIG_ZIP" -d "$OUTPUT"
     cd "$OUTPUT"
-    mv $OLD_NAME $CFG
+    cp "$OLD_NAME/api-sequences/$SAMPLE/0.cfg" $CFG
     cd /app/
-
-    # Get sample
-    SAMPLE=$( jq -r ".options.hash" "$CONFIG" )
 
     cd /app/petransformer
 
@@ -813,14 +815,37 @@ if [ "$NAME" = "PE-Transformer" ]; then
     # Run transformer
     python3 main.py ./shellcode/ "$BINARY/$SAMPLE" "$OUTPUT/$CFG" "$OUTPUT/attack.exe" >> $LOG 2>> $LOG_ERR
 
+    # If logs exist in input, copy to output folder
+    cp "$INPUT/"*.log*.txt "$OUTPUT/"
+    LOG_IN=$(ls -1 "$INPUT/" | grep "\.log.*\.txt")
+    LOG_IN=$(echo $LOG_IN | sed "s/\ /\",\"/g")
+
+    NUM=$(ls -1 "$INPUT/" | grep "\.log.*\.txt" | wc -l)
+    LOG_IN_FTYPE=$(yes "{\"ftype\":\"log\"}," | head -$NUM | tr -d '\n')
+
     # Write output.json
-    echo '{
-    "name": "'"$NAME"'",
-    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
-    "tags": [{"ftype":"log"},{"ftype":"log"}],
-    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
-    "files_modified": []
-}' > "$OUTPUT/output.json"
+    if [ "$LOG_IN" = "" ]; then
+        echo '{
+        "name": "'"$NAME"'",
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"exe"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe"],
+        "files_modified": []
+        }' > "$OUTPUT/output.json"
+
+    else
+        cp "$INPUT/$CFG_ZIP" "$OUTPUT"
+
+        echo '{
+        "name": "'"$NAME"'",
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe","'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CFG_ZIP"'"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"exe"},'"${LOG_IN_FTYPE:0:-1}"',{"ftype":"feature"},{"ftype":"prediction"},{"ftype":"cfg"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe"],
+        "files_modified": ["'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CFG_ZIP"'"]
+        }' > "$OUTPUT/output.json"
+
+    fi
+
 fi
 
 # Detect Trampoline
