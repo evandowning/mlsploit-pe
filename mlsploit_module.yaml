@@ -192,8 +192,6 @@ functions:
   expected_filetype: train.txt
   optional_filetypes:
   - eval.txt
-  - log.txt
-  - log_err.txt
   output_tags: []
 - name: Ensemble-Evaluate
   doctxt: Evaluates an ensemble of trained models. Takes .eval.txt and .model.zip
@@ -242,8 +240,6 @@ functions:
   expected_filetype: eval.txt
   optional_filetypes:
   - model.zip
-  - log.txt
-  - log_err.txt
   output_tags: []
 - name: Mimicry-Attack
   doctxt: Performs mimicry attack. Takes .benign.txt, .target.txt, and .model.zip

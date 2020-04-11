@@ -18,7 +18,7 @@ function = module.build_function(
     creates_new_files=True,
     modifies_input_files=True,
     expected_filetype='.train.txt',
-    optional_filetypes=['.eval.txt','.log.txt','.log_err.txt'])
+    optional_filetypes=['.eval.txt'])
 
 # API sequence
 function.add_option(
@@ -218,7 +218,7 @@ function = module.build_function(
     creates_new_files=True,
     modifies_input_files=True,
     expected_filetype='.eval.txt',
-    optional_filetypes=['.model.zip','.log.txt','.log_err.txt'])
+    optional_filetypes=['.model.zip'])
 function.add_option(
     name='sequence',
     type='bool',
