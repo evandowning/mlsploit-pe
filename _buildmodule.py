@@ -216,7 +216,7 @@ function = module.build_function(
     name='Ensemble-Evaluate',
     doctxt="""Evaluates an ensemble of trained models. Takes .eval.txt and .model.zip as input.""",
     creates_new_files=True,
-    modifies_input_files=False,
+    modifies_input_files=True,
     expected_filetype='.eval.txt',
     optional_filetypes=['.model.zip'])
 function.add_option(

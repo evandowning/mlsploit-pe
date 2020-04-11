@@ -377,7 +377,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         echo '{
         "name": "'"$NAME"'",
         "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip","'"$EVAL"'"],
-        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"}],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"},{"ftype":"data"}],
         "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
         "files_modified": ["'"$EVAL"'"]
     }' > "$OUTPUT/output.json"
@@ -609,7 +609,7 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
         echo '{
         "name": "'"$NAME"'",
         "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip","'"$MODEL_ZIP"'","'"$LOG_IN"'"],
-        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"},{"ftype":"model"}],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"},{"ftype":"model"},{"ftype":"log"}],
         "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip","'"$MODEL_ZIP"'"],
         "files_modified": ["'"$LOG_IN"'"]
 }' > "$OUTPUT/output.json"

@@ -236,7 +236,7 @@ functions:
     enum_values: null
     default: false
   creates_new_files: true
-  modifies_input_files: false
+  modifies_input_files: true
   expected_filetype: eval.txt
   optional_filetypes:
   - model.zip
