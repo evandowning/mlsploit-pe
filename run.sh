@@ -595,7 +595,7 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
     cp "$INPUT/$MODEL_ZIP" "$OUTPUT/$MODEL_ZIP"
 
     # If logs exist in input, copy to output folder
-    cp "$INPUT/*\.log.*\.txt" "$OUTPUT"
+    cp "$INPUT/*.log*.txt" "$OUTPUT"
     LOG_IN=$(ls -1 "$INPUT/" | grep "\.log.*\.txt")
     LOG_IN=$(echo $LOG_IN | sed "s/\ /\",\"/g")
 
