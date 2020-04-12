@@ -265,6 +265,24 @@ functions:
     - multi_classification
     - binary_classification
     default: multi_classification
+  - name: sequence_lstm
+    type: bool
+    doctxt: Sequence - LSTM - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: sequence_rnn
+    type: bool
+    doctxt: Sequence - RNN - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: sequence_cnn
+    type: bool
+    doctxt: Sequence - CNN - Enable
+    required: true
+    enum_values: null
+    default: false
   - name: generations
     type: int
     doctxt: Number of attack samples to generate

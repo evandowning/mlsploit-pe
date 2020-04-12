@@ -287,6 +287,24 @@ function.add_option(
     doctxt="""Sequence - Classification Type""",
     required=True)
 function.add_option(
+    name='sequence_lstm',
+    type='bool',
+    default=False,
+    doctxt="""Sequence - LSTM - Enable""",
+    required=True)
+function.add_option(
+    name='sequence_rnn',
+    type='bool',
+    default=False,
+    doctxt="""Sequence - RNN - Enable""",
+    required=True)
+function.add_option(
+    name='sequence_cnn',
+    type='bool',
+    default=False,
+    doctxt="""Sequence - CNN - Enable""",
+    required=True)
+function.add_option(
     name='generations',
     type='int',
     default=1,
