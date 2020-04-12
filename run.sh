@@ -839,6 +839,10 @@ if [ "$NAME" = "PE-Transformer" ]; then
     else
         cp "$INPUT/$CONFIG_ZIP" "$OUTPUT"
 
+        #TODO - assumes these two zip files will exist
+        cp "$INPUT/attack-feature.zip" "$OUTPUT"
+        cp "$INPUT/attack-prediction.zip" "$OUTPUT"
+
         echo '{
         "name": "'"$NAME"'",
         "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip","'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CONFIG_ZIP"'"],
