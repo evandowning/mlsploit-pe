@@ -816,7 +816,7 @@ if [ "$NAME" = "PE-Transformer" ]; then
     python3 main.py ./shellcode/ "$BINARY/$SAMPLE" "$OUTPUT/$CFG" "$OUTPUT/attack.exe" >> $LOG 2>> $LOG_ERR
 
     # Zip attack binary with password
-    zip -p infected "$OUTPUT/attack.exe.zip" "$OUTPUT/attack.exe"
+    zip -P infected "$OUTPUT/attack.exe.zip" "$OUTPUT/attack.exe"
 
     # If logs exist in input, copy to output folder
     cp "$INPUT/"*.log*.txt "$OUTPUT/"
