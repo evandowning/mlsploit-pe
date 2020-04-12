@@ -816,7 +816,7 @@ if [ "$NAME" = "PE-Transformer" ]; then
     python3 main.py ./shellcode/ "$BINARY/$SAMPLE" "$OUTPUT/$CFG" "$OUTPUT/attack.exe" >> $LOG 2>> $LOG_ERR
 
     # Zip attack binary with password
-    zip -p infected attack.exe.zip attack.exe
+    zip -p infected "$OUTPUT/attack.exe.zip" "$OUTPUT/attack.exe"
 
     # If logs exist in input, copy to output folder
     cp "$INPUT/"*.log*.txt "$OUTPUT/"
@@ -837,14 +837,14 @@ if [ "$NAME" = "PE-Transformer" ]; then
         }' > "$OUTPUT/output.json"
 
     else
-        cp "$INPUT/$CFG_ZIP" "$OUTPUT"
+        cp "$INPUT/$CONFIG_ZIP" "$OUTPUT"
 
         echo '{
         "name": "'"$NAME"'",
-        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip","'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CFG_ZIP"'"],
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip","'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CONFIG_ZIP"'"],
         "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"zip"},'"${LOG_IN_FTYPE:0:-1}"',{"ftype":"feature"},{"ftype":"prediction"},{"ftype":"cfg"}],
         "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip"],
-        "files_modified": ["'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CFG_ZIP"'"]
+        "files_modified": ["'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CONFIG_ZIP"'"]
         }' > "$OUTPUT/output.json"
 
     fi
