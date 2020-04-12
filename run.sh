@@ -815,6 +815,9 @@ if [ "$NAME" = "PE-Transformer" ]; then
     # Run transformer
     python3 main.py ./shellcode/ "$BINARY/$SAMPLE" "$OUTPUT/$CFG" "$OUTPUT/attack.exe" >> $LOG 2>> $LOG_ERR
 
+    # Zip attack binary with password
+    zip -p infected attack.exe.zip attack.exe
+
     # If logs exist in input, copy to output folder
     cp "$INPUT/"*.log*.txt "$OUTPUT/"
     LOG_IN=$(ls -1 "$INPUT/" | grep "\.log.*\.txt")
@@ -827,9 +830,9 @@ if [ "$NAME" = "PE-Transformer" ]; then
     if [ "$LOG_IN" = "" ]; then
         echo '{
         "name": "'"$NAME"'",
-        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe"],
-        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"exe"}],
-        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe"],
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"zip"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip"],
         "files_modified": []
         }' > "$OUTPUT/output.json"
 
@@ -838,9 +841,9 @@ if [ "$NAME" = "PE-Transformer" ]; then
 
         echo '{
         "name": "'"$NAME"'",
-        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe","'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CFG_ZIP"'"],
-        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"exe"},'"${LOG_IN_FTYPE:0:-1}"',{"ftype":"feature"},{"ftype":"prediction"},{"ftype":"cfg"}],
-        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe"],
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip","'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CFG_ZIP"'"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"zip"},'"${LOG_IN_FTYPE:0:-1}"',{"ftype":"feature"},{"ftype":"prediction"},{"ftype":"cfg"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip"],
         "files_modified": ["'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CFG_ZIP"'"]
         }' > "$OUTPUT/output.json"
 
