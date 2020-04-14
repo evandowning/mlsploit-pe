@@ -135,33 +135,42 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         #TODO
         # Train models
         if [ $SEQUENCE_LSTM = true ]; then
+            mkdir "$OUTPUT/model/api-sequence/lstm"
+
             echo "Training LSTM model" >> $LOG
             echo "Training LSTM model" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
             #python3 lstm.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/lstm/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/lstm/convert_classes.txt" >> $LOG 2>> $LOG_ERR
-            python3 -m trace --trace lstm.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/lstm/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/lstm/convert_classes.txt"
+            python3 lstm.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/lstm/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/lstm/convert_classes.txt"
+            echo "BLAH"
             echo "End Timestamp: `date +%s`" >> $LOG
             echo $END >> $LOG
             echo $END >> $LOG_ERR
         fi
 
         if [ $SEQUENCE_RNN = true ]; then
+            mkdir "$OUTPUT/model/api-sequence/rnn"
+
             echo "Training RNN model" >> $LOG
             echo "Training RNN model" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
             #python3 rnn.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/rnn/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/rnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
-            python3 -m trace --trace rnn.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/rnn/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/rnn/convert_classes.txt"
+            python3 rnn.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/rnn/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/rnn/convert_classes.txt"
+            echo "BLAH"
             echo "End Timestamp: `date +%s`" >> $LOG
             echo $END >> $LOG
             echo $END >> $LOG_ERR
         fi
 
         if [ $SEQUENCE_CNN = true ]; then
+            mkdir "$OUTPUT/model/api-sequence/cnn"
+
             echo "Training CNN model" >> $LOG
             echo "Training CNN model" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
             #python3 cnn.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/cnn/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/cnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
-            python3 -m trace --trace cnn.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/cnn/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/cnn/convert_classes.txt"
+            python3 cnn.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/cnn/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/cnn/convert_classes.txt"
+            echo "BLAH"
             echo "End Timestamp: `date +%s`" >> $LOG
             echo $END >> $LOG
             echo $END >> $LOG_ERR
