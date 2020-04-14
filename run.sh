@@ -135,8 +135,6 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         #TODO
         # Train models
         if [ $SEQUENCE_LSTM = true ]; then
-            mkdir "$OUTPUT/model/api-sequence/lstm"
-
             echo "Training LSTM model" >> $LOG
             echo "Training LSTM model" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
@@ -149,8 +147,6 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         fi
 
         if [ $SEQUENCE_RNN = true ]; then
-            mkdir "$OUTPUT/model/api-sequence/rnn"
-
             echo "Training RNN model" >> $LOG
             echo "Training RNN model" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
@@ -163,8 +159,6 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         fi
 
         if [ $SEQUENCE_CNN = true ]; then
-            mkdir "$OUTPUT/model/api-sequence/cnn"
-
             echo "Training CNN model" >> $LOG
             echo "Training CNN model" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
