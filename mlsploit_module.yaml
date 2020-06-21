@@ -320,4 +320,4 @@ functions:
   optional_filetypes:
   - test.txt
   output_tags: []
-icon_url: https://github.com/evandowning/mlsploit-pe/raw/develop/static/pe.png
+icon_url: https://github.com/evandowning/mlsploit-pe/raw/master/static/pe.png

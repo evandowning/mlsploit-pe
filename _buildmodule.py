@@ -1,7 +1,6 @@
 from mlsploit import Module
 
-#TODO - change to "master" branch after finishing
-IMG_URL='https://github.com/evandowning/mlsploit-pe/raw/develop/static/pe.png'
+IMG_URL='https://github.com/evandowning/mlsploit-pe/raw/master/static/pe.png'
 
 module = Module.build(
     display_name='PE Module',
