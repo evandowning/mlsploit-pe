@@ -25,7 +25,5 @@ $ ./test.sh
 ```
 
 ## MLsploit notes
-  * Modify `mlsploit-execution-backend/mlsploit.py`
-    * `Git(tmp_dir).clone(repo)` -> `Git(tmp_dir).clone(repo,recursive=True)`
-  * Modify `run.sh` to contain folder where samples are located and mount on docker in `mlsploit-execution-backend/mlsploit.py`
-    * Current path is variable `RAW` in `run.sh`
+  * Create MLSploit configuration file via `$ python _buildmodule.py`
+    * First install `https://github.com/mlsploit/mlsploit-py`

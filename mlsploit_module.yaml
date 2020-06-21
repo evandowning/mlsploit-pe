@@ -3,7 +3,7 @@ tagline: This is the PE module
 doctxt: Module to train and attack PE models.
 functions:
 - name: Ensemble-Train
-  doctxt: Trains an ensemble of models on PE features. Takes .data.txt file as input.
+  doctxt: Trains an ensemble of models on PE features. Takes .train.txt file as input.
   options:
   - name: sequence
     type: bool
@@ -24,7 +24,7 @@ functions:
     enum_values:
     - multi_classification
     - binary_classification
-    default: binary_classification
+    default: multi_classification
   - name: sequence_lstm
     type: bool
     doctxt: Sequence - LSTM - Enable
@@ -188,22 +188,21 @@ functions:
     enum_values: null
     default: false
   creates_new_files: true
-  modifies_input_files: false
-  expected_filetype: data.txt
-  optional_filetypes: []
-  output_tags:
-  - name: log
-    type: str
-- name: Ensemble - Evaluate
-  doctxt: Evaluates an ensemble of trained models. Takes .data.txt, .map.txt, and
-    .model.zip as input.
+  modifies_input_files: true
+  expected_filetype: train.txt
+  optional_filetypes:
+  - eval.txt
+  output_tags: []
+- name: Ensemble-Evaluate
+  doctxt: Evaluates an ensemble of trained models. Takes .eval.txt and .model.zip
+    as input.
   options:
   - name: sequence
     type: bool
     doctxt: Sequence - Enable
     required: true
     enum_values: null
-    default: null
+    default: false
   - name: sequence_window
     type: int
     doctxt: Sequence - Window Size
@@ -217,41 +216,41 @@ functions:
     enum_values:
     - multi_classification
     - binary_classification
-    default: binary_classification
+    default: multi_classification
   - name: existence
     type: bool
     doctxt: Existence - Enable
     required: true
     enum_values: null
-    default: null
+    default: false
   - name: frequency
     type: bool
     doctxt: Frequency - Enable
     required: true
     enum_values: null
-    default: null
+    default: false
   - name: arguments
     type: bool
     doctxt: Arguments - Enable
     required: true
     enum_values: null
-    default: null
+    default: false
   creates_new_files: true
-  modifies_input_files: false
-  expected_filetype: data.txt,.map.txt
+  modifies_input_files: true
+  expected_filetype: eval.txt
   optional_filetypes:
   - model.zip
   output_tags: []
-- name: Mimicry Attack
-  doctxt: Performs mimicry attack. Takes .data.txt, .target.txt, and .model.zip as
-    input.
+- name: Mimicry-Attack
+  doctxt: Performs mimicry attack. Takes .benign.txt, .target.txt, and .model.zip
+    as input.
   options:
   - name: sequence
     type: bool
     doctxt: Sequence - Enable
     required: true
     enum_values: null
-    default: null
+    default: false
   - name: sequence_window
     type: int
     doctxt: Sequence - Window Size
@@ -265,7 +264,25 @@ functions:
     enum_values:
     - multi_classification
     - binary_classification
-    default: binary_classification
+    default: multi_classification
+  - name: sequence_lstm
+    type: bool
+    doctxt: Sequence - LSTM - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: sequence_rnn
+    type: bool
+    doctxt: Sequence - RNN - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: sequence_cnn
+    type: bool
+    doctxt: Sequence - CNN - Enable
+    required: true
+    enum_values: null
+    default: false
   - name: generations
     type: int
     doctxt: Number of attack samples to generate
@@ -273,14 +290,13 @@ functions:
     enum_values: null
     default: 1
   creates_new_files: true
-  modifies_input_files: false
-  expected_filetype: data.txt,.target.txt
+  modifies_input_files: true
+  expected_filetype: benign.txt
   optional_filetypes:
+  - target.txt
   - model.zip
-  output_tags:
-  - name: tag1
-    type: str
-- name: PE Transformer
+  output_tags: []
+- name: PE-Transformer
   doctxt: Statically modifies PE binary to exhibit attack. Takes .cfg.zip as input.
   options:
   - name: hash
@@ -290,19 +306,18 @@ functions:
     enum_values: null
     default: null
   creates_new_files: true
-  modifies_input_files: false
+  modifies_input_files: true
   expected_filetype: cfg.zip
   optional_filetypes: []
-  output_tags:
-  - name: tag1
-    type: str
-- name: Detect Trampoline
+  output_tags: []
+- name: Detect-Trampoline
   doctxt: Trains model to detect trampoline insertion. Takes .nominal.txt and .test.txt
     as input.
   options: []
   creates_new_files: true
   modifies_input_files: false
-  expected_filetype: nominal.txt,.test.txt
-  optional_filetypes: []
+  expected_filetype: nominal.txt
+  optional_filetypes:
+  - test.txt
   output_tags: []
-icon_url: https://github.com/evandowning/mlsploit-pe/raw/develop/static/pe.png
+icon_url: https://github.com/evandowning/mlsploit-pe/raw/master/static/pe.png

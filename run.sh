@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Function if error occured
 function exit_error() {
     NAME="$1"
     LOG_NAME="$2"
@@ -11,11 +12,35 @@ function exit_error() {
     "name": "'"$NAME"'",
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
     "tags": [{"ftype":"log"},{"ftype":"log"}],
-    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
-    "files_modified": [null]
-}' > "$OUTPUT/output.json"
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "files_modified": []
+    }' > "$OUTPUT/output.json"
 
     exit 0
+}
+
+# Function to parse data files
+function parse_file() {
+    CONFIG="$1"
+    EXT="$2"
+
+    # Get number of files passed
+    NUM_FILES=$( jq -r ".num_files | length" "$CONFIG")
+
+    if [ $NUM_FILES -gt 0 ]; then
+        for i in `seq 0 $((NUM_FILES-1))`
+        do
+            e=$( jq -r ".files"[$i] "$CONFIG" )
+
+            # If this is the targeted file extension
+            if [[ "$e" == *"$EXT" ]]; then
+                echo "$e"
+                return
+            fi
+        done
+    fi
+
+    echo ""
 }
 
 set -x
@@ -30,8 +55,8 @@ BINARY="/mnt/binary"
 CONFIG="$INPUT/input.json"
 NAME=$( jq -r ".name" "$CONFIG" )
 
-LOG_NAME="pe-${NAME}-log.txt"
-LOG_ERR_NAME="pe-${NAME}-log-err.txt"
+LOG_NAME="pe-${NAME}.log.txt"
+LOG_ERR_NAME="pe-${NAME}.log_err.txt"
 LOG="$OUTPUT/$LOG_NAME"
 LOG_ERR="$OUTPUT/$LOG_ERR_NAME"
 
@@ -41,23 +66,12 @@ echo "" > $LOG_ERR
 echo "Running $NAME" >> $LOG
 
 # Get number of files passed
-NUM_FILES=$( jq -r ".tags | length" "$CONFIG")
+NUM_FILES=$( jq -r ".num_files | length" "$CONFIG")
 
 # MODEL_ENSEMBLE
-if [ "$NAME" = "model_ensemble" ]; then
+if [ "$NAME" = "Ensemble-Train" ]; then
     # Get files
-    CLASSES=""
-    if [ $NUM_FILES -gt 0 ]; then
-        for i in `seq 0 $((NUM_FILES-1))`
-        do
-            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
-
-            # If this is a data file
-            if [ "$e" == "data" ]; then
-                CLASSES=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-        done
-    fi
+    CLASSES=$(parse_file "$CONFIG" ".train.txt")
 
     # Check input files
     if [ "$CLASSES" = "" ]; then
@@ -338,40 +352,44 @@ if [ "$NAME" = "model_ensemble" ]; then
 
     # Compress models and move them to output folder
     cd "$OUTPUT"
-    zip -r "$OUTPUT/model.zip" "./model/"
+    zip -r "$OUTPUT/pe.model.zip" "./model/"
     cd /app/
 
-    # Write output.json
-    echo '{
-    "name": "'"$NAME"'",
-    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"],
-    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"}],
-    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","model.zip"],
-    "files_modified": [null]
-}' > "$OUTPUT/output.json"
+    # If eval data file was passed, add it to files_modified[]
+    # so mlsploit frontend will pass it to next in pipeline
+    EVAL=$(parse_file "$CONFIG" ".eval.txt")
+
+    if [ "$EVAL" = "" ]; then
+        # Write output.json
+        echo '{
+        "name": "'"$NAME"'",
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
+        "files_modified": []
+        }' > "$OUTPUT/output.json"
+
+    else
+        # Copy eval data file to output folder
+        cp "$INPUT/$EVAL" "$OUTPUT/$EVAL"
+
+        # Write output.json
+        echo '{
+        "name": "'"$NAME"'",
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip","'"$EVAL"'"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"model"},{"ftype":"data"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","pe.model.zip"],
+        "files_modified": ["'"$EVAL"'"]
+        }' > "$OUTPUT/output.json"
+    fi
+
 fi
 
 # EVALUATE_MODEL_ENSEMBLE
-if [ "$NAME" = "evaluate_model_ensemble" ]; then
+if [ "$NAME" = "Ensemble-Evaluate" ]; then
     # Get files
-    CLASSES=""
-    MODEL_ZIP=""
-    if [ $NUM_FILES -gt 0 ]; then
-        for i in `seq 0 $((NUM_FILES-1))`
-        do
-            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
-
-            # If this is a data file
-            if [ "$e" == "data" ]; then
-                CLASSES=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-
-            # If this is a model file
-            if [ "$e" == "model" ]; then
-                MODEL_ZIP=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-        done
-    fi
+    CLASSES=$(parse_file "$CONFIG" ".eval.txt")
+    MODEL_ZIP=$(parse_file "$CONFIG" ".model.zip")
 
     # Check input files
     if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ]; then
@@ -573,44 +591,48 @@ if [ "$NAME" = "evaluate_model_ensemble" ]; then
     zip -r "$OUTPUT/prediction.zip" "./prediction/"
     cd /app/
 
-    # If there were two input files
-    echo '{
-    "name": "'"$NAME"'",
-    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
-    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"}],
-    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
-    "files_modified": [null]
-}' > "$OUTPUT/output.json"
+    # Copy model to output folder
+    cp "$INPUT/$MODEL_ZIP" "$OUTPUT/$MODEL_ZIP"
+
+    ls -l "$INPUT"
+
+    # If logs exist in input, copy to output folder
+    cp "$INPUT/"*.log*.txt "$OUTPUT/"
+    LOG_IN=$(ls -1 "$INPUT/" | grep "\.log.*\.txt")
+    LOG_IN=$(echo $LOG_IN | sed "s/\ /\",\"/g")
+
+    NUM=$(ls -1 "$INPUT/" | grep "\.log.*\.txt" | wc -l)
+    LOG_IN_FTYPE=$(yes "{\"ftype\":\"log\"}," | head -$NUM | tr -d '\n')
+
+    if [ "$LOG_IN" = "" ]; then
+        echo '{
+        "name": "'"$NAME"'",
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip"],
+        "files_modified": []
+        }' > "$OUTPUT/output.json"
+
+    else
+        echo '{
+        "name": "'"$NAME"'",
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip","'"$MODEL_ZIP"'","'"$LOG_IN"'"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"prediction"},{"ftype":"model"},'"${LOG_IN_FTYPE:0:-1}"'],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","prediction.zip","'"$MODEL_ZIP"'"],
+        "files_modified": ["'"$LOG_IN"'"]
+        }' > "$OUTPUT/output.json"
+
+    fi
+
 fi
 
 
 # Mimicry Attack
-if [ "$NAME" = "mimicry_attack" ]; then
+if [ "$NAME" = "Mimicry-Attack" ]; then
     # Get files
-    CLASSES=""
-    MODEL_ZIP=""
-    TARGET=""
-    if [ $NUM_FILES -gt 0 ]; then
-        for i in `seq 0 $((NUM_FILES-1))`
-        do
-            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
-
-            # If this is a data file
-            if [ "$e" == "data" ]; then
-                CLASSES=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-
-            # If this is a model file
-            if [ "$e" == "model" ]; then
-                MODEL_ZIP=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-
-            # If this is a target file
-            if [ "$e" == "target" ]; then
-                TARGET=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-        done
-    fi
+    CLASSES=$(parse_file "$CONFIG" ".benign.txt")
+    MODEL_ZIP=$(parse_file "$CONFIG" ".model.zip")
+    TARGET=$(parse_file "$CONFIG" ".target.txt")
 
     # Check input files
     if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ] || [ "$TARGET" = "" ]; then
@@ -638,6 +660,7 @@ if [ "$NAME" = "mimicry_attack" ]; then
     echo "[input_options]" >> "$MIMICRY_CFG"
     echo "sequences=/app/sequence/api-sequences/" >> "$MIMICRY_CFG"
     echo "target_hashes=$INPUT/$TARGET" >> "$MIMICRY_CFG"
+    echo "preferred=preferred.txt" >> "$MIMICRY_CFG"
 
     echo "[output_options]" >> "$MIMICRY_CFG"
     echo "attack_features=$OUTPUT/attack-feature/" >> "$MIMICRY_CFG"
@@ -645,6 +668,20 @@ if [ "$NAME" = "mimicry_attack" ]; then
 
     # Get sequence modeling type
     SEQUENCE_TYPE=$( jq -r ".options.sequence_type" "$CONFIG" )
+
+    # Get ensemble options
+    SEQUENCE_LSTM=false
+    SEQUENCE_RNN=false
+    SEQUENCE_CNN=false
+    if [ $( jq ".options.sequence_lstm" "$CONFIG" ) = true ]; then
+        SEQUENCE_LSTM=true
+    fi
+    if [ $( jq ".options.sequence_rnn" "$CONFIG" ) = true ]; then
+        SEQUENCE_RNN=true
+    fi
+    if [ $( jq ".options.sequence_cnn" "$CONFIG" ) = true ]; then
+        SEQUENCE_CNN=true
+    fi
 
     # Folder where extraction code exists
     EXTRACT="/app/sequence/cuckoo-headless/extract_raw/"
@@ -705,11 +742,21 @@ if [ "$NAME" = "mimicry_attack" ]; then
 
     cd /app/sequence/
 
+    # Create samples file
+    rm "$OUTPUT/attack-feature/api-sequences-samples.txt"
+    for fn in `find "$OUTPUT/attack-feature/api-sequences/" -mindepth 1 -maxdepth 1 -type f`; do
+        # Get label for sample
+        h=$(echo $fn | rev | cut -d'/' -f1 | rev)
+        l=$(grep ${h:0:-2} "$INPUT/$TARGET" | cut -d$'\t' -f2)
+
+        echo -e "${h}\t${l}" >> "$OUTPUT/attack-feature/api-sequences-samples.txt"
+    done
+
     # Run evaluation on new features
     echo "Extracting sequence features" >> $LOG
     echo "Extracting sequence features" >> $LOG_ERR
     echo "Start Timestamp: `date +%s`" >> $LOG
-    python3 preprocess.py "$OUTPUT/attack-feature/api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$OUTPUT/attack-feature/api-sequences/samples.txt" "$OUTPUT/api-sequence-attack-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
+    python3 preprocess.py "$OUTPUT/attack-feature/api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$OUTPUT/attack-feature/api-sequences-samples.txt" "$OUTPUT/api-sequence-attack-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
     echo "End Timestamp: `date +%s`" >> $LOG
     echo $END >> $LOG
     echo $END >> $LOG_ERR
@@ -718,11 +765,34 @@ if [ "$NAME" = "mimicry_attack" ]; then
     echo "Evaluating model" >> $LOG_ERR
     echo "Start Timestamp: `date +%s`" >> $LOG
 
-    # If there's a second file, then get the convert_classes file
-    if [ "$OUTPUT/$MODEL/api-sequence/convert_classes.txt" != "" ]; then
-        python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" "$OUTPUT/$MODEL/api-sequence/convert_classes.txt" >> $LOG 2>> $LOG_ERR
-    else
-        python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences/samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence.csv" >> $LOG 2>> $LOG_ERR
+    # LSTM model
+    if [ $SEQUENCE_LSTM = true ]; then
+        # If there's a second file, then get the convert_classes file
+        if [ -f "$OUTPUT/$MODEL/api-sequence/lstm/convert_classes.txt" ]; then
+            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/lstm/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/lstm/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-lstm.csv" "$OUTPUT/$MODEL/api-sequence/lstm/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+        else
+            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/lstm/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/lstm/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-lstm.csv" >> $LOG 2>> $LOG_ERR
+        fi
+    fi
+
+    # RNN model
+    if [ $SEQUENCE_RNN = true ]; then
+        # If there's a second file, then get the convert_classes file
+        if [ -f "$OUTPUT/$MODEL/api-sequence/rnn/convert_classes.txt" ]; then
+            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/rnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/rnn/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-rnn.csv" "$OUTPUT/$MODEL/api-sequence/rnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+        else
+            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/rnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/rnn/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-rnn.csv" >> $LOG 2>> $LOG_ERR
+        fi
+    fi
+
+    # CNN model
+    if [ $SEQUENCE_CNN = true ]; then
+        # If there's a second file, then get the convert_classes file
+        if [ -f "$OUTPUT/$MODEL/api-sequence/cnn/convert_classes.txt" ]; then
+            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/cnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/cnn/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-cnn.csv" "$OUTPUT/$MODEL/api-sequence/cnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+        else
+            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/cnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/cnn/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-cnn.csv" >> $LOG 2>> $LOG_ERR
+        fi
     fi
 
     echo "End Timestamp: `date +%s`" >> $LOG
@@ -733,34 +803,24 @@ if [ "$NAME" = "mimicry_attack" ]; then
     cd "$OUTPUT"
     zip -r "$OUTPUT/attack-feature.zip" "./attack-feature/"
     zip -r "$OUTPUT/attack-prediction.zip" "./attack-prediction/"
+    zip -r "$OUTPUT/attack.cfg.zip" "./attack-config/"
     cd /app/
 
     # Write output.json
     echo '{
     "name": "'"$NAME"'",
-    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"],
-    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"feature"},{"ftype":"prediction"}],
-    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip"],
-    "files_modified": [null]
-}' > "$OUTPUT/output.json"
+    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip","attack.cfg.zip"],
+    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"feature"},{"ftype":"prediction"},{"ftype":"cfg"}],
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-feature.zip","attack-prediction.zip","attack.cfg.zip"],
+    "files_modified": []
+    }' > "$OUTPUT/output.json"
 fi
 
 
 # PE Transformer
-if [ "$NAME" = "pe_transformer" ]; then
+if [ "$NAME" = "PE-Transformer" ]; then
     # Get files
-    CONFIG_ZIP=""
-    if [ $NUM_FILES -gt 0 ]; then
-        for i in `seq 0 $((NUM_FILES-1))`
-        do
-            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
-
-            # If this is a config file
-            if [ "$e" == "cfg" ]; then
-                CONFIG_ZIP=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-        done
-    fi
+    CONFIG_ZIP=$(parse_file "$CONFIG" ".cfg.zip")
 
     # Check input files
     if [ "$CONFIG_ZIP" = "" ]; then
@@ -772,15 +832,16 @@ if [ "$NAME" = "pe_transformer" ]; then
     OLD_NAME=$( zipinfo -1 "$INPUT/$CONFIG_ZIP" | head -1 | awk '{split($NF,a,"/");print a[1]}' )
     CFG="cfg"
 
+    # Get sample
+    SAMPLE=$( jq -r ".options.hash" "$CONFIG" )
+
+    #TODO - Only gets first config from api sequences attack. Should add flexibility in future.
     # Unzip config(s)
     cd "$INPUT"
     unzip "$CONFIG_ZIP" -d "$OUTPUT"
     cd "$OUTPUT"
-    mv $OLD_NAME $CFG
+    cp "$OLD_NAME/api-sequences/$SAMPLE/0.cfg" $CFG
     cd /app/
-
-    # Get sample
-    SAMPLE=$( jq -r ".options.hash" "$CONFIG" )
 
     cd /app/petransformer
 
@@ -789,40 +850,53 @@ if [ "$NAME" = "pe_transformer" ]; then
     cp ./payloads/* ~/.msf4/modules/payloads/singles/windows/
 
     # Run transformer
-    python3 main.py ./shellcode/ "$RAW/sample/$SAMPLE" "$OUTPUT/$CFG/0.cfg" "$OUTPUT/attack.exe" > $LOG 2> $LOG_ERR
+    python3 main.py ./shellcode/ "$BINARY/$SAMPLE" "$OUTPUT/$CFG" "$OUTPUT/attack.exe" >> $LOG 2>> $LOG_ERR
+
+    # Zip attack binary with password
+    zip -P infected "$OUTPUT/attack.exe.zip" "$OUTPUT/attack.exe"
+
+    # If logs exist in input, copy to output folder
+    cp "$INPUT/"*.log*.txt "$OUTPUT/"
+    LOG_IN=$(ls -1 "$INPUT/" | grep "\.log.*\.txt")
+    LOG_IN=$(echo $LOG_IN | sed "s/\ /\",\"/g")
+
+    NUM=$(ls -1 "$INPUT/" | grep "\.log.*\.txt" | wc -l)
+    LOG_IN_FTYPE=$(yes "{\"ftype\":\"log\"}," | head -$NUM | tr -d '\n')
 
     # Write output.json
-    echo '{
-    "name": "'"$NAME"'",
-    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
-    "tags": [{"ftype":"log"},{"ftype":"log"}],
-    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
-    "files_modified": [null]
-}' > "$OUTPUT/output.json"
+    if [ "$LOG_IN" = "" ]; then
+        echo '{
+        "name": "'"$NAME"'",
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"zip"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip"],
+        "files_modified": []
+        }' > "$OUTPUT/output.json"
+
+    else
+        cp "$INPUT/$CONFIG_ZIP" "$OUTPUT"
+
+        #TODO - assumes these two zip files will exist
+        cp "$INPUT/attack-feature.zip" "$OUTPUT"
+        cp "$INPUT/attack-prediction.zip" "$OUTPUT"
+
+        echo '{
+        "name": "'"$NAME"'",
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip","'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CONFIG_ZIP"'"],
+        "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"zip"},'"${LOG_IN_FTYPE:0:-1}"',{"ftype":"feature"},{"ftype":"prediction"},{"ftype":"cfg"}],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip"],
+        "files_modified": ["'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CONFIG_ZIP"'"]
+        }' > "$OUTPUT/output.json"
+
+    fi
+
 fi
 
-#TODO
 # Detect Trampoline
-if [ "$NAME" = "detect_trampoline" ]; then
+if [ "$NAME" = "Detect-Trampoline" ]; then
     # Get files
-    NOMINAL=""
-    TEST=""
-    if [ $NUM_FILES -gt 0 ]; then
-        for i in `seq 0 $((NUM_FILES-1))`
-        do
-            e=$( jq -r ".tags"[$i].ftype "$CONFIG" )
-
-            # If this is a nominal file
-            if [ "$e" == "nominal" ]; then
-                NOMINAL=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-
-            # If this is a modified file
-            if [ "$e" == "test" ]; then
-                TEST=$( jq -r ".files"[$i] "$CONFIG")
-            fi
-        done
-    fi
+    NOMINAL=$(parse_file "$CONFIG" ".nominal.txt")
+    TEST=$(parse_file "$CONFIG" ".test.txt")
 
     # Check input files
     if [ "$NOMINAL" = "" ]; then
@@ -850,18 +924,16 @@ if [ "$NAME" = "detect_trampoline" ]; then
     python3 eval.py "$OUTPUT/test_features/" "$INPUT/$TEST" \
                                              $threshold_num \
                                              $threshold_dist \
-                                             $threshold_ratio
+                                             $threshold_ratio >> $LOG 2>> $LOG_ERR
 
     # Write output.json
     echo '{
     "name": "'"$NAME"'",
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
     "tags": [{"ftype":"log"},{"ftype":"log"}],
-    "files_extra": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
-    "files_modified": [null]
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "files_modified": []
 }' > "$OUTPUT/output.json"
 fi
 
 echo "Finished: `date +%s`" >> $LOG
-echo "Finished: `date +%s`" >> $LOG
-

@@ -1,7 +1,6 @@
 {
-    "name": "detect_trampoline",
+    "name": "Detect-Trampoline",
     "num_files": 2,
-    "files": ["nominal.txt","test.txt"],
-    "options": {},
-    "tags": [{"ftype": "nominal"}, {"ftype": "test"}]
+    "files": ["pe.nominal.txt","pe.test.txt"],
+    "options": {}
 }
