@@ -2,7 +2,7 @@
 
 ## Clone repository
 ```
-$ git clone --recursive https://github.com/evandowning/mlsploit-pe.git
+$ git clone --recursive git@github.com:evandowning/mlsploit-pe.git
 ```
 
 ## Tests
