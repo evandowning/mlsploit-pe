@@ -855,7 +855,7 @@ if [ "$NAME" = "PE-Transformer" ]; then
     cd "$OUTPUT"
     cd /app/
 
-    ls -l "$OLD_NAME/api-sequences/$SAMPLE/"
+    ls -l "$OUTPUT/$OLD_NAME/api-sequences/$SAMPLE/"
 
     cd /app/petransformer
 
@@ -867,8 +867,7 @@ if [ "$NAME" = "PE-Transformer" ]; then
     cp ./payloads/* ~/.msf4/modules/payloads/singles/windows/
 
     # Run transformer for each config file
-    for fn in `ls -1 "$OLD_NAME/api-sequences/$SAMPLE/"`; do
-        cfg="$OLD_NAME/api-sequences/$SAMPLE/$fn"
+    for cfg in $OUTPUT/$OLD_NAME/api-sequences/$SAMPLE/*; do
         i=`echo $cfg | rev | cut -d '/' -f 1 | rev`
         i=`echo $n | cut -d '.' -f 1`
 
