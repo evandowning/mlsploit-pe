@@ -51,6 +51,7 @@ INPUT="/mnt/input"
 OUTPUT="/mnt/output"
 RAW="/mnt/malwarelab"
 BINARY="/mnt/binary"
+RAW_TMP="/mnt/tmp"
 
 CONFIG="$INPUT/input.json"
 NAME=$( jq -r ".name" "$CONFIG" )
@@ -118,6 +119,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd "$EXTRACT"
         python2.7 extract-sequence.py "$RAW" "$INPUT/$CLASSES" "/app/sequence/api-sequences/" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-sequence.py "$RAW_TMP" "$INPUT/$CLASSES" "/app/sequence/api-sequences/" >> $LOG 2>> $LOG_ERR
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -206,6 +208,8 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd "$EXTRACT"
         python2.7 extract-existence.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/existence/api-existence.csv" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-existence.py "$RAW_TMP" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/existence/api-existence_tmp.csv" >> $LOG 2>> $LOG_ERR
+        cat "/app/existence/api-existence_tmp.csv" >> "/app/existence/api-existence.csv"
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -266,6 +270,8 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd "$EXTRACT"
         python2.7 extract-frequency.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/frequency/api-frequency.csv" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-frequency.py "$RAW_TMP" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/frequency/api-frequency_tmp.csv" >> $LOG 2>> $LOG_ERR
+        cat "/app/frequency/api-frequency_tmp.csv" >> "/app/frequency/api-frequency.csv"
         cd ../../
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -326,6 +332,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd extract_raw/
         python2.7 extract.py "$RAW" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles/" >> $LOG 2>> $LOG_ERR
+        python2.7 extract.py "$RAW_TMP" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles/" >> $LOG 2>> $LOG_ERR
         python2.7 feature_set_to_minhash.py "/app/arguments/behavior_profiles/" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles_minhash/" >> $LOG 2>> $LOG_ERR
         cd ../
         echo "End Timestamp: `date +%s`" >> $LOG
@@ -429,6 +436,7 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd "$EXTRACT"
         python2.7 extract-sequence.py "$RAW" "$INPUT/$CLASSES" "/app/sequence/api-sequences/" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-sequence.py "$RAW_TMP" "$INPUT/$CLASSES" "/app/sequence/api-sequences/" >> $LOG 2>> $LOG_ERR
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -504,6 +512,8 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd "$EXTRACT"
         python2.7 extract-existence.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/existence/api-existence.csv" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-existence.py "$RAW_TMP" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/existence/api-existence_tmp.csv" >> $LOG 2>> $LOG_ERR
+        cat "/app/existence/api-existence_tmp.csv" >> "/app/existence/api-existence.csv"
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -533,6 +543,8 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd "$EXTRACT"
         python2.7 extract-frequency.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/frequency/api-frequency.csv" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-frequency.py "$RAW_TMP" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/frequency/api-frequency_tmp.csv" >> $LOG 2>> $LOG_ERR
+        cat "/app/frequency/api-frequency_tmp.csv" >> "/app/frequency/api-frequency.csv"
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
@@ -564,6 +576,7 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
         echo "Start Timestamp: `date +%s`" >> $LOG
         cd extract_raw/
         python2.7 extract.py "$RAW" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles/" >> $LOG 2>> $LOG_ERR
+        python2.7 extract.py "$RAW_TMP" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles/" >> $LOG 2>> $LOG_ERR
         python2.7 feature_set_to_minhash.py "/app/arguments/behavior_profiles/" "$INPUT/$CLASSES" "/app/arguments/behavior_profiles_minhash/" >> $LOG 2>> $LOG_ERR
         cd ../
         echo "End Timestamp: `date +%s`" >> $LOG
@@ -710,6 +723,8 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
         cd cuckoo-headless/extract_raw/
         python2.7 extract-sequence.py "$RAW" "$INPUT/$CLASSES" "/app/sequence/api-sequences/" >> $LOG 2>> $LOG_ERR
         python2.7 extract-sequence.py "$RAW" "$INPUT/$TARGET" "/app/sequence/api-sequences/" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-sequence.py "$RAW_TMP" "$INPUT/$CLASSES" "/app/sequence/api-sequences/" >> $LOG 2>> $LOG_ERR
+        python2.7 extract-sequence.py "$RAW_TMP" "$INPUT/$TARGET" "/app/sequence/api-sequences/" >> $LOG 2>> $LOG_ERR
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
