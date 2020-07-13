@@ -871,14 +871,11 @@ if [ "$NAME" = "PE-Transformer" ]; then
         i=`echo $cfg | rev | cut -d '/' -f 1 | rev`
         i=`echo $i | cut -d '.' -f 1`
 
-        echo $cfg
-        echo $i
-
         python3 main.py ./shellcode/ "${BINARY}/${SAMPLE}" "$cfg" "${ATTACK}/attack-${i}.exe" >> $LOG 2>> $LOG_ERR
     done
 
     # Zip attack binary with password
-    zip -P infected "${OUTPUT}/attack-exe.zip" "$ATTACK"
+    zip -r -P infected "${OUTPUT}/attack-exe.zip" "$ATTACK"
 
     # If logs exist in input, copy to output folder
     cp "$INPUT/"*.log*.txt "$OUTPUT/"
