@@ -869,7 +869,7 @@ if [ "$NAME" = "PE-Transformer" ]; then
     # Run transformer for each config file
     for cfg in $OUTPUT/$OLD_NAME/api-sequences/$SAMPLE/*; do
         i=`echo $cfg | rev | cut -d '/' -f 1 | rev`
-        i=`echo $n | cut -d '.' -f 1`
+        i=`echo $i | cut -d '.' -f 1`
 
         echo $cfg
         echo $i
