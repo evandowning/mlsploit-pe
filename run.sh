@@ -845,30 +845,38 @@ if [ "$NAME" = "PE-Transformer" ]; then
 
     # Get config(s)
     OLD_NAME=$( zipinfo -1 "$INPUT/$CONFIG_ZIP" | head -1 | awk '{split($NF,a,"/");print a[1]}' )
-    CFG="cfg"
 
     # Get sample
     SAMPLE=$( jq -r ".options.hash" "$CONFIG" )
 
-    #TODO - Only gets first config from api sequences attack. Should add flexibility in future.
     # Unzip config(s)
     cd "$INPUT"
     unzip "$CONFIG_ZIP" -d "$OUTPUT"
     cd "$OUTPUT"
-    cp "$OLD_NAME/api-sequences/$SAMPLE/0.cfg" $CFG
     cd /app/
 
     cd /app/petransformer
+
+    ATTACK="${OUTPUT}/attack-exe"
+    mkdir "$ATTACK"
 
     # Copy payloads
     mkdir -p ~/.msf4/modules/payloads/singles/windows/
     cp ./payloads/* ~/.msf4/modules/payloads/singles/windows/
 
-    # Run transformer
-    python3 main.py ./shellcode/ "$BINARY/$SAMPLE" "$OUTPUT/$CFG" "$OUTPUT/attack.exe" >> $LOG 2>> $LOG_ERR
+    # Run transformer for each config file
+    for cfg in $OLD_NAME/api-sequences/$SAMPLE/*; do
+        i=`echo $cfg | rev | cut -d '/' -f 1 | rev`
+        i=`echo $n | cut -d '.' -f 1`
+
+        echo $cfg
+        echo $i
+
+        python3 main.py ./shellcode/ "${BINARY}/${SAMPLE}" "$cfg" "${ATTACK}/attack-${i}.exe" >> $LOG 2>> $LOG_ERR
+    done
 
     # Zip attack binary with password
-    zip -P infected "$OUTPUT/attack.exe.zip" "$OUTPUT/attack.exe"
+    zip -P infected "${OUTPUT}/attack-exe.zip" "$ATTACK"
 
     # If logs exist in input, copy to output folder
     cp "$INPUT/"*.log*.txt "$OUTPUT/"
@@ -882,24 +890,24 @@ if [ "$NAME" = "PE-Transformer" ]; then
     if [ "$LOG_IN" = "" ]; then
         echo '{
         "name": "'"$NAME"'",
-        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip"],
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-exe.zip"],
         "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"zip"}],
-        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip"],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-exe.zip"],
         "files_modified": []
         }' > "$OUTPUT/output.json"
 
     else
         cp "$INPUT/$CONFIG_ZIP" "$OUTPUT"
 
-        #TODO - assumes these two zip files will exist
+        # NOTE - assumes these two zip files will exist
         cp "$INPUT/attack-feature.zip" "$OUTPUT"
         cp "$INPUT/attack-prediction.zip" "$OUTPUT"
 
         echo '{
         "name": "'"$NAME"'",
-        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip","'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CONFIG_ZIP"'"],
+        "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-exe.zip","'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CONFIG_ZIP"'"],
         "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"zip"},'"${LOG_IN_FTYPE:0:-1}"',{"ftype":"feature"},{"ftype":"prediction"},{"ftype":"cfg"}],
-        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack.exe.zip"],
+        "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","attack-exe.zip"],
         "files_modified": ["'"$LOG_IN"'","attack-feature.zip","attack-prediction.zip","'"$CONFIG_ZIP"'"]
         }' > "$OUTPUT/output.json"
 
