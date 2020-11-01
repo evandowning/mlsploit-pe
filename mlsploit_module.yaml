@@ -187,6 +187,12 @@ functions:
     required: true
     enum_values: null
     default: false
+  - name: ember
+    type: bool
+    doctxt: Ember - Enable
+    required: true
+    enum_values: null
+    default: false
   creates_new_files: true
   modifies_input_files: true
   expected_filetype: train.txt
@@ -232,6 +238,12 @@ functions:
   - name: arguments
     type: bool
     doctxt: Arguments - Enable
+    required: true
+    enum_values: null
+    default: false
+  - name: ember
+    type: bool
+    doctxt: Ember - Enable
     required: true
     enum_values: null
     default: false
@@ -319,5 +331,14 @@ functions:
   expected_filetype: nominal.txt
   optional_filetypes:
   - test.txt
+  output_tags: []
+- name: Ember-Attack
+  doctxt: Trains model to generate malware binaries which evade an Ember model. Takes
+    trained ember model as input.
+  options: []
+  creates_new_files: true
+  modifies_input_files: false
+  expected_filetype: model.zip
+  optional_filetypes: []
   output_tags: []
 icon_url: https://github.com/evandowning/mlsploit-pe/raw/master/static/pe.png

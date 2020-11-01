@@ -10,6 +10,7 @@ RUN mkdir frequency
 RUN mkdir mimicry
 RUN mkdir arguments
 RUN mkdir petransformer
+RUN mkdir ember
 
 # Setup sequence
 workdir /app/sequence
@@ -26,11 +27,17 @@ workdir /app/frequency
 COPY ./model-api-frequency ./
 RUN ./setup.sh
 
-# Setup mimicry attack
-workdir /app/mimicry
-COPY ./mimicry-sequence ./
+# Setup ember
+workdir /app/ember
+COPY ./ember ./
+RUN git checkout mlsploit
 RUN ./setup.sh
-RUN ./setup_neo4j.sh
+
+# Setup mimicry attack
+#   workdir /app/mimicry
+#   COPY ./mimicry-sequence ./
+#   RUN ./setup.sh
+#   RUN ./setup_neo4j.sh
 
 # Add run (for Docker) and api.txt (for converting API calls to integers)
 workdir /app

@@ -208,6 +208,14 @@ function.add_option(
     doctxt="""Arguments - Multi-Layer Perceptron - Enable""",
     required=True)
 
+# Ember model using their dataset
+function.add_option(
+    name='ember',
+    type='bool',
+    default=False,
+    doctxt="""Ember - Enable""",
+    required=True)
+
 #############################################
 # Create model ensemble evaluating function #
 #############################################
@@ -254,6 +262,12 @@ function.add_option(
     type='bool',
     default=False,
     doctxt="""Arguments - Enable""",
+    required=True)
+function.add_option(
+    name='ember',
+    type='bool',
+    default=False,
+    doctxt="""Ember - Enable""",
     required=True)
 
 ##################################
@@ -336,6 +350,17 @@ function = module.build_function(
     modifies_input_files=False,
     expected_filetype='.nominal.txt',
     optional_filetypes=['.test.txt'])
+
+######################
+# Attack Ember Model #
+######################
+function = module.build_function(
+    name='Ember-Attack',
+    doctxt="""Trains model to generate malware binaries which evade an Ember model. Takes trained ember model as input.""",
+    creates_new_files=True,
+    modifies_input_files=False,
+    expected_filetype='.model.zip',
+    optional_filetypes=[])
 
 # Save yaml file
 module.save()
