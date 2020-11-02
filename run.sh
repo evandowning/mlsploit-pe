@@ -365,6 +365,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
 
         mkdir "$OUTPUT/model/ember"
 
+        source ~/.bashrc
         conda activate ember
 
         # Train ember model on ember dataset
