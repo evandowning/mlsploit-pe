@@ -51,6 +51,7 @@ INPUT="/mnt/input"
 OUTPUT="/mnt/output"
 RAW="/mnt/malwarelab"
 BINARY="/mnt/binary"
+EMBER="/mnt/ember"
 RAW_TMP="/mnt/tmp"
 
 CONFIG="$INPUT/input.json"
@@ -357,6 +358,25 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         cd /app/
     fi
 
+    #TODO
+    # EMBER
+    if [ $( jq ".options.ember" "$CONFIG" ) = true ]; then
+        cd /app/ember/
+
+        mkdir "$OUTPUT/model/ember"
+
+        # Train ember model on ember dataset
+        echo "Training models" >> $LOG
+        echo "Training models" >> $LOG_ERR
+        echo "Start Timestamp: `date +%s`" >> $LOG
+        time python scripts/train_ember.py -v 1 -datadir "$EMBER/ember/" --outdir "$OUTPUT/model/ember/" >> $LOG 2>> $LOG_ERR
+        echo "End Timestamp: `date +%s`" >> $LOG
+        echo $END >> $LOG
+        echo $END >> $LOG_ERR
+
+        cd /app/
+    fi
+
     # Compress models and move them to output folder
     cd "$OUTPUT"
     zip -r "$OUTPUT/pe.model.zip" "./model/"
@@ -591,6 +611,25 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
             echo "Evaluating model" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
             python2.7 evaluation.py "/app/arguments/behavior_profiles_minhash/" "$OUTPUT/$MODEL/arguments/$model_fn" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/arguments_${model_fn}.csv" >> $LOG 2>> $LOG_ERR
+            echo "End Timestamp: `date +%s`" >> $LOG
+            echo $END >> $LOG
+            echo $END >> $LOG_ERR
+        done
+
+        cd /app/
+    fi
+
+    #TODO
+    # EMBER
+    if [ $( jq ".options.ember" "$CONFIG" ) = true ]; then
+        cd /app/ember/
+
+        # Evaluate model on ember dataset
+        for model_fn in `ls -1 "$OUTPUT/$MODEL/ember/"`; do
+            echo "Evaluating model" >> $LOG
+            echo "Evaluating model" >> $LOG_ERR
+            echo "Start Timestamp: `date +%s`" >> $LOG
+            python scripts/test_ember.py -v 1 -m "$OUTPUT/$MODEL/ember/$model_fn" --datadir "$EMBER/ember/" >> $LOG 2>> $LOG_ERR
             echo "End Timestamp: `date +%s`" >> $LOG
             echo $END >> $LOG
             echo $END >> $LOG_ERR
@@ -947,6 +986,42 @@ if [ "$NAME" = "Detect-Trampoline" ]; then
                                              $threshold_num \
                                              $threshold_dist \
                                              $threshold_ratio >> $LOG 2>> $LOG_ERR
+
+    # Write output.json
+    echo '{
+    "name": "'"$NAME"'",
+    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "tags": [{"ftype":"log"},{"ftype":"log"}],
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "files_modified": []
+}' > "$OUTPUT/output.json"
+fi
+
+#TODO
+# Ember Attack
+if [ "$NAME" = "Ember-Attack" ]; then
+    # Get files
+    CLASSES=$(parse_file "$CONFIG" ".malicious.txt")
+    MODEL_ZIP=$(parse_file "$CONFIG" ".model.zip")
+
+    # Check input files
+    if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ]; then
+        echo "Error. Couldn't find input files." >> $LOG_ERR
+        exit_error "$NAME" "$LOG_NAME" "$LOG_ERR_NAME" "$OUTPUT"
+    fi
+
+    # Get model(s)
+    OLD_NAME=$( zipinfo -1 "$INPUT/$MODEL_ZIP" | head -1 | awk '{split($NF,a,"/");print a[1]}' )
+    MODEL="model"
+
+    # Unzip models
+    cd "$INPUT"
+    unzip "$MODEL_ZIP" -d "$OUTPUT"
+    cd "$OUTPUT"
+    mv $OLD_NAME $MODEL
+    cd /app/
+
+    # Do things
 
     # Write output.json
     echo '{
