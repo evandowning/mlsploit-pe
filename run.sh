@@ -1009,11 +1009,10 @@ fi
 # Ember Attack
 if [ "$NAME" = "Ember-Attack" ]; then
     # Get files
-    CLASSES=$(parse_file "$CONFIG" ".malicious.txt")
     MODEL_ZIP=$(parse_file "$CONFIG" ".model.zip")
 
     # Check input files
-    if [ "$CLASSES" = "" ] || [ "$MODEL_ZIP" = "" ]; then
+    if [ "$MODEL_ZIP" = "" ]; then
         echo "Error. Couldn't find input files." >> $LOG_ERR
         exit_error "$NAME" "$LOG_NAME" "$LOG_ERR_NAME" "$OUTPUT"
     fi
