@@ -365,6 +365,8 @@ if [ "$NAME" = "Ensemble-Train" ]; then
 
         mkdir "$OUTPUT/model/ember"
 
+        conda activate ember
+
         # Train ember model on ember dataset
         echo "Training models" >> $LOG
         echo "Training models" >> $LOG_ERR
@@ -373,6 +375,8 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
+
+        conda deactivate ember
 
         cd /app/
     fi
@@ -624,6 +628,8 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
     if [ $( jq ".options.ember" "$CONFIG" ) = true ]; then
         cd /app/ember/
 
+        conda activate ember
+
         # Evaluate model on ember dataset
         for model_fn in `ls -1 "$OUTPUT/$MODEL/ember/"`; do
             echo "Evaluating model" >> $LOG
@@ -634,6 +640,8 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
             echo $END >> $LOG
             echo $END >> $LOG_ERR
         done
+
+        conda deactivate ember
 
         cd /app/
     fi
