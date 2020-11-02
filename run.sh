@@ -1038,7 +1038,7 @@ if [ "$NAME" = "Ember-Attack" ]; then
 
     #TODO
     # Copy malware samples to sample folder
-    cp "$BINARY/samples_and_vt_reports/binary/00*" "./gym_malware/envs/utils/samples/"
+    cp "$BINARY"/samples_and_vt_reports/binary/00* "./gym_malware/envs/utils/samples/"
     echo "Copied samples to folder:" > $LOG
     ls -1 "./gym_malware/envs/utils/samples/" | wc -l > $LOG
 
