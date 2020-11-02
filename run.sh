@@ -371,7 +371,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         echo "Training models" >> $LOG
         echo "Training models" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        time python scripts/train_ember.py -v 1 -datadir "$EMBER/ember/" --outdir "$OUTPUT/model/ember/" >> $LOG 2>> $LOG_ERR
+        python scripts/train_ember.py -v 1 -datadir "$EMBER/ember/" --outdir "$OUTPUT/model/ember/" >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
