@@ -13,24 +13,23 @@ RUN mkdir petransformer
 RUN mkdir ember
 
 # Setup sequence
-workdir /app/sequence
-COPY ./model-api-sequence ./
-RUN ./setup.sh
+#   workdir /app/sequence
+#   COPY ./model-api-sequence ./
+#   RUN ./setup.sh
 
 # Setup existence
-workdir /app/existence
-COPY ./model-api-existence ./
-RUN ./setup.sh
+#   workdir /app/existence
+#   COPY ./model-api-existence ./
+#   RUN ./setup.sh
 
 # Setup frequency
-workdir /app/frequency
-COPY ./model-api-frequency ./
-RUN ./setup.sh
+#   workdir /app/frequency
+#   COPY ./model-api-frequency ./
+#   RUN ./setup.sh
 
 # Setup ember
 workdir /app/ember
 COPY ./ember ./
-RUN git checkout mlsploit
 RUN ./setup.sh
 
 # Setup mimicry attack
