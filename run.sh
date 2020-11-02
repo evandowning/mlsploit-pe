@@ -1031,26 +1031,53 @@ if [ "$NAME" = "Ember-Attack" ]; then
 
     cd /app/ember-attack/
 
+    ATTACK="$OUTPUT/ember-attack/"
+    mkdir "$ATTACK"
+
     source ~/.bashrc
     conda activate gym
 
+    #TODO
+    # Copy malware samples to sample folder
+    cp "$BINARY/samples_and_vt_reports/binary/00*" "./gym_malware/envs/utils/samples/"
+    echo "Copied samples to folder:" > $LOG
+    ls -1 "./gym_malware/envs/utils/samples/" | wc -l > $LOG
+
+    #TODO
     # Train model to evade ember model
-    python train_agent_chainer.py > $LOG 2>> $LOG_ERR
+    for model_fn in `ls -1 "$OUTPUT/$MODEL/ember/"`; do
+        echo "Evaluating model" >> $LOG
+        echo "Evaluating model" >> $LOG_ERR
+        echo "Start Timestamp: `date +%s`" >> $LOG
+        python train_agent_chainer.py --ember-model "$OUTPUT/$MODEL/ember/$model_fn" > $LOG 2>> $LOG_ERR
+        echo "End Timestamp: `date +%s`" >> $LOG
+        echo $END >> $LOG
+        echo $END >> $LOG_ERR
 
-    #TODO
-    # Verify that samples evaded model
+        # Verify that samples evaded model
+        cd /app/ember/
+        echo "Testing model evasion" >> $LOG
+        echo "Testing model evasion" >> $LOG_ERR
+        echo "Start Timestamp: `date +%s`" >> $LOG
+        find /app/ember-attack/evaded/score/ -type f -exec python scripts/classify_binaries.py -v 1 -m "$OUTPUT/$MODEL/ember/$model_fn" --binaries {} \;
+        echo "End Timestamp: `date +%s`" >> $LOG
+        cd /app/ember-attack/
 
-    #TODO
-    # Compress evaded samples and return them
+        # Copy evaded samples
+        cp ./evaded/score/* "$ATTACK"
+    done
 
     conda deactivate
+
+    # Zip attack binary with password
+    zip -r -P infected "${OUTPUT}/ember-attack.zip" "$ATTACK"
 
     # Write output.json
     echo '{
     "name": "'"$NAME"'",
-    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
-    "tags": [{"ftype":"log"},{"ftype":"log"}],
-    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","ember-attack.zip"],
+    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"zip"}],
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","ember-attack.zip"],
     "files_modified": []
 }' > "$OUTPUT/output.json"
 fi
