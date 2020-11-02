@@ -358,7 +358,6 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         cd /app/
     fi
 
-    #TODO
     # EMBER
     if [ $( jq ".options.ember" "$CONFIG" ) = true ]; then
         cd /app/ember/
@@ -624,7 +623,6 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
         cd /app/
     fi
 
-    #TODO
     # EMBER
     if [ $( jq ".options.ember" "$CONFIG" ) = true ]; then
         cd /app/ember/
@@ -1031,7 +1029,21 @@ if [ "$NAME" = "Ember-Attack" ]; then
     mv $OLD_NAME $MODEL
     cd /app/
 
-    # Do things
+    cd /app/ember-attack/
+
+    source ~/.bashrc
+    conda activate gym
+
+    # Train model to evade ember model
+    python train_agent_chainer.py > $LOG 2>> $LOG_ERR
+
+    #TODO
+    # Verify that samples evaded model
+
+    #TODO
+    # Compress evaded samples and return them
+
+    conda deactivate
 
     # Write output.json
     echo '{

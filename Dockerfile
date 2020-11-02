@@ -38,6 +38,11 @@ RUN ./setup.sh
 #   RUN ./setup.sh
 #   RUN ./setup_neo4j.sh
 
+# Setup ember attack
+workdir /app/ember-attack
+COPY ./gym-malware ./
+RUN ./setup.sh
+
 # Add run (for Docker) and api.txt (for converting API calls to integers)
 workdir /app
 COPY ./run.sh /app
