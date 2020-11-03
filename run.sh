@@ -51,6 +51,7 @@ INPUT="/mnt/input"
 OUTPUT="/mnt/output"
 RAW="/mnt/malwarelab"
 BINARY="/mnt/binary"
+EMBER="/mnt/ember"
 RAW_TMP="/mnt/tmp"
 
 CONFIG="$INPUT/input.json"
@@ -357,6 +358,29 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         cd /app/
     fi
 
+    # EMBER
+    if [ $( jq ".options.ember" "$CONFIG" ) = true ]; then
+        cd /app/ember/
+
+        mkdir "$OUTPUT/model/ember"
+
+        source ~/.bashrc
+        conda activate ember
+
+        # Train ember model on ember dataset
+        echo "Training models" >> $LOG
+        echo "Training models" >> $LOG_ERR
+        echo "Start Timestamp: `date +%s`" >> $LOG
+        python scripts/train_ember.py -v 1 --datadir "$EMBER/ember/" --outdir "$OUTPUT/model/ember/" >> $LOG 2>> $LOG_ERR
+        echo "End Timestamp: `date +%s`" >> $LOG
+        echo $END >> $LOG
+        echo $END >> $LOG_ERR
+
+        conda deactivate ember
+
+        cd /app/
+    fi
+
     # Compress models and move them to output folder
     cd "$OUTPUT"
     zip -r "$OUTPUT/pe.model.zip" "./model/"
@@ -595,6 +619,29 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
             echo $END >> $LOG
             echo $END >> $LOG_ERR
         done
+
+        cd /app/
+    fi
+
+    # EMBER
+    if [ $( jq ".options.ember" "$CONFIG" ) = true ]; then
+        cd /app/ember/
+
+        source ~/.bashrc
+        conda activate ember
+
+        # Evaluate model on ember dataset
+        for model_fn in `ls -1 "$OUTPUT/$MODEL/ember/"`; do
+            echo "Evaluating model" >> $LOG
+            echo "Evaluating model" >> $LOG_ERR
+            echo "Start Timestamp: `date +%s`" >> $LOG
+            python scripts/test_ember.py -v 1 -m "$OUTPUT/$MODEL/ember/$model_fn" --datadir "$EMBER/ember/" >> $LOG 2>> $LOG_ERR
+            echo "End Timestamp: `date +%s`" >> $LOG
+            echo $END >> $LOG
+            echo $END >> $LOG_ERR
+        done
+
+        conda deactivate ember
 
         cd /app/
     fi
@@ -954,6 +1001,87 @@ if [ "$NAME" = "Detect-Trampoline" ]; then
     "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
     "tags": [{"ftype":"log"},{"ftype":"log"}],
     "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'"],
+    "files_modified": []
+}' > "$OUTPUT/output.json"
+fi
+
+#TODO
+# Ember Attack
+if [ "$NAME" = "Ember-Attack" ]; then
+    # Get files
+    MODEL_ZIP=$(parse_file "$CONFIG" ".model.zip")
+
+    # Check input files
+    if [ "$MODEL_ZIP" = "" ]; then
+        echo "Error. Couldn't find input files." >> $LOG_ERR
+        exit_error "$NAME" "$LOG_NAME" "$LOG_ERR_NAME" "$OUTPUT"
+    fi
+
+    # Get model(s)
+    OLD_NAME=$( zipinfo -1 "$INPUT/$MODEL_ZIP" | head -1 | awk '{split($NF,a,"/");print a[1]}' )
+    MODEL="model"
+
+    # Unzip models
+    cd "$INPUT"
+    unzip "$MODEL_ZIP" -d "$OUTPUT"
+    cd "$OUTPUT"
+    mv $OLD_NAME $MODEL
+    cd /app/
+
+    cd /app/ember-attack/
+
+    ATTACK="$OUTPUT/ember-attack/"
+    mkdir "$ATTACK"
+
+    source ~/.bashrc
+
+    # Copy malware samples to sample folder
+    cp "$BINARY"/samples_and_vt_reports/binary/00* "./gym_malware/envs/utils/samples/"
+    echo "Copied samples to folder:" >> $LOG
+    ls -1 "./gym_malware/envs/utils/samples/" | wc -l >> $LOG
+
+    # Train model to evade ember model
+    for model_fn in `ls -1 "$OUTPUT/$MODEL/ember/"`; do
+        conda activate gym
+
+        echo "Attacking model" >> $LOG
+        echo "Attacking model" >> $LOG_ERR
+        echo "Start Timestamp: `date +%s`" >> $LOG
+        #TODO
+        python train_agent_chainer.py --ember-model "$OUTPUT/$MODEL/ember/$model_fn" >> $LOG 2>> $LOG_ERR
+        echo "End Timestamp: `date +%s`" >> $LOG
+        echo $END >> $LOG
+        echo $END >> $LOG_ERR
+
+        conda deactivate
+        conda activate ember
+
+        # Verify that samples evaded model
+        cd /app/ember/
+        echo "Testing model evasion" >> $LOG
+        echo "Testing model evasion" >> $LOG_ERR
+        echo "Start Timestamp: `date +%s`" >> $LOG
+        find /app/ember-attack/evaded/score/ -type f -exec python scripts/classify_binaries.py -v 1 -m "$OUTPUT/$MODEL/ember/$model_fn" --binaries {} \; >> $LOG 2>> $LOG_ERR
+        echo "End Timestamp: `date +%s`" >> $LOG
+        echo $END >> $LOG
+        echo $END >> $LOG_ERR
+        cd /app/ember-attack/
+
+        # Copy evaded samples
+        cp ./evaded/score/* "$ATTACK"
+
+        conda deactivate
+    done
+
+    # Zip attack binary with password
+    zip -r -P infected "${OUTPUT}/ember-attack.zip" "$ATTACK"
+
+    # Write output.json
+    echo '{
+    "name": "'"$NAME"'",
+    "files": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","ember-attack.zip"],
+    "tags": [{"ftype":"log"},{"ftype":"log"},{"ftype":"zip"}],
+    "files_created": ["'"$LOG_NAME"'","'"$LOG_ERR_NAME"'","ember-attack.zip"],
     "files_modified": []
 }' > "$OUTPUT/output.json"
 fi

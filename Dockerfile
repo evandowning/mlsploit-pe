@@ -1,6 +1,6 @@
 FROM debian:buster
 
-RUN apt update && apt install -y sudo default-jre jq python3 zip
+RUN apt update && apt install -y sudo default-jre jq python3 zip wget
 RUN apt upgrade -y
 
 workdir /app
@@ -10,6 +10,7 @@ RUN mkdir frequency
 RUN mkdir mimicry
 RUN mkdir arguments
 RUN mkdir petransformer
+RUN mkdir ember
 
 # Setup sequence
 workdir /app/sequence
@@ -26,11 +27,21 @@ workdir /app/frequency
 COPY ./model-api-frequency ./
 RUN ./setup.sh
 
+# Setup ember
+workdir /app/ember
+COPY ./ember ./
+RUN ./setup.sh
+
 # Setup mimicry attack
 workdir /app/mimicry
 COPY ./mimicry-sequence ./
 RUN ./setup.sh
 RUN ./setup_neo4j.sh
+
+# Setup ember attack
+workdir /app/ember-attack
+COPY ./gym-malware ./
+RUN ./setup.sh
 
 # Add run (for Docker) and api.txt (for converting API calls to integers)
 workdir /app

@@ -10,3 +10,9 @@
 [submodule "mimicry-sequence"]
 	path = mimicry-sequence
 	url = https://github.com/evandowning/mimicry-sequence.git
+[submodule "ember"]
+	path = ember
+	url = https://github.com/evandowning/ember.git
+[submodule "gym-malware"]
+	path = gym-malware
+	url = https://github.com/evandowning/gym-malware.git
