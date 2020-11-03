@@ -1034,7 +1034,6 @@ if [ "$NAME" = "Ember-Attack" ]; then
     mkdir "$ATTACK"
 
     source ~/.bashrc
-    conda activate gym
 
     # Copy malware samples to sample folder
     cp "$BINARY"/samples_and_vt_reports/binary/00* "./gym_malware/envs/utils/samples/"
@@ -1043,6 +1042,8 @@ if [ "$NAME" = "Ember-Attack" ]; then
 
     # Train model to evade ember model
     for model_fn in `ls -1 "$OUTPUT/$MODEL/ember/"`; do
+        conda activate gym
+
         echo "Attacking model" >> $LOG
         echo "Attacking model" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
@@ -1051,6 +1052,9 @@ if [ "$NAME" = "Ember-Attack" ]; then
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
+
+        conda deactivate
+        conda activate ember
 
         # Verify that samples evaded model
         cd /app/ember/
@@ -1065,9 +1069,9 @@ if [ "$NAME" = "Ember-Attack" ]; then
 
         # Copy evaded samples
         cp ./evaded/score/* "$ATTACK"
-    done
 
-    conda deactivate
+        conda deactivate
+    done
 
     # Zip attack binary with password
     zip -r -P infected "${OUTPUT}/ember-attack.zip" "$ATTACK"
