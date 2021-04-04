@@ -1005,7 +1005,6 @@ if [ "$NAME" = "Detect-Trampoline" ]; then
 }' > "$OUTPUT/output.json"
 fi
 
-#TODO
 # Ember Attack
 if [ "$NAME" = "Ember-Attack" ]; then
     # Get files
@@ -1047,7 +1046,6 @@ if [ "$NAME" = "Ember-Attack" ]; then
         echo "Attacking model" >> $LOG
         echo "Attacking model" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        #TODO
         python train_agent_chainer.py --ember-model "$OUTPUT/$MODEL/ember/$model_fn" >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG

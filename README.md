@@ -24,6 +24,6 @@ $ cp input/input-evaluation-ensemble-attack-example.json input/input.json
 $ ./test.sh
 ```
 
-## MLsploit notes
+## MLSploit notes
   * Create MLSploit configuration file via `$ python _buildmodule.py`
     * First install `https://github.com/mlsploit/mlsploit-py`
