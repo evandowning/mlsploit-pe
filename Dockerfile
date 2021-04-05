@@ -1,7 +1,7 @@
 FROM debian:buster
 
 RUN apt update && apt upgrade -y
-RUN apt update && apt install -y sudo default-jre jq python3 python3-pip zip wget
+RUN apt update && apt install -y sudo default-jre jq python3 python3-pip python2.7 zip wget
 RUN pip3 install --upgrade pip
 
 workdir /app

@@ -210,7 +210,6 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         cd "$EXTRACT"
         python2.7 extract-existence.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/existence/api-existence.csv" >> $LOG 2>> $LOG_ERR
         python2.7 extract-existence.py "$RAW_TMP" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/existence/api-existence_tmp.csv" >> $LOG 2>> $LOG_ERR
-        touch "/app/existence/api-existence_tmp.csv"
         cat "/app/existence/api-existence_tmp.csv" >> "/app/existence/api-existence.csv"
         cd ../..
         echo "End Timestamp: `date +%s`" >> $LOG
@@ -273,7 +272,6 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         cd "$EXTRACT"
         python2.7 extract-frequency.py "$RAW" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/frequency/api-frequency.csv" >> $LOG 2>> $LOG_ERR
         python2.7 extract-frequency.py "$RAW_TMP" "api.txt" "/app/label.txt" "$INPUT/$CLASSES" "/app/frequency/api-frequency_tmp.csv" >> $LOG 2>> $LOG_ERR
-        touch "/app/frequency/api-frequency_tmp.csv"
         cat "/app/frequency/api-frequency_tmp.csv" >> "/app/frequency/api-frequency.csv"
         cd ../../
         echo "End Timestamp: `date +%s`" >> $LOG
