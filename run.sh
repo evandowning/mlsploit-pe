@@ -477,8 +477,8 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
 
         # If LSTM was trained
         if [ -d "$OUTPUT/$MODEL/api-sequence/lstm/" ]; then
-            echo "Evaluating model" >> $LOG
-            echo "Evaluating model" >> $LOG_ERR
+            echo "Evaluating LSTM model" >> $LOG
+            echo "Evaluating LSTM model" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
             # If there's a second file, then get the convert_classes file
             if [ "$OUTPUT/$MODEL/api-sequence/lstm/convert_classes.txt" != "" ]; then
@@ -493,8 +493,8 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
 
         # If RNN was trained
         if [ -d "$OUTPUT/$MODEL/api-sequence/rnn/" ]; then
-            echo "Evaluating model" >> $LOG
-            echo "Evaluating model" >> $LOG_ERR
+            echo "Evaluating RNN model" >> $LOG
+            echo "Evaluating RNN model" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
             # If there's a second file, then get the convert_classes file
             if [ "$OUTPUT/$MODEL/api-sequence/rnn/convert_classes.txt" != "" ]; then
@@ -509,8 +509,8 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
 
         # If CNN was trained
         if [ -d "$OUTPUT/$MODEL/api-sequence/cnn/" ]; then
-            echo "Evaluating model" >> $LOG
-            echo "Evaluating model" >> $LOG_ERR
+            echo "Evaluating CNN model" >> $LOG
+            echo "Evaluating CNN model" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
             # If there's a second file, then get the convert_classes file
             if [ "$OUTPUT/$MODEL/api-sequence/cnn/convert_classes.txt" != "" ]; then
@@ -545,8 +545,8 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
 
         # Evaluate model
         for model_fn in `ls -1 "$OUTPUT/$MODEL/api-existence/"`; do
-            echo "Evaluating model" >> $LOG
-            echo "Evaluating model" >> $LOG_ERR
+            echo "Evaluating model ${model_fn}" >> $LOG
+            echo "Evaluating model ${model_fn}" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
             python3 evaluation.py "api-existence.csv" "/app/label.txt" "$OUTPUT/$MODEL/api-existence/$model_fn" "$OUTPUT/prediction/api-existence_${model_fn}.csv" >> $LOG 2>> $LOG_ERR
             echo "End Timestamp: `date +%s`" >> $LOG
@@ -576,8 +576,8 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
 
         # Evaluate model
         for model_fn in `ls -1 "$OUTPUT/$MODEL/api-frequency/"`; do
-            echo "Evaluating model" >> $LOG
-            echo "Evaluating model" >> $LOG_ERR
+            echo "Evaluating model ${model_fn}" >> $LOG
+            echo "Evaluating model ${model_fn}" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
             python3 evaluation.py "api-frequency.csv" "/app/label.txt" "$OUTPUT/$MODEL/api-frequency/$model_fn" "$OUTPUT/prediction/api-frequency_${model_fn}.csv" >> $LOG 2>> $LOG_ERR
             echo "End Timestamp: `date +%s`" >> $LOG
@@ -611,8 +611,8 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
 
         # Evaluate model
         for model_fn in `ls -1 "$OUTPUT/$MODEL/arguments/"`; do
-            echo "Evaluating model" >> $LOG
-            echo "Evaluating model" >> $LOG_ERR
+            echo "Evaluating model ${model_fn}" >> $LOG
+            echo "Evaluating model ${model_fn}" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
             python2.7 evaluation.py "/app/arguments/behavior_profiles_minhash/" "$OUTPUT/$MODEL/arguments/$model_fn" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/arguments_${model_fn}.csv" >> $LOG 2>> $LOG_ERR
             echo "End Timestamp: `date +%s`" >> $LOG
@@ -632,8 +632,8 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
 
         # Evaluate model on ember dataset
         for model_fn in `ls -1 "$OUTPUT/$MODEL/ember/"`; do
-            echo "Evaluating model" >> $LOG
-            echo "Evaluating model" >> $LOG_ERR
+            echo "Evaluating model ${model_fn}" >> $LOG
+            echo "Evaluating model ${model_fn}" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
             python scripts/test_ember.py -v 1 -m "$OUTPUT/$MODEL/ember/$model_fn" --datadir "$EMBER/ember/" >> $LOG 2>> $LOG_ERR
             echo "End Timestamp: `date +%s`" >> $LOG
@@ -1035,7 +1035,7 @@ if [ "$NAME" = "Ember-Attack" ]; then
     source ~/.bashrc
 
     # Copy malware samples to sample folder
-    cp "$BINARY"/samples_and_vt_reports/binary/00* "./gym_malware/envs/utils/samples/"
+    cp "$BINARY"/00* "./gym_malware/envs/utils/samples/"
     echo "Copied samples to folder:" >> $LOG
     ls -1 "./gym_malware/envs/utils/samples/" | wc -l >> $LOG
 
