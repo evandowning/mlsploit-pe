@@ -14,9 +14,9 @@ RUN mkdir petransformer
 RUN mkdir ember
 
 # Setup sequence
-workdir /app/sequence
-COPY ./model-api-sequence ./
-RUN ./setup.sh
+#workdir /app/sequence
+#COPY ./model-api-sequence ./
+#RUN ./setup.sh
 
 # Setup existence
 workdir /app/existence
@@ -29,20 +29,20 @@ COPY ./model-api-frequency ./
 RUN ./setup.sh
 
 # Setup ember
-workdir /app/ember
-COPY ./ember ./
-RUN ./setup.sh
+#workdir /app/ember
+#COPY ./ember ./
+#RUN ./setup.sh
 
 # Setup mimicry attack
-workdir /app/mimicry
-COPY ./mimicry-sequence ./
-RUN ./setup.sh
-RUN ./setup_neo4j.sh
+#workdir /app/mimicry
+#COPY ./mimicry-sequence ./
+#RUN ./setup.sh
+#RUN ./setup_neo4j.sh
 
 # Setup ember attack
-workdir /app/ember-attack
-COPY ./gym-malware ./
-RUN ./setup.sh
+#workdir /app/ember-attack
+#COPY ./gym-malware ./
+#RUN ./setup.sh
 
 # Add run (for Docker) and api.txt (for converting API calls to integers)
 workdir /app
