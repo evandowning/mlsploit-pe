@@ -368,8 +368,8 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         conda activate ember
 
         # Train ember model on ember dataset
-        echo "Training models" >> $LOG
-        echo "Training models" >> $LOG_ERR
+        echo "Training Ember model" >> $LOG
+        echo "Training Ember model" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
         python scripts/train_ember.py -v 1 --datadir "$EMBER/ember/" --outdir "$OUTPUT/model/ember/" >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
@@ -632,8 +632,8 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
 
         # Evaluate model on ember dataset
         for model_fn in `ls -1 "$OUTPUT/$MODEL/ember/"`; do
-            echo "Evaluating model ${model_fn}" >> $LOG
-            echo "Evaluating model ${model_fn}" >> $LOG_ERR
+            echo "Evaluating Ember model ${model_fn}" >> $LOG
+            echo "Evaluating Ember model ${model_fn}" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
             python scripts/test_ember.py -v 1 -m "$OUTPUT/$MODEL/ember/$model_fn" --datadir "$EMBER/ember/" >> $LOG 2>> $LOG_ERR
             echo "End Timestamp: `date +%s`" >> $LOG
@@ -1035,7 +1035,7 @@ if [ "$NAME" = "Ember-Attack" ]; then
     source ~/.bashrc
 
     # Copy malware samples to sample folder
-    cp "$BINARY"/00* "./gym_malware/envs/utils/samples/"
+    cp "$BINARY"/samples_and_vt_reports/binary/00* "./gym_malware/envs/utils/samples/"
     echo "Copied samples to folder:" >> $LOG
     ls -1 "./gym_malware/envs/utils/samples/" | wc -l >> $LOG
 
@@ -1043,8 +1043,8 @@ if [ "$NAME" = "Ember-Attack" ]; then
     for model_fn in `ls -1 "$OUTPUT/$MODEL/ember/"`; do
         conda activate gym
 
-        echo "Attacking model" >> $LOG
-        echo "Attacking model" >> $LOG_ERR
+        echo "Attacking Ember model" >> $LOG
+        echo "Attacking Ember model" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
         python train_agent_chainer.py --ember-model "$OUTPUT/$MODEL/ember/$model_fn" >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
@@ -1056,8 +1056,8 @@ if [ "$NAME" = "Ember-Attack" ]; then
 
         # Verify that samples evaded model
         cd /app/ember/
-        echo "Testing model evasion" >> $LOG
-        echo "Testing model evasion" >> $LOG_ERR
+        echo "Testing Ember model evasion" >> $LOG
+        echo "Testing Ember model evasion" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
         find /app/ember-attack/evaded/score/ -type f -exec python scripts/classify_binaries.py -v 1 -m "$OUTPUT/$MODEL/ember/$model_fn" --binaries {} \; >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG

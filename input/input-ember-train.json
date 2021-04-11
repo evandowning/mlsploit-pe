@@ -1,0 +1,8 @@
+{
+    "name": "Ensemble-Train",
+    "num_files": 1,
+    "files": ["pe.train.txt"],
+    "options": {
+        "ember": true
+    }
+}

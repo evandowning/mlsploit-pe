@@ -22,6 +22,14 @@ $ ./test.sh
 # Evaluate attack
 $ cp input/input-evaluation-ensemble-attack-example.json input/input.json
 $ ./test.sh
+
+# Bonus
+$ cp input/input-ember-train.json input/input.json
+$ ./test.sh
+$ cp input/input-ember-evaluation.json input/input.json
+$ ./test.sh
+$ cp input/input-ember-attack.json input/input.json
+$ ./test.sh
 ```
 
 ## MLSploit notes

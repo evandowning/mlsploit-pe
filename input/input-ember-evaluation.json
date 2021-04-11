@@ -1,0 +1,8 @@
+{
+    "name": "Ensemble-Evaluate",
+    "num_files": 2,
+    "files": ["pe.eval.txt","pe.model.zip"],
+    "options": {
+        "ember": true
+    }
+}
