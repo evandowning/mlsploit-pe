@@ -1,7 +1,7 @@
 {
     "name": "PE-Transformer",
     "num_files": 1,
-    "files": ["rbot.cfg.zip"],
+    "files": ["attack.cfg.zip"],
     "options": {
         "hash": "rbot-original.exe"
     }

@@ -12,15 +12,17 @@ $ cp input/input-train-ensemble-example.json input/input.json
 $ ./test.sh
 
 # Evaluate
+$ cp output/pe.model.zip input/
 $ cp input/input-evaluation-ensemble-example.json input/input.json
 $ ./test.sh
 
-# Attack
-$ cp input/input-transformation-example.json input/input.json
+# Mimicry Attack
+$ cp input/input-mimicry-example.json input/input.json
 $ ./test.sh
 
-# Evaluate attack
-$ cp input/input-evaluation-ensemble-attack-example.json input/input.json
+# Transformation
+$ cp output/attack.cfg.zip input/
+$ cp input/input-transformation-mimicry-example.json input/input.json
 $ ./test.sh
 
 # Bonus
