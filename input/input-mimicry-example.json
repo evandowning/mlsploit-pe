@@ -6,6 +6,9 @@
         "sequence": true,
         "sequence_type": "multi_classification",
         "sequence_window": 32,
-        "generations": 10
+        "sequence_lstm": true,
+        "sequence_rnn": true,
+        "sequence_cnn": true,
+        "generations": 20
     }
 }

@@ -809,7 +809,7 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
     for fn in `find "$OUTPUT/attack-feature/api-sequences/" -mindepth 1 -maxdepth 1 -type f`; do
         # Get label for sample
         h=$(echo $fn | rev | cut -d'/' -f1 | rev)
-        l=$(grep ${h:0:-2} "$INPUT/$TARGET" | cut -d$'\t' -f2)
+        l=$(echo ${h} | cut -d'_' -f1 | xargs -I{} grep {} "$INPUT/$TARGET" | cut -d$'\t' -f2)
 
         echo -e "${h}\t${l}" >> "$OUTPUT/attack-feature/api-sequences-samples.txt"
     done
