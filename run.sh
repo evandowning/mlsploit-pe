@@ -130,7 +130,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         echo "Extracting features" >> $LOG
         echo "Extracting features" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 preprocess.py "api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$INPUT/$CLASSES" "api-sequence-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
+        python3.7 preprocess.py "api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$INPUT/$CLASSES" "api-sequence-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
@@ -140,7 +140,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
             echo "Training LSTM model" >> $LOG
             echo "Training LSTM model" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
-            python3 lstm.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/lstm/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/lstm/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+            python3.7 lstm.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/lstm/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/lstm/convert_classes.txt" >> $LOG 2>> $LOG_ERR
             echo "End Timestamp: `date +%s`" >> $LOG
             echo $END >> $LOG
             echo $END >> $LOG_ERR
@@ -150,7 +150,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
             echo "Training RNN model" >> $LOG
             echo "Training RNN model" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
-            python3 rnn.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/rnn/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/rnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+            python3.7 rnn.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/rnn/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/rnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
             echo "End Timestamp: `date +%s`" >> $LOG
             echo $END >> $LOG
             echo $END >> $LOG_ERR
@@ -160,7 +160,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
             echo "Training CNN model" >> $LOG
             echo "Training CNN model" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
-            python3 cnn.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/cnn/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/cnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+            python3.7 cnn.py "$EXTRACT/api.txt" "api-sequence-features/" "$OUTPUT/model/api-sequence/cnn/" True False $SEQUENCE_TYPE "$OUTPUT/model/api-sequence/cnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
             echo "End Timestamp: `date +%s`" >> $LOG
             echo $END >> $LOG
             echo $END >> $LOG_ERR
@@ -220,7 +220,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         echo "Training models" >> $LOG
         echo "Training models" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 api_existence.py    --csv "api-existence.csv" \
+        python3.7 api_existence.py    --csv "api-existence.csv" \
                                     --ensemble_model "$OUTPUT/model/api-existence/model_ensemble.pkl" \
                                     $EXISTENCE_PARAM \
                                     >> $LOG 2>> $LOG_ERR
@@ -282,7 +282,7 @@ if [ "$NAME" = "Ensemble-Train" ]; then
         echo "Training models" >> $LOG
         echo "Training models" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 api_frequency.py    --csv "api-frequency.csv" \
+        python3.7 api_frequency.py    --csv "api-frequency.csv" \
                                     --ensemble_model "$OUTPUT/model/api-frequency/model_ensemble.pkl" \
                                     $FREQUENCY_PARAM \
                                     >> $LOG 2>> $LOG_ERR
@@ -470,7 +470,7 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
         echo "Extracting features" >> $LOG
         echo "Extracting features" >> $LOG_ERR
         echo "Start Timestamp: `date +%s`" >> $LOG
-        python3 preprocess.py "api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$INPUT/$CLASSES" "api-sequence-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
+        python3.7 preprocess.py "api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$INPUT/$CLASSES" "api-sequence-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
         echo "End Timestamp: `date +%s`" >> $LOG
         echo $END >> $LOG
         echo $END >> $LOG_ERR
@@ -482,9 +482,9 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
             echo "Start Timestamp: `date +%s`" >> $LOG
             # If there's a second file, then get the convert_classes file
             if [ "$OUTPUT/$MODEL/api-sequence/lstm/convert_classes.txt" != "" ]; then
-                python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/lstm/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/lstm/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-lstm.csv" "$OUTPUT/$MODEL/api-sequence/lstm/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+                python3.7 evaluation.py "$OUTPUT/$MODEL/api-sequence/lstm/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/lstm/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-lstm.csv" "$OUTPUT/$MODEL/api-sequence/lstm/convert_classes.txt" >> $LOG 2>> $LOG_ERR
             else
-                python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/lstm/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/lstm/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-lstm.csv" >> $LOG 2>> $LOG_ERR
+                python3.7 evaluation.py "$OUTPUT/$MODEL/api-sequence/lstm/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/lstm/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-lstm.csv" >> $LOG 2>> $LOG_ERR
             fi
             echo "End Timestamp: `date +%s`" >> $LOG
             echo $END >> $LOG
@@ -498,9 +498,9 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
             echo "Start Timestamp: `date +%s`" >> $LOG
             # If there's a second file, then get the convert_classes file
             if [ "$OUTPUT/$MODEL/api-sequence/rnn/convert_classes.txt" != "" ]; then
-                python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/rnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/rnn/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-rnn.csv" "$OUTPUT/$MODEL/api-sequence/rnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+                python3.7 evaluation.py "$OUTPUT/$MODEL/api-sequence/rnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/rnn/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-rnn.csv" "$OUTPUT/$MODEL/api-sequence/rnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
             else
-                python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/rnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/rnn/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-rnn.csv" >> $LOG 2>> $LOG_ERR
+                python3.7 evaluation.py "$OUTPUT/$MODEL/api-sequence/rnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/rnn/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-rnn.csv" >> $LOG 2>> $LOG_ERR
             fi
             echo "End Timestamp: `date +%s`" >> $LOG
             echo $END >> $LOG
@@ -514,9 +514,9 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
             echo "Start Timestamp: `date +%s`" >> $LOG
             # If there's a second file, then get the convert_classes file
             if [ "$OUTPUT/$MODEL/api-sequence/cnn/convert_classes.txt" != "" ]; then
-                python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/cnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/cnn/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-cnn.csv" "$OUTPUT/$MODEL/api-sequence/cnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+                python3.7 evaluation.py "$OUTPUT/$MODEL/api-sequence/cnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/cnn/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-cnn.csv" "$OUTPUT/$MODEL/api-sequence/cnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
             else
-                python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/cnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/cnn/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-cnn.csv" >> $LOG 2>> $LOG_ERR
+                python3.7 evaluation.py "$OUTPUT/$MODEL/api-sequence/cnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/cnn/fold1-weight.h5" "api-sequence-features/" "$INPUT/$CLASSES" "/app/label.txt" "$OUTPUT/prediction/api-sequence-cnn.csv" >> $LOG 2>> $LOG_ERR
             fi
             echo "End Timestamp: `date +%s`" >> $LOG
             echo $END >> $LOG
@@ -548,7 +548,7 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
             echo "Evaluating model ${model_fn}" >> $LOG
             echo "Evaluating model ${model_fn}" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
-            python3 evaluation.py "api-existence.csv" "/app/label.txt" "$OUTPUT/$MODEL/api-existence/$model_fn" "$OUTPUT/prediction/api-existence_${model_fn}.csv" >> $LOG 2>> $LOG_ERR
+            python3.7 evaluation.py "api-existence.csv" "/app/label.txt" "$OUTPUT/$MODEL/api-existence/$model_fn" "$OUTPUT/prediction/api-existence_${model_fn}.csv" >> $LOG 2>> $LOG_ERR
             echo "End Timestamp: `date +%s`" >> $LOG
             echo $END >> $LOG
             echo $END >> $LOG_ERR
@@ -579,7 +579,7 @@ if [ "$NAME" = "Ensemble-Evaluate" ]; then
             echo "Evaluating model ${model_fn}" >> $LOG
             echo "Evaluating model ${model_fn}" >> $LOG_ERR
             echo "Start Timestamp: `date +%s`" >> $LOG
-            python3 evaluation.py "api-frequency.csv" "/app/label.txt" "$OUTPUT/$MODEL/api-frequency/$model_fn" "$OUTPUT/prediction/api-frequency_${model_fn}.csv" >> $LOG 2>> $LOG_ERR
+            python3.7 evaluation.py "api-frequency.csv" "/app/label.txt" "$OUTPUT/$MODEL/api-frequency/$model_fn" "$OUTPUT/prediction/api-frequency_${model_fn}.csv" >> $LOG 2>> $LOG_ERR
             echo "End Timestamp: `date +%s`" >> $LOG
             echo $END >> $LOG
             echo $END >> $LOG_ERR
@@ -782,7 +782,7 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
         sleep 5
         cd /app/mimicry
         cd sequence/
-        python3 create-neo4j-csv.py "/app/sequence/api-sequences/" "$INPUT/$CLASSES" benign output.csv
+        python3.7 create-neo4j-csv.py "/app/sequence/api-sequences/" "$INPUT/$CLASSES" benign output.csv
         cp output.csv /var/lib/neo4j/import/mimicry.csv
         bash neo4j-load-csv.sh neo4j password
         cd /app
@@ -796,7 +796,7 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
     echo "Running Mimicry Attack" >> $LOG
     echo "Running Mimicry Attack" >> $LOG_ERR
     echo "Start Timestamp: `date +%s`" >> $LOG
-    python3 mimicry.py "$MIMICRY_CFG"  >> $LOG 2>> $LOG_ERR
+    python3.7 mimicry.py "$MIMICRY_CFG"  >> $LOG 2>> $LOG_ERR
     cd ..
     echo "End Timestamp: `date +%s`" >> $LOG
     echo $END >> $LOG
@@ -818,7 +818,7 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
     echo "Extracting sequence features" >> $LOG
     echo "Extracting sequence features" >> $LOG_ERR
     echo "Start Timestamp: `date +%s`" >> $LOG
-    python3 preprocess.py "$OUTPUT/attack-feature/api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$OUTPUT/attack-feature/api-sequences-samples.txt" "$OUTPUT/api-sequence-attack-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
+    python3.7 preprocess.py "$OUTPUT/attack-feature/api-sequences/" "$EXTRACT/api.txt" "/app/label.txt" "$OUTPUT/attack-feature/api-sequences-samples.txt" "$OUTPUT/api-sequence-attack-features/" $SEQUENCE_WINDOW $SEQUENCE_TYPE >> $LOG 2>> $LOG_ERR
     echo "End Timestamp: `date +%s`" >> $LOG
     echo $END >> $LOG
     echo $END >> $LOG_ERR
@@ -831,9 +831,9 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
     if [ $SEQUENCE_LSTM = true ]; then
         # If there's a second file, then get the convert_classes file
         if [ -f "$OUTPUT/$MODEL/api-sequence/lstm/convert_classes.txt" ]; then
-            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/lstm/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/lstm/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-lstm.csv" "$OUTPUT/$MODEL/api-sequence/lstm/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+            python3.7 evaluation.py "$OUTPUT/$MODEL/api-sequence/lstm/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/lstm/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-lstm.csv" "$OUTPUT/$MODEL/api-sequence/lstm/convert_classes.txt" >> $LOG 2>> $LOG_ERR
         else
-            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/lstm/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/lstm/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-lstm.csv" >> $LOG 2>> $LOG_ERR
+            python3.7 evaluation.py "$OUTPUT/$MODEL/api-sequence/lstm/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/lstm/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-lstm.csv" >> $LOG 2>> $LOG_ERR
         fi
     fi
 
@@ -841,9 +841,9 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
     if [ $SEQUENCE_RNN = true ]; then
         # If there's a second file, then get the convert_classes file
         if [ -f "$OUTPUT/$MODEL/api-sequence/rnn/convert_classes.txt" ]; then
-            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/rnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/rnn/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-rnn.csv" "$OUTPUT/$MODEL/api-sequence/rnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+            python3.7 evaluation.py "$OUTPUT/$MODEL/api-sequence/rnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/rnn/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-rnn.csv" "$OUTPUT/$MODEL/api-sequence/rnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
         else
-            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/rnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/rnn/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-rnn.csv" >> $LOG 2>> $LOG_ERR
+            python3.7 evaluation.py "$OUTPUT/$MODEL/api-sequence/rnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/rnn/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-rnn.csv" >> $LOG 2>> $LOG_ERR
         fi
     fi
 
@@ -851,9 +851,9 @@ if [ "$NAME" = "Mimicry-Attack" ]; then
     if [ $SEQUENCE_CNN = true ]; then
         # If there's a second file, then get the convert_classes file
         if [ -f "$OUTPUT/$MODEL/api-sequence/cnn/convert_classes.txt" ]; then
-            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/cnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/cnn/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-cnn.csv" "$OUTPUT/$MODEL/api-sequence/cnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
+            python3.7 evaluation.py "$OUTPUT/$MODEL/api-sequence/cnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/cnn/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-cnn.csv" "$OUTPUT/$MODEL/api-sequence/cnn/convert_classes.txt" >> $LOG 2>> $LOG_ERR
         else
-            python3 evaluation.py "$OUTPUT/$MODEL/api-sequence/cnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/cnn/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-cnn.csv" >> $LOG 2>> $LOG_ERR
+            python3.7 evaluation.py "$OUTPUT/$MODEL/api-sequence/cnn/fold1-model.json" "$OUTPUT/$MODEL/api-sequence/cnn/fold1-weight.h5" "$OUTPUT/api-sequence-attack-features/" "$OUTPUT/attack-feature/api-sequences-samples.txt" "/app/label.txt" "$OUTPUT/attack-prediction/api-sequence-cnn.csv" >> $LOG 2>> $LOG_ERR
         fi
     fi
 
@@ -918,7 +918,7 @@ if [ "$NAME" = "PE-Transformer" ]; then
         i=`echo $cfg | rev | cut -d '/' -f 1 | rev`
         i=`echo $i | cut -d '.' -f 1`
 
-        python3 main.py ./shellcode/ "${BINARY}/${SAMPLE}" "$cfg" "${ATTACK}/attack-${i}.exe" >> $LOG 2>> $LOG_ERR
+        python3.7 main.py ./shellcode/ "${BINARY}/${SAMPLE}" "$cfg" "${ATTACK}/attack-${i}.exe" >> $LOG 2>> $LOG_ERR
     done
 
     # Zip attack binary with password
@@ -980,17 +980,17 @@ if [ "$NAME" = "Detect-Trampoline" ]; then
     cd /app/petransformer/artifact/
 
     # Extract features from nominal and test sets
-    python3 extract.py "$BINARY" "$INPUT/$NOMINAL" "$OUTPUT/nominal_features/"
-    python3 extract.py "$BINARY" "$INPUT/$TEST" "$OUTPUT/test_features/"
+    python3.7 extract.py "$BINARY" "$INPUT/$NOMINAL" "$OUTPUT/nominal_features/"
+    python3.7 extract.py "$BINARY" "$INPUT/$TEST" "$OUTPUT/test_features/"
 
     # Model nominal (unmodified) files
-    python3 model_naive.py $OUTPUT/nominal_features/ "$INPUT/$NOMINAL" > "$OUTPUT/out.txt"
+    python3.7 model_naive.py $OUTPUT/nominal_features/ "$INPUT/$NOMINAL" > "$OUTPUT/out.txt"
     threshold_num=`grep 'Average number of jumps:' "$OUTPUT/out.txt" | rev | cut -d ' ' -f 1 | rev`
     threshold_dist=`grep 'Average distance of jumps:' "$OUTPUT/out.txt" | rev | cut -d ' ' -f 1 | rev`
     threshold_ratio=`grep 'ratio' "$OUTPUT/out.txt" | rev | cut -d ' ' -f 1 | rev`
 
     # Run detection on test samples
-    python3 eval.py "$OUTPUT/test_features/" "$INPUT/$TEST" \
+    python3.7 eval.py "$OUTPUT/test_features/" "$INPUT/$TEST" \
                                              $threshold_num \
                                              $threshold_dist \
                                              $threshold_ratio >> $LOG 2>> $LOG_ERR
@@ -1042,6 +1042,7 @@ if [ "$NAME" = "Ember-Attack" ]; then
     # Train model to evade ember model
     for model_fn in `ls -1 "$OUTPUT/$MODEL/ember/"`; do
         conda activate gym
+	cat requirements.txt | xargs -n 1 pip install
 
         echo "Attacking Ember model" >> $LOG
         echo "Attacking Ember model" >> $LOG_ERR
